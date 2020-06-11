@@ -1,0 +1,219 @@
+## 内存布局
+
+JDK1.8之前：
+
+![jdk1.8前内存布局](C:/Users/MinChiang/Desktop/面试笔记/assets/jdk1.8前内存布局.png)
+
+JDK1.8：
+
+![jdk1.8内存布局](C:/Users/MinChiang/Desktop/面试笔记/assets/jdk1.8内存布局.png)
+
+- 线程私有：
+  - 虚拟机栈：存放各种数据类型以及对象引用，每次函数的执行都会有入栈弹栈的过程；
+  - 本地方法栈：调用本地native的方法服务；
+  - 程序计数器：字节码解析器根据程序计数器来读取指令，而且用于记录当前线程的执行位置，**是JVM规范中唯一一个位置不会出现OOM**；
+- 线程共享：
+  - 堆：存放对象的实例；
+  - 方法区（永久代或非堆）：用于存储已被虚拟机加载类信息、常量、静态变量和即时编译后的代码等；方方法区是Java虚拟机中规范的定义，永久代是HotSpot虚拟机中的规范。**方法区是规范、永久代是实现**；
+  - 元空间：在JDK1.8后出现，与方法区作用上一致。
+
+![内存区域划分](C:/Users/MinChiang/Desktop/面试笔记/assets/内存区域划分.jpg)
+
+堆区分为几个区域：
+
+- 新生代（Young Generation）：分为Eden和两个Survivor区，新创建的对象分配在Eden区，在执行一次的MinorGC后，如果对象继续存活，则移动到其中一个Survivor区，如果继续存活，则在下一次MinorGC时移动到另一块Survivor区。Eden区和Survivor区的比值为8：2，可以通过-XX:SurvivorRatio调整。一般来说，新生代占整个堆大小的1/4或者1/3比较合适，可以通过-Xmn调整。-XX:NewRatio也是可以调整新生代和老年代的比值，如果设定了-Xmn，则优先使用-Xmn；
+- 老年代（Old Generation）：一般使用标记整理算法，主要会发生MajorGC，比较适合标记整理算法（CMS垃圾回收器除外）；
+- 永久代（Permanent Generation）：JDK1.7（含）之前存在的区域，JDK1.8后剔除，可以通过设置-XX:PermSize调整；
+- 元空间（Metaspace）：JDK1.8（含）存在的区域。
+
+
+
+## 对象访问定位
+
+![对象的访问定位-使用句柄](C:/Users/MinChiang/Desktop/面试笔记/assets/对象的访问定位-使用句柄.png)
+
+![对象的访问定位-直接指针](C:/Users/MinChiang/Desktop/面试笔记/assets/对象的访问定位-直接指针.png)
+
+- 使用句柄：对象移动时不需要改变reference的指向，只改变句柄实例数据的指针；
+- 使用指针：直接访问，速度快。
+
+
+
+## 栈和栈帧
+
+
+
+
+
+## 双亲委派机制
+
+如果一个类加载器收到了类加载的请求，它首先不会让自己去尝试加载这个类，而是把这个请求**委派给父类加载器去完成**，每一个层次的类加载器都是如此，因此所有的加载请求最终都应该传送到顶层的启动类加载器中，只有当父加载器反馈自己无法完成这个加载请求（它的搜索范围中没有找到所需的类）时，子加载器才会尝试自己去加载。ClassLoader类比较重要的两个方法：findClass和loadClass，**findClass是指如何找到class，而loadClass则默认实现了整个双亲委派机制**，如果需要打破双亲委派机制，需要重写loadClass方法。
+
+```java
+    protected Class<?> loadClass(String name, boolean resolve)
+        throws ClassNotFoundException
+    {
+        synchronized (getClassLoadingLock(name)) {
+            // First, check if the class has already been loaded
+            Class<?> c = findLoadedClass(name);
+            if (c == null) {
+                long t0 = System.nanoTime();
+                try {
+                    if (parent != null) {
+                        c = parent.loadClass(name, false);
+                    } else {
+                        c = findBootstrapClassOrNull(name);
+                    }
+                } catch (ClassNotFoundException e) {
+                    // ClassNotFoundException thrown if class not found
+                    // from the non-null parent class loader
+                }
+
+                if (c == null) {
+                    // If still not found, then invoke findClass in order
+                    // to find the class.
+                    long t1 = System.nanoTime();
+                    c = findClass(name);
+
+                    // this is the defining class loader; record the stats
+                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);
+                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);
+                    sun.misc.PerfCounter.getFindClasses().increment();
+                }
+            }
+            if (resolve) {
+                resolveClass(c);
+            }
+            return c;
+        }
+    }
+
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        throw new ClassNotFoundException(name);
+    }
+```
+
+
+
+## 对象创建
+
+- 指针碰撞：**内存需要绝对规整**，挪动开辟对象所需的区域大小即可；
+- 空闲列表：记录哪部分区域是空闲的。
+
+
+
+## 对象存活判断
+
+- 引用计数法：对象存有被引用的次数，简单但无法解决**循环引用**的问题；
+- 可达性分析：Hotspot使用枚举根节点的方式，需要发生STW，可以解决循环引用等问题。
+
+
+
+## 对象的引用
+
+- 强引用：指代码普遍存在的引用方式，只要强引用存在，则永远不会对其进行垃圾回收；
+- 软引用：在系统发生**内存溢出异常**之前对其进行垃圾回收，使用**SoftReference**；
+- 弱引用：引用的对象只能生存到**下一次垃圾回收**之前，无论内存是否足够，都进行回收，使用WeakReference；
+- 虚引用：最弱的引用关系，目的是对象被回收时**收到一个系统通知，跟踪对象垃圾回收的状态**，使用PhantomReference。
+
+
+
+## 垃圾收集算法
+
+- 标记清除：先标记，然后直接清除；简单快速但会产生内存碎片；
+
+![标记清除算法](C:/Users/MinChiang/Desktop/面试笔记/assets/标记清除算法.jpg)
+
+- 复制：划分区域，每次使用其中1块区域，使用完之后把存活的数据复制到另外一块中，Hotspot新生代默认使用，划分为1个Eden和2个Survivor，大小比例为8：1，Survivor空间不足时**使用老年代分配担保**；
+
+![复制算法](C:/Users/MinChiang/Desktop/面试笔记/assets/复制算法.jpg)
+
+- 标记整理：先标记，然后把存活对象向空间一端移动，适合**老年代**使用的算法。
+
+![标记整理算法](C:/Users/MinChiang/Desktop/面试笔记/assets/标记整理算法.jpg)
+
+
+
+## 静态链接和动态链接
+
+
+
+
+
+## 垃圾收集器
+
+1. 新生代：
+   - Serial收集器：单线程、回收时发生STW（暂停所有其他线程直到收集结束）、对于单CPU环境性能最高、简单高效、复制算法、client模式下默认新生代垃圾收集器；
+   - ParNew（Parallel）收集器：Serial收集器的**多线程**版本（默认开启和CPU数目相同的线程数）、会发生STW、复制算法；
+   - Parallel Scavenge收集器：关注点是**控制吞吐量**（用户运行代码与CPU总消耗时间的比值，运行用户代码时间/(运行用户代码时间+垃圾收集时间)）、复制算法、新生代默认收集器（针对server虚拟机而言），存在-XX:+UseAdaptiveSizePolicy自适应调节策略，配置之后就不需要手工指定其他细节参数，虚拟机会自动调整这些参数。
+2. 老年代：
+   - Serial Old收集器：Serial的老年代版本，单线程、标记整理算法、老年代默认收集器（针对client虚拟机而言）；
+   - Parallel Serial收集器：是Parallel Scavenge老年代算法，吞吐量优先、多线程、标记整理算法；
+   - CMS收集器：以**最短回收停顿为目标**，真正意义上的并发收集器。分为初始标记、并发标记、重新标记和并发清除四个步骤，使用**标记清除算法**，对CPU资源非常敏感、**无法清除浮动垃圾（边回收而且边产生的垃圾）**、收集结束会产生大量的**内存碎片**。
+3. 共用：
+   - G1收集器：可预测的停顿；整体使用标记整理算法，局部使用复制算法；把堆划分为多个独立区域Region，新生代和老年代不再是物理隔离的，跟踪各个Region中的堆积价值大小，优先回收价值最大的Region。
+
+
+
+## GC名词解释
+
+- MinorGC：次要的GC，发生在新生代，都会发生STW；
+- MajorGC：主要的GC，发生在老年代；
+- FullGC：整个堆的GC。
+
+
+
+## JVM调优参数
+
+| 选项                            | 解释                                                         |
+| :------------------------------ | :----------------------------------------------------------- |
+| -Xms                            | 初始堆大小。如：-Xms256m。                                   |
+| -Xmx                            | 最大堆大小。如：-Xmx512m。                                   |
+| -Xmn                            | 新生代大小。通常为 Xmx 的 1/3 或 1/4。新生代 = Eden + 2 个 Survivor 空间。实际可用空间为 = Eden + 1 个 Survivor，即 90% 。 |
+| -Xss                            | JDK1.5+ 每个线程堆栈大小为 1M，一般来说如果栈不是很深的话， 1M 是绝对够用了的。 |
+| -XX:NewRatio                    | 新生代与老年代的比例，如 –XX:NewRatio=2，则新生代占整个堆空间的1/3，老年代占2/3。 |
+| -XX:SurvivorRatio               | 新生代中 Eden 与 Survivor 的比值。默认值为 8。即 Eden 占新生代空间的 8/10，另外两个 Survivor 各占 1/10 。 |
+| -XX:PermSize                    | JDK1.7（含）前永久代（方法区）的初始大小。                   |
+| -XX:MaxPermSize                 | JDK1.7（含）前永久代（方法区）的最大值。                     |
+| -XX:MetaspaceSize               | JDK1.8（含）直接内存内存元空间的初始大小。                   |
+| -XX:MaxMetaspaceSize            | JDK1.8（含）直接内存内存元空间的最大值。                     |
+| -XX:+PrintGCDetails             | 打印GC 信息。                                                |
+| -XX:+HeapDumpOnOutOfMemoryError | 让虚拟机在发生内存溢出时 Dump 出当前的内存堆转储快照，以便分析用。 |
+
+
+
+## Client模式和Server模式的区别
+
+> 为了提高热点代码的执行效率，在运行时，虚拟机将会把这些代码编译成***与本地平台相关的机器码***，并进行各种层次的优化，完成这个任务的编译器叫做即时编译器（Just In Time Compiler，即JIT编译器），当程序需要迅速启动和执行的时候，解释器可以先发挥作用，省去编译的时间，立即执行。在程序运行后，随着时间的推移，编译器逐渐发挥作用，把越来越多的代码编译成本地代码之后，可以获取更高的执行效率。
+
+- Server模式：与C2编译器共同运行，更注重编译质量，启动速度慢，但是运行效率高，适合在服务器环境下运行，针对生产环境进行了优化处理；
+- Client模式：与C1编译器共同运行，更注重编译速度，启动速度快，更适合在客户端版本下，针对GUI进行了优化处理。
+
+
+
+## 内存交互操作概念
+
+> Java内存模型中定义了一下8种内存变量交换的操作，虚拟机必须保证这8种操作都是原子的，不可再分的。
+
+![内存交互操作](C:/Users/MinChiang/Desktop/面试笔记/assets/内存交互操作.png)
+
+- lock：作用于主内存，把一个变量标识为一条线程独占状态；
+- unlock：作用于主内存，把一个处于lock状态的变量释放出来，释放后才能被其他线程锁定；
+- read：作用于主内存，把一个变量值从主内存传到线程的工作内存中，便于随后的load动作使用；
+- load：作用于工作内存，把read操作从主内存中得到的变量放入工作内存的变量副本中；
+- use：作用于工作内存，把工作内存中一个变量值传递给执行引擎，每当虚拟机遇到一个需要使用变量值的字节码指令时会执行这个操作；
+- assign：作用于工作内存，把一个从执行引擎收到的值赋给工作内存的变量，每当虚拟机遇到一个给变量赋值的字节码指令时执行这个操作；
+- store：作用于工作内存，把工作内存中一个变量值传送到主内存中，一边随后的write操作使用；
+- write：作用于主内存，把store操作从工作内存中得到的变量的值放入主内存的变量中。
+
+
+
+## 命令工具
+
+- jps：查看运行中的java程序；
+- jstat：查看虚拟机的状态；
+- jinfo：查看虚拟机的参数；
+- jmap：dump出堆的数据；
+- jstack：当前线程执行的快照；
+- VisualVM：上面工具的集合，一般用此工具，省力省心。
+
