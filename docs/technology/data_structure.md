@@ -8,7 +8,7 @@
 - 节点的高度：从其最下面的叶子节点（0层或者1层）开始，到该节点的层数，自下而上；
 - 树的高度和深度：是相等的，就是树所拥有层的数量。
 
-![树高度解释1](C:/Users/MinChiang/Desktop/面试笔记/assets/树高度解释1.jpg)![树高度解释2](C:/Users/MinChiang/Desktop/面试笔记/assets/树高度解释2.jpg)
+![树高度解释1](./images/树高度解释1.jpg)![树高度解释2](./images/树高度解释2.jpg)
 
 | 图                | 左          | 右          |
 | ----------------- | ----------- | ----------- |
@@ -34,21 +34,21 @@
 
 B树示例图：
 
-![B树示例图](C:/Users/MinChiang/Desktop/面试笔记/assets/B树示例图.jpg)
+![B树示例图](./images/B树示例图.jpg)
 
 B树插入示例图：
 
-![B树插入示例图1](C:/Users/MinChiang/Desktop/面试笔记/assets/B树插入示例图1.jpg)
+![B树插入示例图1](./images/B树插入示例图1.jpg)
 
-![B树插入示例图2](C:/Users/MinChiang/Desktop/面试笔记/assets/B树插入示例图2.jpg)
+![B树插入示例图2](./images/B树插入示例图2.jpg)
 
 B树删除示例图：
 
-![B树删除示例图1](C:/Users/MinChiang/Desktop/面试笔记/assets/B树删除示例图1.jpg)
+![B树删除示例图1](./images/B树删除示例图1.jpg)
 
-![B树删除示例图2](C:/Users/MinChiang/Desktop/面试笔记/assets/B树删除示例图2.jpg)
+![B树删除示例图2](./images/B树删除示例图2.jpg)
 
-![B树删除示例图3](C:/Users/MinChiang/Desktop/面试笔记/assets/B树删除示例图3.jpg)
+![B树删除示例图3](./images/B树删除示例图3.jpg)
 
 
 
@@ -60,7 +60,7 @@ B树删除示例图：
 - B+树查询更加稳定，但是查询相比B树会慢；
 - B+树具备排序功能，叶子节点构成**有序链表**，有利于做顺序扫描。
 
-![B+树示例图](C:/Users/MinChiang/Desktop/面试笔记/assets/B+树示例图.jpg)
+![B+树示例图](./images/B+树示例图.jpg)
 
 
 
@@ -70,5 +70,5 @@ B树删除示例图：
 - B*树初始化关键字数量更多，使节点空间利用率更高；
 - 分裂时，B*树先检查兄弟节点是否满，未满时会向兄弟节点转移。
 
-![B星树示例图](C:/Users/MinChiang/Desktop/面试笔记/assets/B星树示例图.jpg)
+![B星树示例图](./images/B星树示例图.jpg)
 

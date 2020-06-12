@@ -1,16 +1,16 @@
 ---
 home: true
-heroImage: /hero.png
-heroText: Hero 标题
-tagline: Hero 副标题
-actionText: 快速上手 →
+heroImage: /images/doge.png
+heroText: MinChiang的技术博客
+tagline: 极客、代码规范强迫症、强烈好奇心
+actionText: 了解我
 actionLink: /technology/
 features:
-- title: 简洁至上
-  details: 以 Markdown 为中心的项目结构，以最少的配置帮助你专注于写作。
-- title: Vue驱动
-  details: 享受 Vue + webpack 的开发体验，在 Markdown 中使用 Vue 组件，同时可以使用 Vue 来开发自定义主题。
-- title: 高性能
-  details: VuePress 为每个页面预渲染生成静态的 HTML，同时在页面被加载的时候，将作为 SPA 运行。
-footer: MIT Licensed | Copyright © 2018-present Evan You
+- title: 专业化
+  details: 以符合当前潮流技术服务业务，满足所需的业务场景和业务需求
+- title: 流程化
+  details: 推崇敏捷开发、DevOps和DDD（领域驱动模型），让项目从启动到上线符合“流水线”的思想
+- title: 规范化
+  details: 以主流合理的规范进行代码开发，整合项目中技术知识并沉淀归档
+footer: MIT Licensed | Copyright © 2020-present MinChiang
 ---

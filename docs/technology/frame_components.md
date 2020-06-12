@@ -83,7 +83,7 @@ public class B {
 
 ### SpringMVC
 
-![springmvc原理](C:/Users/MinChiang/Desktop/面试笔记/assets/springmvc原理.png)
+![springmvc原理](./images/springmvc原理.png)
 
 DispatcherServlet部分源码：
 
@@ -237,11 +237,11 @@ SimpleControllerHandlerAdapter部分源码：
 
 - feign：关于interfact的http远程调用；
 
-![feign原理](C:/Users/MinChiang/Desktop/面试笔记/assets/feign原理.png)
+![feign原理](./images/feign原理.png)
 
 - hystrix：熔断器；
 
-![hystrix原理](C:/Users/MinChiang/Desktop/面试笔记/assets/hystrix原理.png)
+![hystrix原理](./images/hystrix原理.png)
 
 - zuul/gateway：网关。
 
@@ -343,7 +343,7 @@ SimpleControllerHandlerAdapter部分源码：
 - 采用了单线程，避免了上下文切换和竞争条件；注意是处理网络请求的时候只有一个线程来处理；
 - 采用了非阻塞IO：IO多路复用。
 
-![redis线程模型](C:/Users/MinChiang/Desktop/面试笔记/assets/redis线程模型.png)
+![redis线程模型](./images/redis线程模型.png)
 
 
 
@@ -351,7 +351,7 @@ SimpleControllerHandlerAdapter部分源码：
 
 #### 哨兵模式
 
-![哨兵模式](C:/Users/MinChiang/Desktop/面试笔记/assets/redis哨兵模式.png)
+![哨兵模式](./images/redis哨兵模式.png)
 
 - 集群监控：负责监控 redis master 和 slave 进程是否正常工作；
 - 消息通知：如果某个 redis 实例有故障，那么哨兵负责发送消息作为报警通知给管理员；
@@ -362,7 +362,7 @@ SimpleControllerHandlerAdapter部分源码：
 
 #### 基于客户端分配模式
 
-![基于客户端分配模式](C:/Users/MinChiang/Desktop/面试笔记/assets/基于客户端分配.jpg)
+![基于客户端分配模式](./images/基于客户端分配.jpg)
 
 - 配置简单，结构简单，容易搭建，不需要第三方的组件；
 - 本质上通过key映射到某Redis中的某个节点，**不适合动态扩容（最重要缺点）**；
@@ -373,7 +373,7 @@ SimpleControllerHandlerAdapter部分源码：
 
 #### Redis Cluster
 
-![Redis Cluster模式](C:/Users/MinChiang/Desktop/面试笔记/assets/RedisCluster模式.png)
+![Redis Cluster模式](./images/RedisCluster模式.png)
 
 - 没有使用一致性hash（会有hash倾斜等问题）的方式，而是采用slot槽的概念；
 - 可以动态扩容，仅仅需要迁移**一部分**数据到新的节点；
@@ -486,7 +486,7 @@ keys和scan的区别：
 
 ### 架构模型
 
-![kafka架构模型](C:/Users/MinChiang/Desktop/面试笔记/assets/kafka架构模型.png)
+![kafka架构模型](./images/kafka架构模型.png)
 
 正常情况下，kafka里的数据都不能只有一份。假设我们保存了N个副本，即topic每个partition都有N个副本（Replica）。并且**副本的个数一定小于broker个数**（因为每份数据的副本必须保存在不同的broker，否则没有意义，因为如果一份数据的副本保存在同一个broker，那么这个broker挂了，则数据依然丢）。所以对于每个partition而言，每个broker上最多**只有一个**副本，因此我们常常使用broker-id表示副本。kafka还有个机制，就是会默认将副本均匀分布到所有的broker上。当replication-factor为N时，Partition会有N个副本，其中N为leader和follower的**总和**。
 
@@ -563,7 +563,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 >4
 ```
 
-![kafka消费结果](C:/Users/MinChiang/Desktop/面试笔记/assets/kafka消费结果.png)
+![kafka消费结果](./images/kafka消费结果.png)
 
 在test群组中多加入一个消费者时，消费者也可以继续消费。但是再加入一个后，test群组中的consumer数量为4，比分区数量3还多，因此有一个消费者**无法消费**信息。
 
@@ -577,7 +577,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 - Follower：响应leader的心跳请求，响应客户端的读请求，并将写请求转发给leader处理；
 - Observer：与follower类似，不参与投票，响应读请求，把写请求转发给leader。
 
-![zookeeper模型](C:/Users/MinChiang/Desktop/面试笔记/assets/zookeeper模型.png)
+![zookeeper模型](./images/zookeeper模型.png)
 
 
 
@@ -611,7 +611,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 - 广播模式：zookeeper集群对外正式开始提供服务，并且leader可以进行消息广播，如果有新的节点计入，还需要对新节点进行同步。
 
-  ![zookeeper广播实例图](C:/Users/MinChiang/Desktop/面试笔记/assets/zookeeper广播实例图.jpg)
+  ![zookeeper广播实例图](./images/zookeeper广播实例图.jpg)
 
   1. 客户端发送写入请求到任意的follower；
   2. server把写入数据请求转发给leader；

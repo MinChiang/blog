@@ -6,5 +6,9 @@
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"
+  },
+  "dependencies": {
+    "markdown-it-disable-url-encode": "^1.0.1",
+    "mdurl": "^1.0.1"
   }
 }

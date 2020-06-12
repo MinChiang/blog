@@ -1,6 +1,6 @@
 ## 概述
 
-![排序算法属性](C:/Users/MinChiang/Desktop/面试笔记/assets/排序算法属性.png)
+![排序算法属性](./images/排序算法属性.png)
 
 
 

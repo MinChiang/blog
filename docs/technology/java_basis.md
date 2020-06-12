@@ -61,7 +61,7 @@
 
 内部源码实现：
 
-![线程池内部判断流程](C:/Users/MinChiang/Desktop/面试笔记/assets/线程池源码流程图.jpg)
+![线程池源码流程图](./images/线程池源码流程图.jpg)
 
 ```java
 	public Future<?> submit(Runnable task) {
@@ -399,7 +399,7 @@ public class Thread implements Runnable {
 }
 ```
 
-![线程状态](C:/Users/MinChiang/Desktop/面试笔记/assets/线程状态.png)
+![线程状态](./images/线程状态.png)
 
 RUNNABLE是指**等待运行和运行中**的集合状态：在Thread.start()执行后，线程就可以被CPU接纳执行；
 
@@ -903,17 +903,17 @@ CAS操作时，需要判断V位置的值与预期值A是否相等，如果不相
 
   重量级锁：指的是传统意义上执行synchronized**同步代码块**时，加入字节码monitorenter和monitorexit指令来实现monitor的获取和释放，就是需要JVM通过字节码显式地去获取和释放monitor实现同步；使用synchronized**同步方法**时候，检查方法的ACC_SYNCHRONIZED标志是否被设置，如果设置了线程需要先去获取monitor。
 
-  ![重量级锁synchronized加锁流程](C:/Users/MinChiang/Desktop/面试笔记/assets/重量级锁synchronized加锁流程.png)
+  ![重量级锁synchronized加锁流程](./images/重量级锁synchronized加锁流程.png)
 
   轻量级锁：为了在没有多线程竞争的前提下，**减少传统重量级锁使用操作系统互斥量产生的性能消耗**。在进入同步块时，虚拟机首先在当前线程栈帧中建立一个Lock Record空间，用于存储锁对象目前的Mark Word拷贝（关方把这份拷贝加了一个Displaced前缀，即Displaced Mark Word），并尝试使用CAS操作将锁对象的Mark Word更新为指向Lock Record的指针。如果更新成功，则当前线程拥有了对象的锁，并且将对象Mark Word的锁标志位改为00（轻量级锁）状态。如果更新失败了，检查锁对象Mark Wrod是否指向当前线程的栈帧，若是则说明已经拥有锁，同步代码块继续执行，若否则说明被抢占了。如果有两条以上的线程争用同一个锁，轻量级锁久不再有效，**膨胀为重量级锁**。
 
 - 偏向锁：
 
-  ![对象头MarkWord简述](C:/Users/MinChiang/Desktop/面试笔记/assets/对象头MarkWord简述.png)
+  ![对象头MarkWord简述](./images/对象头MarkWord简述.png)
 
 总结：
 
-![Java虚拟机加锁流程](C:/Users/MinChiang/Desktop/面试笔记/assets/Java虚拟机加锁流程.png)
+![Java虚拟机加锁流程](./images/Java虚拟机加锁流程.png)
 
 | 锁类型   | 面向的场景                   | 优点                                                   |
 | -------- | ---------------------------- | ------------------------------------------------------ |
@@ -1312,11 +1312,11 @@ Try、Confirm和Cancel单词的缩写，也是简化版的3段提交协议（把
 
 ### CAS登录流程
 
-![CAS登录流程](C:/Users/MinChiang/Desktop/面试笔记/assets/CAS登录流程.jpg)
+![CAS登录流程](./images/CAS登录流程.jpg)
 
 
 
 ### Oauth登录流程
 
-![oauth认证流程](C:/Users/MinChiang/Desktop/面试笔记/assets/oauth认证流程.png)
+![oauth认证流程](./images/oauth认证流程.png)
 
