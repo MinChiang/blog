@@ -1,10 +1,10 @@
 ---
 home: true
 heroImage: /images/doge.png
-heroText: MinChiang的技术博客
+heroText: MinChiang的博客
 tagline: 极客、代码规范强迫症、强烈好奇心
 actionText: 了解我
-actionLink: /technology/
+actionLink: /technology/java_basis
 features:
 - title: 专业化
   details: 以符合当前潮流技术服务业务，满足所需的业务场景和业务需求

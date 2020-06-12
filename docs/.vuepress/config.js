@@ -1,7 +1,7 @@
 module.exports = {
   title: "MinChiang的博客",
   description: "专业讨论技术网站",
-  head: [["link", { rel: "icon", href: "/icon/favicon.ico" }]],
+  head: [["link", { rel: "icon", href: "/icon/favicon16.ico" }]],
   markdown: {
     lineNumbers: true,
     extendMarkdown: (md) => {
