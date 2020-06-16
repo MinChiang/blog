@@ -1,5 +1,5 @@
 module.exports = {
-  title: "MinChiang’s Blog",
+  title: "MinChiang的博客",
   description: "专业讨论技术网站",
   head: [["link", { rel: "icon", href: "/icon/favicon16.ico" }]],
   markdown: {

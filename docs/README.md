@@ -1,7 +1,7 @@
 ---
 home: true
 heroImage: /images/doge.png
-heroText: MinChiang's Blog
+heroText: MinChiang的博客
 tagline: 极客、代码规范强迫症、强烈好奇心
 actionText: 了解我
 actionLink: /technology/java_basis
