@@ -1,7 +1,7 @@
 ---
 home: true
 heroImage: /images/doge.png
-heroText: MinChiang's Blog
+heroText: MinChiang的博客
 tagline: 极客、代码规范强迫症、强烈好奇心
 actionText: 了解我
 actionLink: /technology/java_basis
@@ -14,3 +14,4 @@ features:
   details: 以主流合理的规范进行代码开发，整合项目中技术知识并沉淀归档
 footer: MIT Licensed | Copyright © 2020-present MinChiang
 ---
+
