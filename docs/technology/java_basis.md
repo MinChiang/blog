@@ -855,7 +855,7 @@ public abstract class AbstractQueuedSynchronizer
 
 ### 互斥锁和自旋锁
 
-自旋锁：自旋锁在执行单元在获取锁之前，如果发现有其他执行单元正在占用锁，则会不停的**循环判断锁状态**，直到锁被释放，期间并**不会阻塞**自己。由于在等待时不断的"自旋",这也是它为什么叫做自旋锁。所以自旋锁使用时，是非常**消耗CPU**资源的。
+自旋锁：自旋锁在执行单元在获取锁之前，如果发现有其他执行单元正在占用锁，则会不停的**循环判断锁状态**，直到锁被释放，期间并**不会阻塞**自己。由于在等待时不断重复判断，这也是它为什么叫做自旋锁。所以自旋锁使用时，是非常**消耗CPU**资源的。
 
 互斥锁：会把自己**阻塞并放入到队列**中。当锁被释放时，会唤醒队列上执行单元把其放入就绪队列中，并由调度算法进行调度并执行。所以互斥锁使用时会有**线程的上下文切换**，这可能是非常耗时的一个操作，但是等待锁期间不会浪费CPU资源。
 
@@ -1203,24 +1203,9 @@ HashMap、LinkedHashMap、TreeMap的关系：
 ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 
 - ArrayList基于数组实现，需要动态扩容（每次扩容到原来的1.5倍），根据index查找速度为O(1)，基于非后最元素的add或者delete速度很慢，适合固定大小以及常用遍历的场景；继承RandomAccess快速随机访问接口，用for循环迭代比使用iterator快；
-- LinkedList基于量表实现，无须动态扩容，根据index遍历比较慢，但是add或者delete速度较快，适合查少改多的场景；
+- LinkedList基于链表实现，无须动态扩容，根据index遍历比较慢，但是add或者delete速度较快，适合查少改多的场景；
 - Vector线程安全，但已经弃用，Vector可以使用Enumeration和Iterator进行元素遍历，ArrayList只提供了Iterator的方式；
-- CopyOnWriteArrayList线程安全，是牺牲内存空间的前提下，保证了数据的最终一致性。在CopyOnWriteArrayList进行增删改时，先进行加锁，然后把原数组拷贝到一个副本内，拷贝完成时把原数组指向副本数组，再解锁。在读取时，直接遍历内部的数组即可，保证了最终一致性。而Vector在进行for循环遍历时，使用vector.size()获取长度遍历，仍然存在其他线程修改vector.size()属性，导致vector遍历出现ArrayIndexOutOfBoundsException。
-
-
-
-## 队列
-
-| 操作                | 异常 | 阻塞 | 所属接口      | 操作描述                                                     |
-| ------------------- | ---- | ---- | ------------- | ------------------------------------------------------------ |
-| boolean add(E e);   | 是   | 否   | Queue         | 添加一个元素，如果队列已满则抛出IllegalStateException        |
-| boolean offer(E e); | 否   | 否   | Queue         | 添加一个元素，并返回添加是否成功。如果队列未满（成功），返回true；如果已满（不成功），返回false |
-| E remove();         | 是   | 否   | Queue         | 取出队列中的头元素，如果队列为空则抛出NoSuchElementException |
-| E poll();           | 否   | 否   | Queue         | 取出队列中的头元素，如果队列为空则返回null                   |
-| E element();        | 是   | 否   | Queue         | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
-| E peek();           | 否   | 否   | Queue         | 获取队列中的头元素，如果队列为空则返回null                   |
-| void put(E e);      | 否   | 是   | BlockingQueue | 添加一个元素，如果队列为满则一直阻塞                         |
-| E take();           | 否   | 是   | BlockingQueue | 取出队列中的头元素，如果队列为空则一直阻塞                   |
+- CopyOnWriteArrayList线程安全，是牺牲内存空间的前提下，保证了数据的最终一致性。在CopyOnWriteArrayList进行增删改时，先进行加锁，然后把原数组拷贝到一个副本内，拷贝完成时把原数组指向副本数组，再解锁。在读取时，直接遍历内部的数组即可，保证了**最终一致性**。而Vector在进行for循环遍历时，使用vector.size()获取长度遍历，仍然存在其他线程修改vector.size()属性，导致vector遍历出现ArrayIndexOutOfBoundsException。
 
 
 
@@ -1236,6 +1221,21 @@ ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 | 是否会导致内存溢出                  | 否                                  | 是                                      |
 | 遍历时修改元素是否能被感知          | 是（抛出异常）                      | 否                                      |
 | 用例                                | HashMap，Vector，ArrayList，HashSet | CopyOnWriteArrayList，ConcurrentHashMap |
+
+
+
+## 队列
+
+| 操作                | 异常 | 阻塞 | 所属接口      | 操作描述                                                     |
+| ------------------- | ---- | ---- | ------------- | ------------------------------------------------------------ |
+| boolean add(E e);   | 是   | 否   | Queue         | 添加一个元素，如果队列已满则抛出IllegalStateException        |
+| boolean offer(E e); | 否   | 否   | Queue         | 添加一个元素，并返回添加是否成功。如果队列未满（成功），返回true；如果已满（不成功），返回false |
+| E remove();         | 是   | 否   | Queue         | 取出队列中的头元素，如果队列为空则抛出NoSuchElementException |
+| E poll();           | 否   | 否   | Queue         | 取出队列中的头元素，如果队列为空则返回null                   |
+| E element();        | 是   | 否   | Queue         | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
+| E peek();           | 否   | 否   | Queue         | 获取队列中的头元素，如果队列为空则返回null                   |
+| void put(E e);      | 否   | 是   | BlockingQueue | 添加一个元素，如果队列为满则一直阻塞                         |
+| E take();           | 否   | 是   | BlockingQueue | 取出队列中的头元素，如果队列为空则一直阻塞                   |
 
 
 

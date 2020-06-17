@@ -231,7 +231,7 @@ SimpleControllerHandlerAdapter部分源码：
   功能对比与组件选型：
 
   - eureka：已经闭源，基于AP，没有对应的配置中心，没有主从节点，一个节点挂了自动切换到其他节点使用，去中心化；
-  - consol：保证一致性，基于CP，需要进行集群搭建，某个节点失效首先需要选择新的leader，半数以上的节点不可用，则服务继续提供正常服务。
+  - consul：保证一致性，基于CP，需要进行集群搭建，某个节点失效首先需要选择新的leader，半数以上的节点不可用，则服务继续提供正常服务。
 
 - ribbon：负载均衡；
 
@@ -283,9 +283,9 @@ SimpleControllerHandlerAdapter部分源码：
 
 ### 数据类型&数据结构
 
-数据类型：仅支持byte[]类型。
+数据类型：仅支持**byte数组**类型。
 
-5种数据结构：
+数据结构：
 
 - String：一个key对应一个value的简单映射；
 - List：一个key对应多个value，value值可以重复；
@@ -311,7 +311,7 @@ SimpleControllerHandlerAdapter部分源码：
 - 惰性过期：访问一个key时才会判断是否已经过期，过期清除；
   - 优点：使用才进行计算，节省CPU资源；
   - 缺点：占用内存。
-- 定期过期：每隔一段时间扫描expires字典中的key。
+- 定期过期：每隔一段时间扫描expires字典中的key；
   - 优点：平衡CPU和内存资源。
 
 
