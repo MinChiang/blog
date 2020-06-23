@@ -554,7 +554,6 @@ CycleBarrier
 ### wait、notify和notifyAll的使用
 
 - 使用前必须获取锁对象的监视器，即需要进行synchronized上锁；
-
 - notify和notifyAll的区别是，notify去随机唤醒监视器队列中的一个等待线程，而notifyAll是唤醒全部线程，但是仍然需要进行等待处理（等待获取锁）。
 
 
@@ -570,7 +569,7 @@ CycleBarrier
 
 - lock：线程一直在等待锁，不然一直都会在block的状态，不响应interrupt中断；
 - tryLock：马上返回，拿到锁就返回true，否则返回false；
-- lockInterruptibly：**响应interrupt中断**，并要求处理interruptExcetpion。
+- lockInterruptibly：**响应interrupt中断**，并要求处理InterruptExcetpion。
 
 
 
@@ -855,7 +854,7 @@ public abstract class AbstractQueuedSynchronizer
 
 ### 互斥锁和自旋锁
 
-自旋锁：自旋锁在执行单元在获取锁之前，如果发现有其他执行单元正在占用锁，则会不停的**循环判断锁状态**，直到锁被释放，期间并**不会阻塞**自己。由于在等待时不断重复判断，这也是它为什么叫做自旋锁。所以自旋锁使用时，是非常**消耗CPU**资源的。
+自旋锁：自旋锁在执行单元在获取锁之前，如果发现有其他执行单元正在占用锁，则会不停的**循环判断锁状态**，直到锁被释放，期间并**不会阻塞**自己。所以自旋锁使用时，是非常**消耗CPU**资源的。
 
 互斥锁：会把自己**阻塞并放入到队列**中。当锁被释放时，会唤醒队列上执行单元把其放入就绪队列中，并由调度算法进行调度并执行。所以互斥锁使用时会有**线程的上下文切换**，这可能是非常耗时的一个操作，但是等待锁期间不会浪费CPU资源。
 
