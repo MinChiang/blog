@@ -627,12 +627,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 
 
-#### Paxos协议
-
-
-
-
-
 ## Nginx
 
 目前Nginx集群没有好的解决方案，下面对应的技术方案可以简单实现：
@@ -643,10 +637,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 
 
-## Eureka和Consul的区别以及选型
-
-集群
-
+## Consul
 
 
 ## Activiti
