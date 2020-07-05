@@ -141,3 +141,13 @@ select * from performance_schema.data_locks;
 - 联合索引的顺序问题；
 - 数据量太少，mysql认为全表扫描比使用索引更快。
 
+
+## Spring事务不生效的场景
+- 数据库引擎本身不支持事务
+- 对应的Service没有被Spring管理
+- @Transactional注解所在方法不是public修饰
+- 自身调用的情况
+- 数据源没有配置事务管理器
+- @Transactional中传播方式为不支持事务
+- 出现异常但是被方法内部捕获了，又没有向框架抛出异常
+- @Transactional抛出非RuntimeException或者Error异常，需要使用rollbackFor支持其他异常的回滚
