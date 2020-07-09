@@ -32,6 +32,7 @@ module.exports = {
             { title: "计算机基础", path: "computer" },
             { title: "数据结构", path: "data_structure" },
             { title: "算法", path: "algorithm" },
+            { title: "编程思想", path: "thinking" },
             { title: "大数据", path: "bigdata" },
             { title: "工具", path: "tools" },
             { title: "其他", path: "other" },
