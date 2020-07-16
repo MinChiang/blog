@@ -72,3 +72,221 @@ B树删除示例图：
 
 ![B星树示例图](./images/B星树示例图.jpg)
 
+
+
+## 二叉搜索树
+
+```java
+public class BinaryTree {
+
+    TreeNode root;
+
+    public BinaryTree(int[] arr) {
+        this.create(arr);
+    }
+
+    public void create(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return;
+        }
+        root = new TreeNode(arr[0]);
+        for (int i : arr) {
+            insert(i);
+        }
+    }
+
+    public TreeNode search(int e) {
+        TreeNode now = root;
+        while (now != null) {
+            if (now.val == e) {
+                return now;
+            } else if (now.val > e) {
+                now = now.left;
+            } else {
+                now = now.right;
+            }
+        }
+        return null;
+    }
+
+    public TreeNode insert(int e) {
+        if (root == null) {
+            root = new TreeNode(e);
+            return root;
+        }
+
+        TreeNode now = root, result = new TreeNode(e);
+        while (true) {
+            if (e > now.val) {
+                if (now.right == null) {
+                    now.right = result;
+                    return result;
+                } else {
+                    now = now.right;
+                }
+            } else if (e < now.val) {
+                if (now.left == null) {
+                    now.left = result;
+                    return result;
+                } else {
+                    now = now.left;
+                }
+            } else {
+                return now;
+            }
+        }
+    }
+
+    public TreeNode delete(int e) {
+        TreeNode now = root, pre = null;
+        while (now != null) {
+            if (now.val == e) {
+                break;
+            } else if (now.val > e) {
+                pre = now;
+                now = now.left;
+            } else {
+                pre = now;
+                now = now.right;
+            }
+        }
+
+        if (now == null) {
+            return null;
+        }
+
+        if (now == root) {
+            root = null;
+            return now;
+        }
+
+        boolean leftEmpty = (now.left == null);
+        boolean rightEmpty = (now.right == null);
+        if (leftEmpty && rightEmpty) {
+            pre.left = null;
+            pre.right = null;
+        } else if (!leftEmpty && !leftEmpty) {
+            if (now.val < pre.val) {
+                pre.left = now.right;
+            } else {
+                pre.right = now.right;
+            }
+            TreeNode min = now.right;
+            while (min.left != null) {
+                min = min.left;
+            }
+            min.left = now.left;
+            now.left = null;
+        } else {
+            TreeNode sub = (leftEmpty ? now.right : now.left);
+            if (now.val < pre.val) {
+                pre.left = sub;
+            } else {
+                pre.right = sub;
+            }
+        }
+        return now;
+    }
+
+    public void preOrder(TreeNode node) {
+//        if (node == null) {
+//            return;
+//        }
+//
+//        System.out.println(node.val);
+//        preOrder(node.left);
+//        preOrder(node.right);
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+        while (node != null || !stack.empty()) {
+            if (node != null) {
+                System.out.println(node.val);
+                stack.push(node);
+                node = node.left;
+            } else {
+                node = stack.pop();
+                node = node.right;
+            }
+        }
+    }
+
+    public void midOrder(TreeNode node) {
+//        if (node == null) {
+//            return;
+//        }
+//        midOrder(node.left);
+//        System.out.println(node.val);
+//        midOrder(node.right);
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+        while (node != null || !stack.empty()) {
+            if (node != null) {
+                stack.push(node);
+                node = node.left;
+            } else {
+                node = stack.pop();
+                System.out.println(node.val);
+                node = node.right;
+            }
+        }
+    }
+
+    public void posOrder(TreeNode node) {
+//        if (node == null) {
+//            return;
+//        }
+//        posOrder(node.left);
+//        posOrder(node.right);
+//        System.out.println(node.val);
+        Deque<TreeNode> deque = new ArrayDeque<>();
+        TreeNode r = null;
+        while (node != null || !deque.isEmpty()) {
+            if (node != null) {
+                deque.push(node);
+                node = node.left;
+            } else {
+                node = deque.peek();
+                if (node.right == null || node.right == r) {
+                    System.out.println(node.val);
+                    r = node;
+                    deque.pop();
+                    node = null;
+                } else {
+                    node = node.right;
+                }
+            }
+        }
+    }
+
+    public TreeNode getMin() {
+        TreeNode now = root;
+        while (now.left != null) {
+            now = now.left;
+        }
+        return now;
+    }
+
+    public TreeNode getMax() {
+        TreeNode now = root;
+        while (now.right != null) {
+            now = now.right;
+        }
+        return now;
+    }
+
+    public static class TreeNode {
+
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        public TreeNode(int val) {
+            this.val = val;
+        }
+
+        public TreeNode() {
+        }
+
+    }
+
+}
+```
+
