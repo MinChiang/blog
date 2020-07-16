@@ -4,6 +4,8 @@
 - 隔离性（Isolation）：事务的隔离性是多个用户并发访问数据库时，数据库为每一个用户开启的事务，不能被其他事务的操作数据所干扰，多个并发事务之间要相互隔离；
 - 持久性（Durability）：持久性是指一个事务一旦被提交，它对数据库中数据的改变就是永久性的，接下来即使数据库发生故障也不应该对其有任何影响。
 
+
+
 ## 事务隔离性
 
 | 问题       | 描述                                                         |
@@ -107,12 +109,6 @@ select * from performance_schema.data_locks;
 
 
 
-## 锁机制
-
-各种锁的使用方法以及介绍
-
-
-
 ## 查询优化Explain
 
 | 标志          | 简要描述                   | 详细描述                                                     |
@@ -140,14 +136,3 @@ select * from performance_schema.data_locks;
 - 对索引列进行函数运算；
 - 联合索引的顺序问题；
 - 数据量太少，mysql认为全表扫描比使用索引更快。
-
-
-## Spring事务不生效的场景
-- 数据库引擎本身不支持事务
-- 对应的Service没有被Spring管理
-- @Transactional注解所在方法不是public修饰
-- 自身调用的情况
-- 数据源没有配置事务管理器
-- @Transactional中传播方式为不支持事务
-- 出现异常但是被方法内部捕获了，又没有向框架抛出异常
-- @Transactional抛出非RuntimeException或者Error异常，需要使用rollbackFor支持其他异常的回滚

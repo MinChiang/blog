@@ -290,3 +290,124 @@ public class BinaryTree {
 }
 ```
 
+
+
+## 二叉堆
+
+```java
+public class HeapSort<T extends Comparable<T>> {
+
+    private T[] arr;
+
+    public HeapSort(T[] arr) {
+        this.arr = Arrays.copyOfRange(arr, 0, arr.length);
+        adjust();
+    }
+
+    /**
+     * 初始化调整节点
+     */
+    private void adjust() {
+        //遍历非叶子节点
+        int mid = arr.length / 2 - 1;
+        int left, right;
+        while (mid >= 0) {
+            down(mid);
+            mid--;
+        }
+    }
+
+    /**
+     * 数据下沉操作
+     *
+     * @param mid 需要下沉的元素
+     */
+    private void down(int mid) {
+        //判断是否为叶子节点
+        if (mid > arr.length / 2 - 1) {
+            return;
+        }
+
+        int right = (mid + 1) * 2, left = right - 1;
+        if (arr.length > right) {
+            int point = arr[left].compareTo(arr[right]) < 0 ? left : right;
+            if (arr[point].compareTo(arr[mid]) < 0) {
+                T tmp = arr[point];
+                arr[point] = arr[mid];
+                arr[mid] = tmp;
+                //下沉操作
+                down(point);
+            }
+        } else {
+            if (arr[left].compareTo(arr[mid]) < 0) {
+                T tmp = arr[left];
+                arr[left] = arr[mid];
+                arr[mid] = tmp;
+                //下沉操作
+                down(left);
+            }
+        }
+    }
+
+    /**
+     * 数据上浮操作
+     *
+     * @param index 需要下沉的元素
+     */
+    private void up(int index) {
+        if (index == 0) {
+            return;
+        }
+        //获取父节点
+        int mid = (index + 1) / 2 - 1;
+        if (arr[index].compareTo(arr[mid]) < 0) {
+            T tmp = arr[index];
+            arr[index] = arr[mid];
+            arr[mid] = tmp;
+            up(mid);
+        }
+    }
+
+    /**
+     * 获取最大元素
+     *
+     * @return 最大元素
+     */
+    public T peek() {
+        return arr[0];
+    }
+
+    /**
+     * 获取并删除最大元素
+     *
+     * @return 最大元素
+     */
+    public T pop() {
+        T result = peek();
+        arr[0] = arr[arr.length - 1];
+        arr = Arrays.copyOfRange(arr, 0, arr.length - 1);
+        down(0);
+        return result;
+    }
+
+    /**
+     * 插入数据
+     *
+     * @param t 待插入的数据
+     */
+    public void push(T t) {
+        arr = Arrays.copyOf(arr, arr.length + 1);
+        arr[arr.length - 1] = t;
+        up(arr.length - 1);
+    }
+
+    @Override
+    public String toString() {
+        return "HeapSort{" +
+                "arr=" + Arrays.toString(arr) +
+                '}';
+    }
+
+}
+```
+

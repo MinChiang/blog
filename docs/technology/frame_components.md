@@ -235,15 +235,15 @@ SimpleControllerHandlerAdapter部分源码：
 
 - ribbon：负载均衡；
 
+- zuul/gateway：网关；
+
 - feign：关于interfact的http远程调用；
 
 ![feign原理](./images/feign原理.png)
 
-- hystrix：熔断器；
+- hystrix：熔断器。
 
 ![hystrix原理](./images/hystrix原理.png)
-
-- zuul/gateway：网关。
 
 
 
@@ -257,17 +257,30 @@ SimpleControllerHandlerAdapter部分源码：
 
 ### Spring事务
 
-- 隔离级别
+#### 事务的传播属性
 
 | 级别                      | 详解                                                         |
 | ------------------------- | ------------------------------------------------------------ |
-| PROPAGATION_REQUIRED      | 支持当前运行的事务，如果不存在事务则创建一个新的事务         |
+| PROPAGATION_REQUIRED      | 支持当前运行的事务，如果不存在事务则创建一个新的事务，为Spring的默认传播级别 |
 | PROPAGATION_SUPPORTS      | 支持当前运行的事务，如果不存在事务则以非事务模式运行         |
 | PROPAGATION_MANDATORY     | 支持当前运行的事务，如果不存在事务则抛出异常                 |
 | PROPAGATION_REQUIRES_NEW  | 创建新事务运行，如果存在事务则挂起当前事务                   |
 | PROPAGATION_NOT_SUPPORTED | 不持支当前事务，总是以非事务方式执行                         |
 | PROPAGATION_NEVER         | 不支持当前事务，如果当前存在事务则抛出异常                   |
 | PROPAGATION_NESTED        | 以嵌套方式执行事务；外层事务失败会回滚内层事务，内层事务不会回滚外层事务。在A中执行B，A报错B会回滚，但B报错仅B回滚，A不会回滚 |
+
+
+
+#### Spring事务不生效的场景
+
+- 数据库引擎本身不支持事务
+- 对应的Service没有被Spring管理
+- @Transactional注解所在方法不是public修饰
+- 自身调用的情况
+- 数据源没有配置事务管理器
+- @Transactional中传播方式为不支持事务
+- 出现异常但是被方法内部捕获了，又没有向框架抛出异常
+- @Transactional抛出非RuntimeException或者Error异常，需要使用rollbackFor支持其他异常的回滚
 
 
 
@@ -638,6 +651,10 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 
 ## Consul
+
+技术架构实现
+
+
 
 
 ## Activiti
