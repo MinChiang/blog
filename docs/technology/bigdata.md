@@ -10,6 +10,8 @@
 - Secondary NameNode：从JournalNodes集群拉去edits log，应用到自己内存的文件目录树，然后把自己内存文件目录树写一份到磁盘上的fsimage，这个操作叫checkpoint检查点操作，然后把fsimage上传到Active NameNode，清空掉Active NameNode的旧edits log文件。在Active NameNode宕机时，Secondary NameNode作为Active NameNode继续运行，为集群提供了**高可用**保证。
 - DataNode：文件存储的基本单元，负责实际数据存储，当一个大文件上传到HDFS上时，该文件会被切割成多个block（64MB）并分别存储到不同的DataNode，同一个block会有多个副本（默认为3个）到不同的DataNode；
 
+
+
 ## Hive&Hbase
 
 

@@ -549,6 +549,16 @@ CycleBarrier
 
 
 
+## 序列化与反序列化
+
+### Serializable
+
+- 原生的JVM进行序列化和反序列化对象时需要实现Serializale接口，若被序列化的对象没有实现该接口，或者成员变量中含有引用类型但没实现该接口，则抛出NotSerializableException异常；
+- Serializale本质上来说是个空接口，需要开发人员覆盖serialVersionUID字段，JVM在反序列化的时候校验这个字段是否一致；
+- 使用时机：想把一个对象保存在一个文件或者数据库中，或者想通过RMI传输对象的时候。
+
+
+
 ## 锁
 
 ### wait、notify和notifyAll的使用
@@ -918,6 +928,74 @@ CAS操作时，需要判断V位置的值与预期值A是否相等，如果不相
 | 偏向锁   | **只有一个**线程进入临界区   | 加锁解锁速度非常快，和执行非同步方法仅存在纳秒级的差距 |
 | 轻量级锁 | 多个线程**交替**地进入临界区 | 竞争的线程不会阻塞，提高了程序的响应速度               |
 | 重量级锁 | **多个线程**同时进入临界区   | 线程进行挂起，不会消耗CPU                              |
+
+
+
+### ThreadLocal
+
+- 在高并发时可以使用ThreadLocal为每个线程单独分配一个对象，把共享对象拆分到具体一个线程一个，以空间换取时间的做法；
+- ThreadLocal可能导致内存泄漏，Thread中有一个类型为ThreadLocal.ThreadLocalMap成员变量threadLocals，而ThreadLocal.ThreadLocalMap内部是使用Entry结构类型存储数据的，Entry本质上继承了WeakReference类，**在发生GC时候，若ThreadLocal没有被外部强引用，则会被回收，若使用了ThreadLocal进行set的线程一直运行（典型情况下在线程池中运行），那么这个Entry对象的key值变为null，导致value值可能一直不能回收**，从而发生内存泄漏；使用ThreadLocal类的set方法后，**显式调用remove方法**可以有效规避内存泄漏的问题；
+
+```java
+public class Thread implements Runnable {
+    
+    //成员变量
+    ThreadLocal.ThreadLocalMap threadLocals = null;
+    
+}
+```
+
+```java
+public class ThreadLocal<T> { 
+    
+    static class ThreadLocalMap {
+		
+        //与HashMap中的结构与想法类似
+        private Entry[] table;
+        
+        static class Entry extends WeakReference<ThreadLocal<?>> {
+            Object value;
+            Entry(ThreadLocal<?> k, Object v) {
+                super(k);
+                value = v;
+            }
+        }
+        
+        private void set(ThreadLocal<?> key, Object value) {}
+        
+        private void remove(ThreadLocal<?> key) {}
+        
+    }
+    
+    public T get() {
+        Thread t = Thread.currentThread();
+        ThreadLocalMap map = getMap(t);
+        if (map != null) {
+            ThreadLocalMap.Entry e = map.getEntry(this);
+            if (e != null) {
+                @SuppressWarnings("unchecked")
+                T result = (T)e.value;
+                return result;
+            }
+        }
+        return setInitialValue();
+    }
+    
+    public void set(T value) {
+        Thread t = Thread.currentThread();
+        ThreadLocalMap map = getMap(t);
+        if (map != null)
+            map.set(this, value);
+        else
+            createMap(t, value);
+    }
+    
+}
+```
+
+
+
+
 
 
 
