@@ -247,6 +247,8 @@ public class QuickSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
 ### 计数器法
 
+思路简单，使用方便，会有**临界问题**，即所有流量在临界点前后流入，会导致tps激增为2倍的tps。
+
 ```java
 public class Counter {
 
@@ -282,12 +284,11 @@ public class Counter {
 }
 ```
 
-- 思路简单，使用方便
-- 会有**临界问题**，即所有流量在临界点前后流入，会导致tps激增为2倍的tps
-
 
 
 ### 滑动窗口
+
+滑动窗口使用一个固定大小的数组或者链表存放细分后的数据，数组内存放单位时间内的流量计数，流量进入时，若当前的时间戳大于最后一个数组元素的时间戳，则新建元素并推移时间窗口；然后统计流量总数，若大于流量总数，则直接返回超过流量；若小于流量总数，则流量总数加一并且返回成功。本质上来说，滑动窗口的数量越多，颗粒度越高，计算的资源也越多，也会越精确。
 
 ```java
 public class RollingWindow {
@@ -369,11 +370,68 @@ public class RollingWindow {
 
 ### 漏桶算法
 
+```java
+public class LeakyBucket {
 
+    private static final int DEFAULT_WINDOW_SIZE = 10;
+
+    private int windowSize = DEFAULT_WINDOW_SIZE;
+    private final long maxTransaction;
+    private final long milliseconds;
+    private final long singlePeriodTransaction;
+
+    //时间执行器
+    private final ScheduledExecutorService executor;
+    //桶
+    private final Queue<Water> queue;
+
+    public LeakyBucket(long milliseconds, long maxTransaction, int windowSize) {
+        this.windowSize = windowSize;
+        this.milliseconds = milliseconds / windowSize;
+        this.maxTransaction = maxTransaction;
+        this.singlePeriodTransaction = maxTransaction / windowSize;
+        
+		//设置桶和桶大小
+        queue = new LinkedBlockingQueue<>(new Long(maxTransaction).intValue());
+        //单线程的任务执行器
+        this.executor = Executors.newSingleThreadScheduledExecutor();
+		//启动任务，循环漏水
+        executor.scheduleAtFixedRate(() -> {
+            int count = 0;
+            while (count++ < singlePeriodTransaction) {
+                Water water = queue.poll();
+                if (water == null) {
+                    return;
+                }
+                water.start();
+            }
+        }, 0, this.milliseconds, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+	* 注水
+	* @param water 注入的水
+	*/
+    public void fillWater(Water water) {
+        this.queue.add(water);
+    }
+
+    public static interface Water {
+
+        void start();
+
+    }
+
+}
+```
 
 
 
 ### 令牌桶算法
+
+```java
+
+```
 
 
 
