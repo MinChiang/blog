@@ -681,3 +681,26 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 技术实现
 
+
+
+### ElasticSearch
+
+| ElasticSearch | 关系数据库      |
+| ------------- | --------------- |
+| Indices索引   | Databases数据库 |
+| Types类型     | Tables表        |
+| Documents文档 | Rows行          |
+| Fields域      | Columns列       |
+
+
+
+| 内容               | 语法                                                         |
+| ------------------ | ------------------------------------------------------------ |
+| 查看所有索引       | GET _cat/indices                                             |
+| 查看索引结构       | GET /local_es_order/_mapping                                 |
+| 新建索引           | PUT /local_my_test<br/>{"mappings":{"properties":{"gender":{"type":"integer"},"name":{"type":"keyword"},"age":{"type":"integer"}}}} |
+| 获取索引详细信息   | GET /local_my_test                                           |
+| 删除索引           | DELETE /local_my_test                                        |
+| 插入索引           | PUT /local_my_test/_doc/1<br/>{"gender":1,"name":"test","age":30} |
+| 根据id查找索引内容 | GET /local_my_test/_doc/1                                    |
+

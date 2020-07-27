@@ -1,10 +1,10 @@
-## 概述
+## 排序
 
 ![排序算法属性](./images/排序算法属性.png)
 
 
 
-## 冒泡排序
+### 冒泡排序
 
 ```java
 /**
@@ -34,7 +34,7 @@ public class BubbleSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
 
 
-## 插入排序
+### 插入排序
 
 ```java
 /**
@@ -68,7 +68,7 @@ public class InsertSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
 
 
-## 选择排序
+### 选择排序
 
 ```java
 /**
@@ -102,7 +102,7 @@ public class SelectSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
 
 
-## 归并排序
+### 归并排序
 
 ```java
 /**
@@ -184,7 +184,7 @@ public class MergeSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
 
 
-## 快速排序
+### 快速排序
 
 ```java
 /**
@@ -240,4 +240,198 @@ public class QuickSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
 }
 ```
+
+
+
+## 限流
+
+### 计数器法
+
+思路简单，使用方便，会有**临界问题**，即所有流量在临界点前后流入，会导致tps激增为2倍的tps。
+
+```java
+public class Counter {
+
+    //初始时间
+    private long startTime;
+    //流量计数
+    private long count;
+    //滑窗大小
+    private long length;
+    //单个滑窗内最大的并发数
+    private long limit;
+
+    public Counter(long length, long limit) {
+        this.length = length;
+        this.limit = limit;
+        reset();
+    }
+
+    private void reset() {
+        this.count = 0;
+        this.startTime = System.currentTimeMillis();
+    }
+
+    public boolean require() {
+        if (System.currentTimeMillis() <= startTime + length) {
+            return ++count < limit;
+        }
+
+        reset();
+        return ++count < limit;
+    }
+
+}
+```
+
+
+
+### 滑动窗口
+
+滑动窗口使用一个固定大小的数组或者链表存放细分后的数据，数组内存放单位时间内的流量计数，流量进入时，若当前的时间戳大于最后一个数组元素的时间戳，则新建元素并推移时间窗口；然后统计流量总数，若大于流量总数，则直接返回超过流量；若小于流量总数，则流量总数加一并且返回成功。本质上来说，滑动窗口的数量越多，颗粒度越高，计算的资源也越多，也会越精确。
+
+```java
+public class RollingWindow {
+
+    private static final int DEFAULT_WINDOW_SIZE = 10;
+
+    //窗口大小，窗口越小流量越平滑
+    private int windowSize = DEFAULT_WINDOW_SIZE;
+
+    private final long maxTransaction;
+    private final long milliseconds;
+
+    private Window head;
+    private Window tail;
+    private int currentWindowLength;
+    private long currentCount;
+    private long startTime;
+
+    public RollingWindow(long milliseconds, long maxTransaction, int windowSize) {
+        this.windowSize = windowSize;
+        this.milliseconds = milliseconds / windowSize;
+        this.maxTransaction = maxTransaction;
+
+        Window current = new Window(0);
+        head = current;
+        tail = current;
+        currentWindowLength++;
+
+        startTime = System.currentTimeMillis();
+    }
+
+    private void appendWindow() {
+        Window current = new Window(0);
+        if (currentWindowLength < windowSize) {
+            currentWindowLength++;
+        } else {
+            currentCount -= head.count;
+            head = head.next;
+        }
+        tail.next = current;
+        tail = current;
+        startTime = System.currentTimeMillis();
+    }
+
+    public boolean require() {
+        if (System.currentTimeMillis() <= startTime + milliseconds) {
+            if (currentCount >= maxTransaction) {
+                return false;
+            }
+            tail.count++;
+            currentCount++;
+            return true;
+        }
+
+        appendWindow();
+        if (currentCount >= maxTransaction) {
+            return false;
+        }
+        tail.count++;
+        currentCount++;
+        return true;
+    }
+
+    private static class Window {
+
+        long count;
+        Window next;
+
+        public Window(long count) {
+            this.count = count;
+        }
+
+    }
+
+}
+```
+
+
+
+### 漏桶算法
+
+```java
+public class LeakyBucket {
+
+    private static final int DEFAULT_WINDOW_SIZE = 10;
+
+    private int windowSize = DEFAULT_WINDOW_SIZE;
+    private final long maxTransaction;
+    private final long milliseconds;
+    private final long singlePeriodTransaction;
+
+    //时间执行器
+    private final ScheduledExecutorService executor;
+    //桶
+    private final Queue<Water> queue;
+
+    public LeakyBucket(long milliseconds, long maxTransaction, int windowSize) {
+        this.windowSize = windowSize;
+        this.milliseconds = milliseconds / windowSize;
+        this.maxTransaction = maxTransaction;
+        this.singlePeriodTransaction = maxTransaction / windowSize;
+        
+		//设置桶和桶大小
+        queue = new LinkedBlockingQueue<>(new Long(maxTransaction).intValue());
+        //单线程的任务执行器
+        this.executor = Executors.newSingleThreadScheduledExecutor();
+		//启动任务，循环漏水
+        executor.scheduleAtFixedRate(() -> {
+            int count = 0;
+            while (count++ < singlePeriodTransaction) {
+                Water water = queue.poll();
+                if (water == null) {
+                    return;
+                }
+                water.start();
+            }
+        }, 0, this.milliseconds, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+	* 注水
+	* @param water 注入的水
+	*/
+    public void fillWater(Water water) {
+        this.queue.add(water);
+    }
+
+    public static interface Water {
+
+        void start();
+
+    }
+
+}
+```
+
+
+
+### 令牌桶算法
+
+```java
+
+```
+
+
 

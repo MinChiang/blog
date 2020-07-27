@@ -549,6 +549,90 @@ CycleBarrier
 
 
 
+## 序列化与反序列化
+
+- 原生的JVM进行序列化和反序列化对象时需要实现Serializale接口，若被序列化的对象没有实现该接口，或者成员变量中含有引用类型但没实现该接口，则抛出NotSerializableException异常；
+- Serializale本质上来说是个空接口，需要开发人员覆盖serialVersionUID字段，JVM在反序列化的时候校验这个字段是否一致；
+- 使用时机：想把一个对象保存在一个文件或者数据库中，或者想通过RMI传输对象的时候。
+
+
+
+## 基础
+
+### equals()、==、hashCode()和System.identityHashCode区别
+
+- equals比较的是程序员自定义的两个对象比较的方法，相不相等自己实现，约定重写equals必须重写hashcode；
+- ==比较的是两个对象的内存地址是否相等；
+- hashCode可以通过重写自定义对象的哈希值计算方式，而System.identityHashCode则是判断两个对象原生的hashcode（和内存地址相关的计算方式），无论这个对象hashCode是否被重写，因此System.identityHashCode可以直接判断两个对象是否内存相等（例如判断String是否内存相等）。
+
+
+
+### String
+
+#### String、StringBuilder、StringBuffer的联系与区别
+
+- String天生是不可变的，因此是线程安全的；
+- StringBuilder是可以变的，但线程不安全；
+- StringBuffer是可以变的，线程安全。
+
+
+
+#### intern()方法以及各种String方式引用易错点
+
+Jdk1.6以前
+
+- 如果常量池存在该字面量的字符串，返回这个常量池对象的引用；
+- 在常量池不存在，则**创建与字面量一样的字符串，返回常量池（新建）对象的引用**；
+
+Jdk1.7及以后
+
+- 如果常量池存在该字面量的字符串，返回这个常量池对象的引用（同1.6）；
+- 在常量池不存在，在常量池中**记录首次出现的实例引用，并返回这个引用**；
+
+```java
+    public static void main(String[] args) {
+        String s1 = new String("a") + new String("bc");
+        String s2 = "abc";
+        String s3 = new String("ab") + new String("c");
+
+        System.out.println("s1:" + System.identityHashCode(s1));
+        System.out.println("s1.intern():" + System.identityHashCode(s1.intern()));
+        System.out.println("s2:" + System.identityHashCode(s2));
+        System.out.println("s3:" + System.identityHashCode(s3));
+        System.out.println("s3.intern():" + System.identityHashCode(s3.intern()));
+    }
+```
+
+```
+s1:1956725890
+s1.intern():356573597
+s2:356573597
+s3:1735600054
+s3.intern():356573597
+```
+
+- String s = "test"，直接使用字符串常量创建字符串，则在常量池中创建；
+- String s = new String("test")，先在常量池中创建test字符串常量，并返回在堆上的new String("test")的实例引用；
+- String s = "te" + "st"，在常量池中创建"te"、"st"和"test"，并返回"test"在常量池中的引用；
+- String s = new String("te") + new String("st")，在常量池中创建"te"，"st"，并在堆上创建字面量为"test"的对象并返回堆上引用。
+
+
+
+#### 为什么使用字符数组保存密码比使用String保存密码更好
+
+- String在java中是不可变的，字符串放在常量池中，直到执行GC才会被清除，任何能够访问内存的人都能直接看到密码，非常不安全；
+- 使用字符串在进行文本输出时，会存在风险，能够直接打印出来，但是字符数组打印的是对应的内存数组。
+
+
+
+#### String如何实现对象不可变
+
+- String类使用final修饰，子类无法对该类进行方法的重写；
+- 内部的字符数组使用final修饰，本质上无法变更其指向；
+- 内部所有的方法均返回一个新的String对象实例。
+
+
+
 ## 锁
 
 ### wait、notify和notifyAll的使用
@@ -918,6 +1002,74 @@ CAS操作时，需要判断V位置的值与预期值A是否相等，如果不相
 | 偏向锁   | **只有一个**线程进入临界区   | 加锁解锁速度非常快，和执行非同步方法仅存在纳秒级的差距 |
 | 轻量级锁 | 多个线程**交替**地进入临界区 | 竞争的线程不会阻塞，提高了程序的响应速度               |
 | 重量级锁 | **多个线程**同时进入临界区   | 线程进行挂起，不会消耗CPU                              |
+
+
+
+### ThreadLocal
+
+- 在高并发时可以使用ThreadLocal为每个线程单独分配一个对象，把共享对象拆分到具体一个线程一个，以空间换取时间的做法；
+- ThreadLocal可能导致内存泄漏，Thread中有一个类型为ThreadLocal.ThreadLocalMap成员变量threadLocals，而ThreadLocal.ThreadLocalMap内部是使用Entry结构类型存储数据的，Entry本质上继承了WeakReference类，**在发生GC时候，若ThreadLocal没有被外部强引用，则会被回收，若使用了ThreadLocal进行set的线程一直运行（典型情况下在线程池中运行），那么这个Entry对象的key值变为null，导致value值可能一直不能回收**，从而发生内存泄漏；使用ThreadLocal类的set方法后，**显式调用remove方法**可以有效规避内存泄漏的问题；
+
+```java
+public class Thread implements Runnable {
+    
+    //成员变量
+    ThreadLocal.ThreadLocalMap threadLocals = null;
+    
+}
+```
+
+```java
+public class ThreadLocal<T> { 
+    
+    static class ThreadLocalMap {
+		
+        //与HashMap中的结构与想法类似
+        private Entry[] table;
+        
+        static class Entry extends WeakReference<ThreadLocal<?>> {
+            Object value;
+            Entry(ThreadLocal<?> k, Object v) {
+                super(k);
+                value = v;
+            }
+        }
+        
+        private void set(ThreadLocal<?> key, Object value) {}
+        
+        private void remove(ThreadLocal<?> key) {}
+        
+    }
+    
+    public T get() {
+        Thread t = Thread.currentThread();
+        ThreadLocalMap map = getMap(t);
+        if (map != null) {
+            ThreadLocalMap.Entry e = map.getEntry(this);
+            if (e != null) {
+                @SuppressWarnings("unchecked")
+                T result = (T)e.value;
+                return result;
+            }
+        }
+        return setInitialValue();
+    }
+    
+    public void set(T value) {
+        Thread t = Thread.currentThread();
+        ThreadLocalMap map = getMap(t);
+        if (map != null)
+            map.set(this, value);
+        else
+            createMap(t, value);
+    }
+    
+}
+```
+
+
+
+
 
 
 
