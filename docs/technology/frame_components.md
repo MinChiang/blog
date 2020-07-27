@@ -300,10 +300,6 @@ SimpleControllerHandlerAdapter部分源码：
 
 
 
-## Activiti流程引擎，表单引擎
-
-
-
 ## Redis
 
 ### 数据类型&数据结构
@@ -662,14 +658,20 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 
 
-## Consul
-
-技术架构实现
-
-
-
 
 ## Activiti
+
+- ProcessEngineConfiguration：加载activiti.cfg.xml配置文件
+- ProcessEngine：快速获得各个service接口，生成activiti的工作环境以及25张表
+- Service接口：
+  - RepositoryService：对流程定义和部署的存储库的访问路径
+  - RuntimeService：实例流程相关
+  - TaskService：与正在执行的任务管理相关
+  - HistroyService：查询历史服务接口
+
+
+
+## Consul
 
 技术架构实现
 
