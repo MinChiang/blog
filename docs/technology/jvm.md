@@ -294,7 +294,28 @@ JDK1.8：
 
 
 
-## 调优样例
+### 命令工具
+
+- jps：查看运行中的java程序，jps -l -v
+- jstat：统计Jvm信息，jstat -gc PID [采样间隔毫秒] [采样个数]
+  - S0C、S1C、S0U、S1U：Surivior 0/1区容量（capacity）和使用量（Used）
+  - EC、EU：Eden区容量和使用量
+  - OC、OU：老年代容量和使用量
+  - PC、PU：永久代容量和使用量
+  - YGC、YGT：年轻代GC次数和耗时
+  - FGC、FGCT：Full GC次数和耗时
+  - GCT：GC总耗时
+- jinfo：查看虚拟机的参数，jinfo PID
+- jmap/jhat：dump出堆的数据和数据分析
+  - jmap -heap PID，打印堆的信息
+  - jmap -histo[:live] PID，打印对象直方图，live为为只打印存活的对象
+  - jmap -dump:format=b,file=xxx PID，把整个堆dump出来
+- jstack：当前线程执行的快照，jstack -l PID
+- VisualVM：上面工具的集合，一般用此工具，省力省心。
+
+
+
+## JVM操作样例
 
 ### 如何合理设置线程池大小
 
@@ -304,12 +325,81 @@ JDK1.8：
 
 
 
-### 命令工具
+### 如何查看与定位CPU100%的问题
 
-- jps：查看运行中的java程序；
-- jstat：查看虚拟机的状态；
-- jinfo：查看虚拟机的参数；
-- jmap：dump出堆的数据；
-- jstack：当前线程执行的快照；
-- VisualVM：上面工具的集合，一般用此工具，省力省心。
+```java
+public static void main(String[] args) throws InterruptedException {
+    MyWhile.doWhile();
+}
 
+private static final class MyWhile {
+    static void doWhile() {
+        while (true) {
+        }
+    }
+}
+```
+
+- 首先CPU100%**不一定存在问题**，需要观察本机器执行的任务是否是CPU密集型任务，若是，则完全有可能出现100%CPU的问题；
+- 登录到机器上，使用top命令查看对应的进程列表，按下P（大写）键，按照进程CPU使用率排序，记录下对应的PID，此处PID为1743；
+
+![CPU100%问题1](./images/CPU100%问题1.png)
+
+- 根据PID查询出消耗CPU最高的线程ID，使用命令top -Hp 刚才找到的PID，按下P（大写）键，按照线程查看CPU使用率排序，记录下对应的PID，此时记录的PID为十进制，需要转化为十六进制，此处PID为1744，对应的十六进制为6d0；
+
+![CPU100%问题2](./images/CPU100%问题2.png)
+
+- 使用jstack -l 刚才找到的进程PID > tmp.stack，导出对应的线程信息；
+
+- 使用vim查看tmp.stack，查找对应的十六进制的PID，查看其执行的内容与状态。
+
+![CPU100%问题3](./images/CPU100%问题3.png)
+
+如果查看到对应线程为GC线程，那么极有可能是频繁的GC导致CPU100%的，那么需要使用jstat来观察对应的GC运行信息（jstat -gc PID [监视频率毫秒]），倘若频繁发生GC，那么需要进一步通过jmap分析内存对象占用信息，观察是否有内存泄漏的问题存在
+
+
+
+### 如何定位死锁的问题
+
+执行以下代码：
+
+```java
+public static void main(String[] args) throws InterruptedException {
+    Lock l1 = new ReentrantLock();
+    Lock l2 = new ReentrantLock();
+
+    new Thread(() -> {
+        l1.lock();
+        System.out.println("线程1获取锁1完成");
+        try {
+            Thread.sleep(500L);
+            l2.lock();
+            System.out.println("线程1获取锁2完成");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            l2.unlock();
+            l1.unlock();
+        }
+    }).start();
+
+    new Thread(() -> {
+        l2.lock();
+        System.out.println("线程2获取锁2完成");
+        try {
+            Thread.sleep(500L);
+            l1.lock();
+            System.out.println("线程2获取锁1完成");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            l1.unlock();
+            l2.unlock();
+        }
+    }).start();
+}
+```
+
+直接执行jstack -l PID，可以自动检测到死锁的问题：
+
+![Java死锁问题](./images/Java死锁问题.png)
