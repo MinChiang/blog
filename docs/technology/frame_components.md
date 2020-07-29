@@ -596,6 +596,16 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 
 
+### Kafka如何保证消息有序性
+
+- Kafka topic只设置一个partition分区：kafka默认保证同一个partition分区内的消息是有序的，设置全局一个分区这样就保证全局有序，但缺点是只能被consumer group里的一个消费者消费，不适合高并发的情况；
+- producer将消息发送到指定分区：
+  - 指定分区
+  - 不指定分区，由指定key，根据key的hash规则确定发送到哪个分区
+  - 不指定分区，不指定key，轮询发送
+
+
+
 ## Zookeeper
 
 #### 角色分类
