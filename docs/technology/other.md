@@ -168,27 +168,6 @@ vim /etc/security/limits.d/20-nproc.conf
 
 
 
-## 常见应用端口
-
-- Zookeeper：
-  - 服务端口：2181
-
-  - leader选举端口：3888
-  - 集群通讯使用：2888（leader监听此端口）
-- Mysql：
-  - 服务端口：3306
-- Oracle：
-  - 服务端口：1521
-- Redis：
-  - 服务端口：6379
-- Kafka：
-  - 服务端口：9092
-- ElasticSearch：
-  - restful服务端口：9200
-  - client服务端口：9300
-
-
-
 ## 看过什么网站和有用的书籍
 
 - Stackoverflow：https://stackoverflow.com/
