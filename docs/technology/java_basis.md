@@ -1417,6 +1417,58 @@ ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 
 
 
+## SPI
+
+SPI全称为Service Provider Interface，通过本地方式加载第三方扩展的方式启用框架或代码实现的组件；
+
+常用在以下场景：
+
+- JDBC4后数据库驱动加载接口的实现
+- 日志门面接口实现类加载
+- Spring：对servlet3.0规范的实现，自动类型转换
+
+在com.spi包下，新建几个类：
+
+```java
+public interface Animal {
+    String shout();
+}
+
+public class Cat implements Animal {
+    @Override
+    public String shout() {
+        return "喵";
+    }
+}
+
+public class Dog implements Animal {
+    @Override
+    public String shout() {
+        return "汪";
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        ServiceLoader<Animal> animals = ServiceLoader.load(Animal.class);
+        for (Animal animal : animals) {
+            System.out.println(animal.shout());
+        }
+    }
+}
+```
+
+在resources文件夹下，新建META-INF\services\com.api.Animal文件，文件内容为：
+
+```
+com.api.Cat
+com.api.Dog
+```
+
+
+
+
+
 ## 分布式事务
 
 ### 基础理论
