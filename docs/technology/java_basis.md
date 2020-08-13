@@ -557,6 +557,126 @@ CycleBarrier
 
 
 
+## IO与NIO的区别与代码样例分析
+
+|                      | IO（传统的IO） | NIO      |
+| -------------------- | -------------- | -------- |
+| 面向对象             | 面向流         | 面向缓冲 |
+| 是否阻塞             | 阻塞IO         | 非阻塞IO |
+| 实现方式             | 数组           | Buffer   |
+| 客户端个数：IO线程数 | 1:1            | M:1      |
+
+```java
+public class TestNIO {
+
+    public static void main(String[] args) {
+        MultiplexerTimeServer multiplexerTimeServer = new MultiplexerTimeServer(10222);
+        new Thread(multiplexerTimeServer, "hahahahahah").start();
+    }
+
+    static final class MultiplexerTimeServer implements Runnable {
+
+        private Selector selector;
+        private ServerSocketChannel serverSocketChannel;
+        private volatile boolean stop;
+
+        public MultiplexerTimeServer(int port) {
+            try {
+                selector = Selector.open();
+                serverSocketChannel = ServerSocketChannel.open();
+                //设置为非阻塞式
+                serverSocketChannel.configureBlocking(false);
+                serverSocketChannel.socket().bind(new InetSocketAddress(port), 1024);
+                //注册channel
+                serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        public void stop() {
+            this.stop = true;
+        }
+
+        @Override
+        public void run() {
+            while (!stop) {
+                try {
+                    selector.select(1000);
+                    Set<SelectionKey> selectionKeys = selector.selectedKeys();
+                    Iterator<SelectionKey> iterator = selectionKeys.iterator();
+                    SelectionKey key = null;
+                    while (iterator.hasNext()) {
+                        key = iterator.next();
+                        iterator.remove();
+                        try {
+                            handleInput(key);
+                        } catch (Exception e) {
+                            if (key != null) {
+                                key.cancel();
+                                if (key.channel() != null) {
+                                    key.channel().close();
+                                }
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (selector != null) {
+                try {
+                    selector.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        private void handleInput(SelectionKey key) throws IOException {
+            if (key.isValid()) {
+                if (key.isAcceptable()) {
+                    ServerSocketChannel channel = (ServerSocketChannel) key.channel();
+                    SocketChannel accept = channel.accept();
+                    accept.configureBlocking(false);
+                    accept.register(selector, SelectionKey.OP_READ);
+                } else if (key.isReadable()) {
+                    SocketChannel channel = (SocketChannel) key.channel();
+                    ByteBuffer byteBuffer = ByteBuffer.allocate(10);
+                    int bytes = channel.read(byteBuffer);
+                    if (bytes > 0) {
+                        byteBuffer.flip();
+                        byte[] bs = new byte[byteBuffer.remaining()];
+                        byteBuffer.get(bs);
+                        System.out.println("收到报文为：" + new String(bs, StandardCharsets.UTF_8));
+                        doWrite(channel, "我是相应报文");
+                    } else if (bytes < 0) {
+                        key.cancel();
+                        channel.close();
+                    }
+                }
+            }
+        }
+
+        private void doWrite(SocketChannel channel, String response) throws IOException {
+            if (response != null && response.trim().length() > 0) {
+                byte[] bytes = response.getBytes();
+                ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
+                byteBuffer.put(bytes);
+                byteBuffer.flip();
+                channel.write(byteBuffer);
+            }
+        }
+
+    }
+
+}
+```
+
+
+
 ## 基础
 
 ### equals()、==、hashCode()和System.identityHashCode区别
