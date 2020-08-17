@@ -115,48 +115,48 @@ JDK1.8：
 如果一个类加载器收到了类加载的请求，它首先不会让自己去尝试加载这个类，而是把这个请求**委派给父类加载器去完成**，每一个层次的类加载器都是如此，因此所有的加载请求最终都应该传送到顶层的启动类加载器中，只有当父加载器反馈自己无法完成这个加载请求（它的搜索范围中没有找到所需的类）时，子加载器才会尝试自己去加载。ClassLoader类比较重要的两个方法：findClass和loadClass，**findClass是指如何找到class，而loadClass则默认实现了整个双亲委派机制**，如果需要打破双亲委派机制，需要重写loadClass方法。Java虚拟机的基本classLoader如下：**BootstrapClassLoader（启动类加载）=> ExtClassLoader（标准扩展类加载器）=> AppClassLoader（系统类加载器）=>CustomClassLoader（用户自定义类加载器）**
 
 ```java
-    protected Class<?> loadClass(String name, boolean resolve)
-        throws ClassNotFoundException
-    {
-        synchronized (getClassLoadingLock(name)) {
-            // 先查找对应的class文件是否已经被加载过了
-            Class<?> c = findLoadedClass(name);
+protected Class<?> loadClass(String name, boolean resolve)
+    throws ClassNotFoundException
+{
+    synchronized (getClassLoadingLock(name)) {
+        // 先查找对应的class文件是否已经被加载过了
+        Class<?> c = findLoadedClass(name);
+        if (c == null) {
+            long t0 = System.nanoTime();
+            try {
+                if (parent != null) {
+                    // 使用父的ClassLoader进行class加载
+                    c = parent.loadClass(name, false);
+                } else {
+                    // 使用顶层BootStrapClassLoader加载
+                    c = findBootstrapClassOrNull(name);
+                }
+            } catch (ClassNotFoundException e) {
+                // ClassNotFoundException thrown if class not found
+                // from the non-null parent class loader
+            }
+
             if (c == null) {
-                long t0 = System.nanoTime();
-                try {
-                    if (parent != null) {
-                        // 使用父的ClassLoader进行class加载
-                        c = parent.loadClass(name, false);
-                    } else {
-                        // 使用顶层BootStrapClassLoader加载
-                        c = findBootstrapClassOrNull(name);
-                    }
-                } catch (ClassNotFoundException e) {
-                    // ClassNotFoundException thrown if class not found
-                    // from the non-null parent class loader
-                }
+                long t1 = System.nanoTime();
+                // 调用本类中findClass方法进行加载，自定义classLoader时需要重写该方法
+                c = findClass(name);
 
-                if (c == null) {
-                    long t1 = System.nanoTime();
-                    // 调用本类中findClass方法进行加载，自定义classLoader时需要重写该方法
-                    c = findClass(name);
-
-                    // this is the defining class loader; record the stats
-                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);
-                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);
-                    sun.misc.PerfCounter.getFindClasses().increment();
-                }
+                // this is the defining class loader; record the stats
+                sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);
+                sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);
+                sun.misc.PerfCounter.getFindClasses().increment();
             }
-            if (resolve) {
-                resolveClass(c);
-            }
-            return c;
         }
+        if (resolve) {
+            resolveClass(c);
+        }
+        return c;
     }
+}
 
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
-        throw new ClassNotFoundException(name);
-    }
+protected Class<?> findClass(String name) throws ClassNotFoundException {
+    throw new ClassNotFoundException(name);
+}
 ```
 
 
@@ -197,7 +197,7 @@ JDK1.8：
 
 - 对象头：
 
-  - MarkWorld（运行时数据）：如哈希码，GC分代年龄，锁状态标志位；
+  - Mark Word（运行时数据）：如哈希码，GC分代年龄，锁状态标志位；
 
   ![对象头MarkWord简述](./images/对象头MarkWord简述.png)
 

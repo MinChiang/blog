@@ -3,36 +3,36 @@
 常用的线程池：
 
 ```java
-    public static ExecutorService newFixedThreadPool(int nThreads) {
-        return new ThreadPoolExecutor(nThreads, nThreads,
-                                      0L, TimeUnit.MILLISECONDS,
-                                      new LinkedBlockingQueue<Runnable>());
-    }
+public static ExecutorService newFixedThreadPool(int nThreads) {
+    return new ThreadPoolExecutor(nThreads, nThreads,
+                                  0L, TimeUnit.MILLISECONDS,
+                                  new LinkedBlockingQueue<Runnable>());
+}
 
-    public static ExecutorService newSingleThreadExecutor() {
-        return new FinalizableDelegatedExecutorService
-            (new ThreadPoolExecutor(1, 1,
-                                    0L, TimeUnit.MILLISECONDS,
-                                    new LinkedBlockingQueue<Runnable>()));
-    }
+public static ExecutorService newSingleThreadExecutor() {
+    return new FinalizableDelegatedExecutorService
+        (new ThreadPoolExecutor(1, 1,
+                                0L, TimeUnit.MILLISECONDS,
+                                new LinkedBlockingQueue<Runnable>()));
+}
 
-    public static ExecutorService newCachedThreadPool() {
-        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                                      60L, TimeUnit.SECONDS,
-                                      new SynchronousQueue<Runnable>());
-    }
+public static ExecutorService newCachedThreadPool() {
+    return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                  60L, TimeUnit.SECONDS,
+                                  new SynchronousQueue<Runnable>());
+}
 ```
 
 内部ThreadPoolExecutor的全量入参构造：
 
 ```java
-    public ThreadPoolExecutor(int corePoolSize,
-                              int maximumPoolSize,
-                              long keepAliveTime,
-                              TimeUnit unit,
-                              BlockingQueue<Runnable> workQueue,
-                              ThreadFactory threadFactory,
-                              RejectedExecutionHandler handler)
+public ThreadPoolExecutor(int corePoolSize,
+                          int maximumPoolSize,
+                          long keepAliveTime,
+                          TimeUnit unit,
+                          BlockingQueue<Runnable> workQueue,
+                          ThreadFactory threadFactory,
+                          RejectedExecutionHandler handler)
 ```
 
 - corePoolSize：核心线程数；
@@ -64,246 +64,246 @@
 ![线程池源码流程图](./images/线程池源码流程图.jpg)
 
 ```java
-	public Future<?> submit(Runnable task) {
-        if (task == null) throw new NullPointerException();
-        RunnableFuture<Void> ftask = newTaskFor(task, null);
-        execute(ftask);
-        return ftask;
-    }
+public Future<?> submit(Runnable task) {
+    if (task == null) throw new NullPointerException();
+    RunnableFuture<Void> ftask = newTaskFor(task, null);
+    execute(ftask);
+    return ftask;
+}
 
-	public void execute(Runnable command) {
-        if (command == null)
-            throw new NullPointerException();
-        int c = ctl.get();
-        //如果当前线程数量小于核心线程数
-        if (workerCountOf(c) < corePoolSize) {
-            //添加worker并执行对应的任务
-            if (addWorker(command, true))
-                return;
-            c = ctl.get();
-        }
-        //把当前任务扔入队列中
-        if (isRunning(c) && workQueue.offer(command)) {
-            int recheck = ctl.get();
-            //如果当前threadpool不在运行中，删除对应的任务
-            if (!isRunning(recheck) && remove(command))
-                //执行拒绝策略
-                reject(command);
-            else if (workerCountOf(recheck) == 0)
-                //增加至少一个执行器
-                addWorker(null, false);
-        }
-        //如果入队失败，则尝试新增执行器直接执行任务
-        else if (!addWorker(command, false))
-            //添加执行器失败，执行拒绝策略
+public void execute(Runnable command) {
+    if (command == null)
+        throw new NullPointerException();
+    int c = ctl.get();
+    //如果当前线程数量小于核心线程数
+    if (workerCountOf(c) < corePoolSize) {
+        //添加worker并执行对应的任务
+        if (addWorker(command, true))
+            return;
+        c = ctl.get();
+    }
+    //把当前任务扔入队列中
+    if (isRunning(c) && workQueue.offer(command)) {
+        int recheck = ctl.get();
+        //如果当前threadpool不在运行中，删除对应的任务
+        if (!isRunning(recheck) && remove(command))
+            //执行拒绝策略
             reject(command);
+        else if (workerCountOf(recheck) == 0)
+            //增加至少一个执行器
+            addWorker(null, false);
     }
+    //如果入队失败，则尝试新增执行器直接执行任务
+    else if (!addWorker(command, false))
+        //添加执行器失败，执行拒绝策略
+        reject(command);
+}
 
-	private boolean addWorker(Runnable firstTask, boolean core) {
-        retry:
+private boolean addWorker(Runnable firstTask, boolean core) {
+    retry:
+    for (;;) {
+        int c = ctl.get();
+        int rs = runStateOf(c);
+
+        if (rs >= SHUTDOWN &&
+            ! (rs == SHUTDOWN &&
+               firstTask == null &&
+               ! workQueue.isEmpty()))
+            return false;
+
         for (;;) {
-            int c = ctl.get();
-            int rs = runStateOf(c);
-
-            if (rs >= SHUTDOWN &&
-                ! (rs == SHUTDOWN &&
-                   firstTask == null &&
-                   ! workQueue.isEmpty()))
+            int wc = workerCountOf(c);
+            if (wc >= CAPACITY ||
+                wc >= (core ? corePoolSize : maximumPoolSize))
                 return false;
-
-            for (;;) {
-                int wc = workerCountOf(c);
-                if (wc >= CAPACITY ||
-                    wc >= (core ? corePoolSize : maximumPoolSize))
-                    return false;
-                if (compareAndIncrementWorkerCount(c))
-                    break retry;
-                c = ctl.get();
-                if (runStateOf(c) != rs)
-                    continue retry;
-            }
+            if (compareAndIncrementWorkerCount(c))
+                break retry;
+            c = ctl.get();
+            if (runStateOf(c) != rs)
+                continue retry;
         }
-
-        boolean workerStarted = false;
-        boolean workerAdded = false;
-        Worker w = null;
-        try {
-            //新建执行器
-            w = new Worker(firstTask);
-            final Thread t = w.thread;
-            if (t != null) {
-                final ReentrantLock mainLock = this.mainLock;
-                mainLock.lock();
-                try {
-                    int rs = runStateOf(ctl.get());
-
-                    if (rs < SHUTDOWN ||
-                        (rs == SHUTDOWN && firstTask == null)) {
-                        if (t.isAlive())
-                            throw new IllegalThreadStateException();
-                        workers.add(w);
-                        int s = workers.size();
-                        if (s > largestPoolSize)
-                            largestPoolSize = s;
-                        workerAdded = true;
-                    }
-                } finally {
-                    mainLock.unlock();
-                }
-                if (workerAdded) {
-                    //执行器运行
-                    t.start();
-                    workerStarted = true;
-                }
-            }
-        } finally {
-            if (! workerStarted)
-                addWorkerFailed(w);
-        }
-        return workerStarted;
     }
+
+    boolean workerStarted = false;
+    boolean workerAdded = false;
+    Worker w = null;
+    try {
+        //新建执行器
+        w = new Worker(firstTask);
+        final Thread t = w.thread;
+        if (t != null) {
+            final ReentrantLock mainLock = this.mainLock;
+            mainLock.lock();
+            try {
+                int rs = runStateOf(ctl.get());
+
+                if (rs < SHUTDOWN ||
+                    (rs == SHUTDOWN && firstTask == null)) {
+                    if (t.isAlive())
+                        throw new IllegalThreadStateException();
+                    workers.add(w);
+                    int s = workers.size();
+                    if (s > largestPoolSize)
+                        largestPoolSize = s;
+                    workerAdded = true;
+                }
+            } finally {
+                mainLock.unlock();
+            }
+            if (workerAdded) {
+                //执行器运行
+                t.start();
+                workerStarted = true;
+            }
+        }
+    } finally {
+        if (! workerStarted)
+            addWorkerFailed(w);
+    }
+    return workerStarted;
+}
 ```
 
 ```java
-	private final class Worker
-        extends AbstractQueuedSynchronizer
-        implements Runnable
-    {
+private final class Worker
+    extends AbstractQueuedSynchronizer
+    implements Runnable
+{
 
-        private static final long serialVersionUID = 6138294804551838833L;
+    private static final long serialVersionUID = 6138294804551838833L;
 
-        final Thread thread;
-        Runnable firstTask;
-        volatile long completedTasks;
+    final Thread thread;
+    Runnable firstTask;
+    volatile long completedTasks;
 
-        Worker(Runnable firstTask) {
-            setState(-1);
-            this.firstTask = firstTask;
-            //在threadpool中的threadfactory中创建执行的线程
-            this.thread = getThreadFactory().newThread(this);
-        }
+    Worker(Runnable firstTask) {
+        setState(-1);
+        this.firstTask = firstTask;
+        //在threadpool中的threadfactory中创建执行的线程
+        this.thread = getThreadFactory().newThread(this);
+    }
 
-        public void run() {
-            //本质上调用runWorker方法执行
-            runWorker(this);
-        }
+    public void run() {
+        //本质上调用runWorker方法执行
+        runWorker(this);
+    }
 
-        protected boolean isHeldExclusively() {
-            return getState() != 0;
-        }
+    protected boolean isHeldExclusively() {
+        return getState() != 0;
+    }
 
-        protected boolean tryAcquire(int unused) {
-            if (compareAndSetState(0, 1)) {
-                setExclusiveOwnerThread(Thread.currentThread());
-                return true;
-            }
-            return false;
-        }
-
-        protected boolean tryRelease(int unused) {
-            setExclusiveOwnerThread(null);
-            setState(0);
+    protected boolean tryAcquire(int unused) {
+        if (compareAndSetState(0, 1)) {
+            setExclusiveOwnerThread(Thread.currentThread());
             return true;
         }
+        return false;
+    }
 
-        public void lock()        { acquire(1); }
-        public boolean tryLock()  { return tryAcquire(1); }
-        public void unlock()      { release(1); }
-        public boolean isLocked() { return isHeldExclusively(); }
+    protected boolean tryRelease(int unused) {
+        setExclusiveOwnerThread(null);
+        setState(0);
+        return true;
+    }
 
-        void interruptIfStarted() {
-            Thread t;
-            if (getState() >= 0 && (t = thread) != null && !t.isInterrupted()) {
-                try {
-                    t.interrupt();
-                } catch (SecurityException ignore) {
-                }
+    public void lock()        { acquire(1); }
+    public boolean tryLock()  { return tryAcquire(1); }
+    public void unlock()      { release(1); }
+    public boolean isLocked() { return isHeldExclusively(); }
+
+    void interruptIfStarted() {
+        Thread t;
+        if (getState() >= 0 && (t = thread) != null && !t.isInterrupted()) {
+            try {
+                t.interrupt();
+            } catch (SecurityException ignore) {
             }
         }
     }
+}
 ```
 
 ```java
-    final void runWorker(Worker w) {
-        Thread wt = Thread.currentThread();
-        Runnable task = w.firstTask;
-        w.firstTask = null;
-        w.unlock();
-        boolean completedAbruptly = true;
-        try {
-            //注意此处循环调用getTask方法，按照getTask的结果判断下次是否需要继续执行
-            while (task != null || (task = getTask()) != null) {
-                w.lock();
-                if ((runStateAtLeast(ctl.get(), STOP) ||
-                     (Thread.interrupted() &&
-                      runStateAtLeast(ctl.get(), STOP))) &&
-                    !wt.isInterrupted())
-                    wt.interrupt();
-                try {
-                    beforeExecute(wt, task);
-                    Throwable thrown = null;
-                    try {
-                        task.run();
-                    } catch (RuntimeException x) {
-                        thrown = x; throw x;
-                    } catch (Error x) {
-                        thrown = x; throw x;
-                    } catch (Throwable x) {
-                        thrown = x; throw new Error(x);
-                    } finally {
-                        afterExecute(task, thrown);
-                    }
-                } finally {
-                    task = null;
-                    w.completedTasks++;
-                    w.unlock();
-                }
-            }
-            completedAbruptly = false;
-        } finally {
-            processWorkerExit(w, completedAbruptly);
-        }
-    }
-
-	private Runnable getTask() {
-        boolean timedOut = false;
-
-        //进行CAS操作
-        for (;;) {
-            int c = ctl.get();
-            int rs = runStateOf(c);
-
-            if (rs >= SHUTDOWN && (rs >= STOP || workQueue.isEmpty())) {
-                decrementWorkerCount();
-                return null;
-            }
-
-            int wc = workerCountOf(c);
-
-            //判断是否需要跳出
-            boolean timed = allowCoreThreadTimeOut || wc > corePoolSize;
-
-            //如果当前线程数比核心线程数还大
-            if ((wc > maximumPoolSize || (timed && timedOut))
-                && (wc > 1 || workQueue.isEmpty())) {
-                if (compareAndDecrementWorkerCount(c))
-                    return null;
-                continue;
-            }
-
+final void runWorker(Worker w) {
+    Thread wt = Thread.currentThread();
+    Runnable task = w.firstTask;
+    w.firstTask = null;
+    w.unlock();
+    boolean completedAbruptly = true;
+    try {
+        //注意此处循环调用getTask方法，按照getTask的结果判断下次是否需要继续执行
+        while (task != null || (task = getTask()) != null) {
+            w.lock();
+            if ((runStateAtLeast(ctl.get(), STOP) ||
+                 (Thread.interrupted() &&
+                  runStateAtLeast(ctl.get(), STOP))) &&
+                !wt.isInterrupted())
+                wt.interrupt();
             try {
-                //此处控制worker是否需要继续存活，按照队列的超时获取功能或者阻塞功能实现
-                Runnable r = timed ?
-                    workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :
-                    workQueue.take();
-                if (r != null)
-                    return r;
-                timedOut = true;
-            } catch (InterruptedException retry) {
-                timedOut = false;
+                beforeExecute(wt, task);
+                Throwable thrown = null;
+                try {
+                    task.run();
+                } catch (RuntimeException x) {
+                    thrown = x; throw x;
+                } catch (Error x) {
+                    thrown = x; throw x;
+                } catch (Throwable x) {
+                    thrown = x; throw new Error(x);
+                } finally {
+                    afterExecute(task, thrown);
+                }
+            } finally {
+                task = null;
+                w.completedTasks++;
+                w.unlock();
             }
         }
+        completedAbruptly = false;
+    } finally {
+        processWorkerExit(w, completedAbruptly);
     }
+}
+
+private Runnable getTask() {
+    boolean timedOut = false;
+
+    //进行CAS操作
+    for (;;) {
+        int c = ctl.get();
+        int rs = runStateOf(c);
+
+        if (rs >= SHUTDOWN && (rs >= STOP || workQueue.isEmpty())) {
+            decrementWorkerCount();
+            return null;
+        }
+
+        int wc = workerCountOf(c);
+
+        //判断是否需要跳出
+        boolean timed = allowCoreThreadTimeOut || wc > corePoolSize;
+
+        //如果当前线程数比核心线程数还大
+        if ((wc > maximumPoolSize || (timed && timedOut))
+            && (wc > 1 || workQueue.isEmpty())) {
+            if (compareAndDecrementWorkerCount(c))
+                return null;
+            continue;
+        }
+
+        try {
+            //此处控制worker是否需要继续存活，按照队列的超时获取功能或者阻塞功能实现
+            Runnable r = timed ?
+                workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :
+            workQueue.take();
+            if (r != null)
+                return r;
+            timedOut = true;
+        } catch (InterruptedException retry) {
+            timedOut = false;
+        }
+    }
+}
 ```
 
 常用的提交方法：
@@ -314,33 +314,33 @@
 拒绝策略：
 
 ```java
-    public static class CallerRunsPolicy implements RejectedExecutionHandler {
-        public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
-            if (!e.isShutdown()) {
-                r.run();
-            }
+public static class CallerRunsPolicy implements RejectedExecutionHandler {
+    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+        if (!e.isShutdown()) {
+            r.run();
         }
     }
+}
 
-    public static class AbortPolicy implements RejectedExecutionHandler {
-        public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
-            throw new RejectedExecutionException();
-        }
+public static class AbortPolicy implements RejectedExecutionHandler {
+    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+        throw new RejectedExecutionException();
     }
+}
 
-    public static class DiscardPolicy implements RejectedExecutionHandler {
-        public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
-        }
+public static class DiscardPolicy implements RejectedExecutionHandler {
+    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
     }
+}
 
-    public static class DiscardOldestPolicy implements RejectedExecutionHandler {
-        public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
-            if (!e.isShutdown()) {
-                e.getQueue().poll();
-                e.execute(r);
-            }
+public static class DiscardOldestPolicy implements RejectedExecutionHandler {
+    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+        if (!e.isShutdown()) {
+            e.getQueue().poll();
+            e.execute(r);
         }
     }
+}
 ```
 
 - CallerRunsPolicy：直接在提交任务的线程中执行任务；
@@ -351,28 +351,28 @@
 常用的计划任务线程池：
 
 ```java
-    public static ScheduledExecutorService newSingleThreadScheduledExecutor() {
-        return new DelegatedScheduledExecutorService
-            (new ScheduledThreadPoolExecutor(1));
-    }
+public static ScheduledExecutorService newSingleThreadScheduledExecutor() {
+    return new DelegatedScheduledExecutorService
+        (new ScheduledThreadPoolExecutor(1));
+}
 
-    public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize){
-        return new ScheduledThreadPoolExecutor(corePoolSize);
-    }
+public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize){
+    return new ScheduledThreadPoolExecutor(corePoolSize);
+}
 ```
 
 常用的执行计划任务接口：
 
 ```java
-    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command,
-						  long initialDelay,
-						  long period,
-						  TimeUnit unit);
+public ScheduledFuture<?> scheduleAtFixedRate(Runnable command,
+                                              long initialDelay,
+                                              long period,
+                                              TimeUnit unit);
 
-    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
-						     long initialDelay,
-						     long delay,
-						     TimeUnit unit);
+public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
+                                                 long initialDelay,
+                                                 long delay,
+                                                 TimeUnit unit);
 ```
 
 - scheduleAtFixedRate：以一定的速率执行，不管上一个任务有没有执行完毕；
@@ -420,31 +420,31 @@ wait()在使用时需要对监视对象进行synchronized。
 ### CountDownLatch和CycleBarrier
 
 ```java
-    public static void main(String[] args) throws InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(3, new ThreadFactory() {
-            private AtomicInteger ai = new AtomicInteger();
+public static void main(String[] args) throws InterruptedException {
+    ExecutorService executorService = Executors.newFixedThreadPool(3, new ThreadFactory() {
+        private AtomicInteger ai = new AtomicInteger();
 
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "线程" + ai.getAndIncrement());
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread(r, "线程" + ai.getAndIncrement());
+        }
+    });
+    CountDownLatch countDownLatch = new CountDownLatch(3);
+    for (int i = 0; i < 3; i++) {
+        executorService.execute(() -> {
+            System.out.println(Thread.currentThread().getName() + "正在执行中");
+            try {
+                Thread.sleep(3000L);
+                countDownLatch.countDown();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         });
-        CountDownLatch countDownLatch = new CountDownLatch(3);
-        for (int i = 0; i < 3; i++) {
-            executorService.execute(() -> {
-                System.out.println(Thread.currentThread().getName() + "正在执行中");
-                try {
-                    Thread.sleep(3000L);
-                    countDownLatch.countDown();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
-
-        countDownLatch.await();
-        System.out.println("主线程执行完毕");
     }
+
+    countDownLatch.await();
+    System.out.println("主线程执行完毕");
+}
 ```
 
 ```
@@ -457,38 +457,38 @@ wait()在使用时需要对监视对象进行synchronized。
 
 
 ```java
-	public static void main(String[] args) throws InterruptedException {
-        ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactory() {
-            private AtomicInteger ai = new AtomicInteger();
+public static void main(String[] args) throws InterruptedException {
+    ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactory() {
+        private AtomicInteger ai = new AtomicInteger();
 
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "线程" + ai.getAndIncrement());
-            }
-        });
-        CyclicBarrier cyclicBarrier = new CyclicBarrier(2, new Runnable() {
-            private AtomicInteger ai = new AtomicInteger();
-
-            @Override
-            public void run() {
-                System.out.println("=====我现在是在" + Thread.currentThread().getName() + "执行=====");
-                System.out.println("第" + ai.getAndIncrement() + "次开始");
-            }
-        });
-
-        for (int i = 0; i < 5; i++) {
-            executorService.execute(() -> {
-                System.out.println(Thread.currentThread().getName() + "正在执行中");
-                try {
-                    cyclicBarrier.await();
-                    Thread.sleep(3000L);
-                    System.out.println(Thread.currentThread().getName() + "执行完毕");
-                } catch (InterruptedException | BrokenBarrierException e) {
-                    e.printStackTrace();
-                }
-            });
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread(r, "线程" + ai.getAndIncrement());
         }
+    });
+    CyclicBarrier cyclicBarrier = new CyclicBarrier(2, new Runnable() {
+        private AtomicInteger ai = new AtomicInteger();
+
+        @Override
+        public void run() {
+            System.out.println("=====我现在是在" + Thread.currentThread().getName() + "执行=====");
+            System.out.println("第" + ai.getAndIncrement() + "次开始");
+        }
+    });
+
+    for (int i = 0; i < 5; i++) {
+        executorService.execute(() -> {
+            System.out.println(Thread.currentThread().getName() + "正在执行中");
+            try {
+                cyclicBarrier.await();
+                Thread.sleep(3000L);
+                System.out.println(Thread.currentThread().getName() + "执行完毕");
+            } catch (InterruptedException | BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+        });
     }
+}
 ```
 
 ```
@@ -524,22 +524,22 @@ CycleBarrier
 ### LockSupport
 
 ```java
-    public static void main(String[] args) throws InterruptedException {
+public static void main(String[] args) throws InterruptedException {
 
-        Thread thread = new Thread(() -> {
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    Thread thread = new Thread(() -> {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-            System.out.println(LocalDateTime.now().format(dateTimeFormatter) + "子线程准备执行");
-            LockSupport.park();
-            System.out.println(LocalDateTime.now().format(dateTimeFormatter) + "子线程执行完毕");
-        });
+        System.out.println(LocalDateTime.now().format(dateTimeFormatter) + "子线程准备执行");
+        LockSupport.park();
+        System.out.println(LocalDateTime.now().format(dateTimeFormatter) + "子线程执行完毕");
+    });
 
-        thread.start();
-        Thread.sleep(3000L);
+    thread.start();
+    Thread.sleep(3000L);
 
-        LockSupport.unpark(thread);
+    LockSupport.unpark(thread);
 
-    }
+}
 ```
 
 ```
@@ -568,7 +568,6 @@ CycleBarrier
 
 ```java
 public class TestNIO {
-
     public static void main(String[] args) {
         MultiplexerTimeServer multiplexerTimeServer = new MultiplexerTimeServer(10222);
         new Thread(multiplexerTimeServer, "hahahahahah").start();
@@ -669,9 +668,7 @@ public class TestNIO {
                 channel.write(byteBuffer);
             }
         }
-
     }
-
 }
 ```
 
@@ -710,17 +707,17 @@ Jdk1.7及以后
 - 在常量池不存在，在常量池中**记录首次出现的实例引用，并返回这个引用**；
 
 ```java
-    public static void main(String[] args) {
-        String s1 = new String("a") + new String("bc");
-        String s2 = "abc";
-        String s3 = new String("ab") + new String("c");
+public static void main(String[] args) {
+    String s1 = new String("a") + new String("bc");
+    String s2 = "abc";
+    String s3 = new String("ab") + new String("c");
 
-        System.out.println("s1:" + System.identityHashCode(s1));
-        System.out.println("s1.intern():" + System.identityHashCode(s1.intern()));
-        System.out.println("s2:" + System.identityHashCode(s2));
-        System.out.println("s3:" + System.identityHashCode(s3));
-        System.out.println("s3.intern():" + System.identityHashCode(s3.intern()));
-    }
+    System.out.println("s1:" + System.identityHashCode(s1));
+    System.out.println("s1.intern():" + System.identityHashCode(s1.intern()));
+    System.out.println("s2:" + System.identityHashCode(s2));
+    System.out.println("s3:" + System.identityHashCode(s3));
+    System.out.println("s3.intern():" + System.identityHashCode(s3.intern()));
+}
 ```
 
 ```
@@ -1108,7 +1105,7 @@ CAS操作时，需要判断V位置的值与预期值A是否相等，如果不相
 
   ![重量级锁synchronized加锁流程](./images/重量级锁synchronized加锁流程.png)
 
-  轻量级锁：为了在没有多线程竞争的前提下，**减少传统重量级锁使用操作系统互斥量产生的性能消耗**。在进入同步块时，虚拟机首先在当前线程栈帧中建立一个Lock Record空间，用于存储锁对象目前的Mark Word拷贝（官方把这份拷贝加了一个Displaced前缀，即Displaced Mark Word），并尝试使用CAS操作将锁对象的Mark Word更新为指向Lock Record的指针。如果更新成功，则当前线程拥有了对象的锁，并且将对象Mark Word的锁标志位改为00（轻量级锁）状态。如果更新失败了，检查锁对象Mark Wrod是否指向当前线程的栈帧，若是则说明已经拥有锁，同步代码块继续执行，若否则说明被抢占了。如果有两条以上的线程争用同一个锁，轻量级锁久不再有效，**膨胀为重量级锁**。
+  轻量级锁：为了在没有多线程竞争的前提下，**减少传统重量级锁使用操作系统互斥量产生的性能消耗**。在进入同步块时，虚拟机首先在当前线程栈帧中建立一个Lock Record空间，用于存储锁对象目前的Mark Word拷贝（官方把这份拷贝加了一个Displaced前缀，即Displaced Mark Word），并尝试使用CAS操作将锁对象的Mark Word更新为指向Lock Record的指针。如果更新成功，则当前线程拥有了对象的锁，并且将对象Mark Word的锁标志位改为00（轻量级锁）状态。如果更新失败了，检查锁对象Mark Word是否指向当前线程的栈帧，若是则说明已经拥有锁，同步代码块继续执行，若否则说明被抢占了。如果有两条以上的线程争用同一个锁，轻量级锁久不再有效，**膨胀为重量级锁**。
 - 偏向锁：
 
   ![对象头MarkWord简述](./images/对象头MarkWord简述.png)
@@ -1200,7 +1197,6 @@ public class ThreadLocal<T> {
         else
             createMap(t, value);
     }
-    
 }
 ```
 

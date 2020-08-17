@@ -96,137 +96,137 @@ DispatcherServlet部分源码：
 
 ```java
 protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		HttpServletRequest processedRequest = request;
-		HandlerExecutionChain mappedHandler = null;
-		boolean multipartRequestParsed = false;
+    HttpServletRequest processedRequest = request;
+    HandlerExecutionChain mappedHandler = null;
+    boolean multipartRequestParsed = false;
 
-		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
+    WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 
-		try {
-			ModelAndView mv = null;
-			Exception dispatchException = null;
+    try {
+        ModelAndView mv = null;
+        Exception dispatchException = null;
 
-			try {
-				processedRequest = checkMultipart(request);
-				multipartRequestParsed = (processedRequest != request);
+        try {
+            processedRequest = checkMultipart(request);
+            multipartRequestParsed = (processedRequest != request);
 
-				mappedHandler = getHandler(processedRequest);
-				if (mappedHandler == null || mappedHandler.getHandler() == null) {
-					noHandlerFound(processedRequest, response);
-					return;
-				}
+            mappedHandler = getHandler(processedRequest);
+            if (mappedHandler == null || mappedHandler.getHandler() == null) {
+                noHandlerFound(processedRequest, response);
+                return;
+            }
 
-                //获取handler
-				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
+            //获取handler
+            HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
-				String method = request.getMethod();
-				boolean isGet = "GET".equals(method);
-				if (isGet || "HEAD".equals(method)) {
-					long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
-					if (logger.isDebugEnabled()) {
-						logger.debug("Last-Modified value for [" + getRequestUri(request) + "] is: " + lastModified);
-					}
-					if (new ServletWebRequest(request, response).checkNotModified(lastModified) && isGet) {
-						return;
-					}
-				}
+            String method = request.getMethod();
+            boolean isGet = "GET".equals(method);
+            if (isGet || "HEAD".equals(method)) {
+                long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Last-Modified value for [" + getRequestUri(request) + "] is: " + lastModified);
+                }
+                if (new ServletWebRequest(request, response).checkNotModified(lastModified) && isGet) {
+                    return;
+                }
+            }
 
-                //前置处理
-				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
-					return;
-				}
+            //前置处理
+            if (!mappedHandler.applyPreHandle(processedRequest, response)) {
+                return;
+            }
 
-                //根据handle处理请求对象，此方法包括了查找Controller或者Servlet的步骤
-				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+            //根据handle处理请求对象，此方法包括了查找Controller或者Servlet的步骤
+            mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
-				if (asyncManager.isConcurrentHandlingStarted()) {
-					return;
-				}
+            if (asyncManager.isConcurrentHandlingStarted()) {
+                return;
+            }
 
-				applyDefaultViewName(processedRequest, mv);
-                //后置处理
-				mappedHandler.applyPostHandle(processedRequest, response, mv);
-			}
-			catch (Exception ex) {
-				dispatchException = ex;
-			}
-			catch (Throwable err) {
-				dispatchException = new NestedServletException("Handler dispatch failed", err);
-			}
-            //处理后续的对象与视图
-			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
-		}
-		catch (Exception ex) {
-			triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
-		}
-		catch (Throwable err) {
-			triggerAfterCompletion(processedRequest, response, mappedHandler,
-					new NestedServletException("Handler processing failed", err));
-		}
-		finally {
-			if (asyncManager.isConcurrentHandlingStarted()) {
-				if (mappedHandler != null) {
-					mappedHandler.applyAfterConcurrentHandlingStarted(processedRequest, response);
-				}
-			}
-			else {
-				if (multipartRequestParsed) {
-					cleanupMultipart(processedRequest);
-				}
-			}
-		}
-	}
+            applyDefaultViewName(processedRequest, mv);
+            //后置处理
+            mappedHandler.applyPostHandle(processedRequest, response, mv);
+        }
+        catch (Exception ex) {
+            dispatchException = ex;
+        }
+        catch (Throwable err) {
+            dispatchException = new NestedServletException("Handler dispatch failed", err);
+        }
+        //处理后续的对象与视图
+        processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
+    }
+    catch (Exception ex) {
+        triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
+    }
+    catch (Throwable err) {
+        triggerAfterCompletion(processedRequest, response, mappedHandler,
+                               new NestedServletException("Handler processing failed", err));
+    }
+    finally {
+        if (asyncManager.isConcurrentHandlingStarted()) {
+            if (mappedHandler != null) {
+                mappedHandler.applyAfterConcurrentHandlingStarted(processedRequest, response);
+            }
+        }
+        else {
+            if (multipartRequestParsed) {
+                cleanupMultipart(processedRequest);
+            }
+        }
+    }
+}
 
-	private void processDispatchResult(HttpServletRequest request, HttpServletResponse response,
-			HandlerExecutionChain mappedHandler, ModelAndView mv, Exception exception) throws Exception {
+private void processDispatchResult(HttpServletRequest request, HttpServletResponse response,
+                                   HandlerExecutionChain mappedHandler, ModelAndView mv, Exception exception) throws Exception {
 
-		boolean errorView = false;
+    boolean errorView = false;
 
-		if (exception != null) {
-			if (exception instanceof ModelAndViewDefiningException) {
-				logger.debug("ModelAndViewDefiningException encountered", exception);
-				mv = ((ModelAndViewDefiningException) exception).getModelAndView();
-			}
-			else {
-				Object handler = (mappedHandler != null ? mappedHandler.getHandler() : null);
-				mv = processHandlerException(request, response, handler, exception);
-				errorView = (mv != null);
-			}
-		}
+    if (exception != null) {
+        if (exception instanceof ModelAndViewDefiningException) {
+            logger.debug("ModelAndViewDefiningException encountered", exception);
+            mv = ((ModelAndViewDefiningException) exception).getModelAndView();
+        }
+        else {
+            Object handler = (mappedHandler != null ? mappedHandler.getHandler() : null);
+            mv = processHandlerException(request, response, handler, exception);
+            errorView = (mv != null);
+        }
+    }
 
-		if (mv != null && !mv.wasCleared()) {
-            //根据ModelAndView渲染页面
-			render(mv, request, response);
-			if (errorView) {
-				WebUtils.clearErrorRequestAttributes(request);
-			}
-		}
-		else {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Null ModelAndView returned to DispatcherServlet with name '" + getServletName() +
-						"': assuming HandlerAdapter completed request handling");
-			}
-		}
+    if (mv != null && !mv.wasCleared()) {
+        //根据ModelAndView渲染页面
+        render(mv, request, response);
+        if (errorView) {
+            WebUtils.clearErrorRequestAttributes(request);
+        }
+    }
+    else {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Null ModelAndView returned to DispatcherServlet with name '" + getServletName() +
+                         "': assuming HandlerAdapter completed request handling");
+        }
+    }
 
-		if (WebAsyncUtils.getAsyncManager(request).isConcurrentHandlingStarted()) {
-			return;
-		}
+    if (WebAsyncUtils.getAsyncManager(request).isConcurrentHandlingStarted()) {
+        return;
+    }
 
-		if (mappedHandler != null) {
-			mappedHandler.triggerAfterCompletion(request, response, null);
-		}
-	}
+    if (mappedHandler != null) {
+        mappedHandler.triggerAfterCompletion(request, response, null);
+    }
+}
 ```
 
 SimpleControllerHandlerAdapter部分源码：
 
 ```java
-	@Override
-	public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
+@Override
+public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
+    throws Exception {
 
-		return ((Controller) handler).handleRequest(request, response);
-	}
+    return ((Controller) handler).handleRequest(request, response);
+}
 ```
 
 
