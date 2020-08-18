@@ -6,8 +6,7 @@
   - Interface默认方法
   - 新时间日期API
   - HashMap结构优化，新增红黑树和resize时的代码优化，ConcurrentHashMap采用CAS算法，不再使用分段锁，而且也引入了红黑树
-- **移除了永久代，增加直接内存区域**
-  
+  - **移除了永久代，增加直接内存区域**
 - 1.7
   - switch可以使用String判断
   - 泛型实例化类型自动推断
