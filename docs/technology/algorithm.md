@@ -243,6 +243,69 @@ public class QuickSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
 
 
+## BFS
+
+```
+result = []
+def permute(已经选择的路径, 剩余选择列表):
+    if 满足结束条件:
+    	// 此时注意路径的可变动方式，若为数组或者列表需要new一个新的
+        result.add(已经选择的路径)
+        return
+
+    for 选择 in 剩余选择列表:
+        做选择（其实就是路径的变动，把剩余选择列表中变为路径）
+        permute(路径, 选择列表)
+        撤销选择（回滚路径的变动）
+```
+
+```java
+/**
+ * @author MinChiang
+ * @version 1.0.0
+ * @date 2021-02-20 15:40
+ */
+public class Permutations {
+
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> choice = new ArrayList<>();
+        for (int num : nums) {
+            choice.add(num);
+        }
+        permute(new ArrayList<>(), choice, result);
+        return result;
+    }
+
+    // path表示【已经选择的路径】，choice表示【还未选择的路径】
+    public void permute(List<Integer> path, List<Integer> choice, List<List<Integer>> result) {
+        // 结束判定
+        if (choice.size() == 0) {
+            result.add(new ArrayList<>(path));
+            return;
+        }
+
+        for (int i = 0; i < choice.size(); i++) {
+            // 做出选择，把未选择的路径转化为已选择的路径
+            int c = choice.remove(i);
+            path.add(c);
+
+            // 递归
+            permute(path, choice, result);
+
+            // 撤销选择
+            path.remove(path.size() - 1);
+            choice.add(i, c);
+        }
+    }
+
+}
+```
+
+
+
+
+
 ## 限流
 
 ### 计数器法

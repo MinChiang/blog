@@ -231,8 +231,8 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 
 - 强引用：指代码普遍存在的引用方式，只要强引用存在，则永远不会对其进行垃圾回收；
 - 软引用：在系统发生**内存溢出异常**之前对其进行垃圾回收，使用**SoftReference**；
-- 弱引用：引用的对象只能生存到**下一次垃圾回收**之前，无论内存是否足够，都进行回收，使用WeakReference；
-- 虚引用：最弱的引用关系，目的是对象被回收时**收到一个系统通知，跟踪对象垃圾回收的状态**，使用PhantomReference。
+- 弱引用：引用的对象只能生存到**下一次垃圾回收**之前，无论内存是否足够，都进行回收，使用**WeakReference**；
+- 虚引用：最弱的引用关系，目的是对象被回收时**收到一个系统通知，跟踪对象垃圾回收的状态**，使用**PhantomReference**。
 
 
 
