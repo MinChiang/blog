@@ -700,19 +700,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 
 
-## Consul
-
-技术架构实现
-
-
-
-## 用户埋点
-
-技术实现
-
-
-
-### ElasticSearch
+## ElasticSearch
 
 | ElasticSearch | 关系数据库      |
 | ------------- | --------------- |
@@ -720,8 +708,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 | Types类型     | Tables表        |
 | Documents文档 | Rows行          |
 | Fields域      | Columns列       |
-
-
 
 | 内容               | 语法                                                         |
 | ------------------ | ------------------------------------------------------------ |
