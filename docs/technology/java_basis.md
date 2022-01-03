@@ -1,6 +1,6 @@
 ## 线程池
 
-常用的线程池：
+### 常用的线程池
 
 ```java
 public static ExecutorService newFixedThreadPool(int nThreads) {
@@ -378,7 +378,9 @@ public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
 - scheduleAtFixedRate：以一定的速率执行，不管上一个任务有没有执行完毕；
 - scheduleWithFixedDelay：以固定的延时执行，上一个任务执行完后x秒再执行。
 
-线程的状态（6种）：
+
+
+### 线程的6种状态
 
 ```java
 public class Thread implements Runnable {
@@ -412,6 +414,109 @@ join()指当前线程等待某个线程执行完成才能继续执行；
 sleep()让指定时间内暂停执行，但**不会释放锁**；
 
 wait()在使用时需要对监视对象进行synchronized。
+
+
+
+### 线程池的高级用法
+
+#### 全局任务
+
+如果有重要的任务，执行多次的效果是幂等的（执行1000次和执行1次的效果一样），那么建议用全局任务的方式创建线程
+
+```java
+new ThreadPoolExecutor(
+                1,
+                1,
+                0L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(1),
+                runnable -> new Thread(runnable, "whole-job-thread"),
+                (r, executor) -> log.info("drop trigger event!, normally you can ignore this message~")
+        )
+```
+
+
+
+#### 组件线程的控制
+
+往往很多组件都内置了自己的线程，此时业务无需多此一举再关心线程的控制，因为控制不好反而会发生OOM，例子：在kafka监听消息的入口，无需再开启新的线程控制，原因是kafka已经内置线程管理；若自己添加线程介入，可能kafka处理任务比业务线程快导致任务的积压。
+
+```java
+private static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(
+    Runtime.getRuntime().availableProcessors() + 1,
+    Runtime.getRuntime().availableProcessors() + 1,
+    0L,
+    TimeUnit.MILLISECONDS,
+    // 注意这里用无界队列吧
+    new LinkedBlockingQueue<>(),
+    (ThreadFactory) Thread::new
+);
+
+/**
+ * 监听点击事件入口
+ * 这里入口为纯写新的数据内容，可以不做更改
+ *
+ * @param records 记录
+ */
+@KafkaListener(topics = "${kafka.topic.click}", containerFactory = HIIDO_KAFKA_LISTENER_CONTAINER_FACTORY)
+public void listenClick(List<ConsumerRecord<String, String>> records) {
+    // 这里开启线程
+    EXECUTOR_SERVICE.execute(() -> {
+        for (ConsumerRecord<String, String> record : records) {
+            try {
+                HiidoClickReq hiidoClickReq = OBJECT_MAPPER.readValue(record.value(), HiidoClickReq.class);
+                List<HiidoClickDetailReq> hiidoClickDetailReqs = Optional.ofNullable(hiidoClickReq.getDatas()).orElse(Collections.emptyList());
+                for (HiidoClickDetailReq hiidoClickDetailReq : hiidoClickDetailReqs) {
+                    if (StringUtils.isBlank(hiidoClickDetailReq.getArgs())) {
+                        continue;
+                    }
+                    Map<String, String> content = decodeArgs(hiidoClickDetailReq.getArgs());
+                    Optional
+                            .of(content)
+                            .map(abstractClickParamConverter::convert)
+                            .filter(checker::checkClick)
+                            .ifPresent(clickService::save);
+                }
+            } catch (Exception e) {
+                log.error("listen click event error: ", e);
+            }
+        }
+    });
+}
+```
+
+正确应该是：
+
+```java
+/**
+ * 监听点击事件入口
+ * 这里入口为纯写新的数据内容，可以不做更改
+ *
+ * @param records 记录
+ */
+@KafkaListener(topics = "${kafka.topic.click}", containerFactory = HIIDO_KAFKA_LISTENER_CONTAINER_FACTORY)
+public void listenClick(List<ConsumerRecord<String, String>> records) {
+    for (ConsumerRecord<String, String> record : records) {
+        try {
+            HiidoClickReq hiidoClickReq = OBJECT_MAPPER.readValue(record.value(), HiidoClickReq.class);
+            List<HiidoClickDetailReq> hiidoClickDetailReqs = Optional.ofNullable(hiidoClickReq.getDatas()).orElse(Collections.emptyList());
+            for (HiidoClickDetailReq hiidoClickDetailReq : hiidoClickDetailReqs) {
+                if (StringUtils.isBlank(hiidoClickDetailReq.getArgs())) {
+                    continue;
+                }
+                Map<String, String> content = decodeArgs(hiidoClickDetailReq.getArgs());
+                Optional
+                        .of(content)
+                        .map(abstractClickParamConverter::convert)
+                        .filter(checker::checkClick)
+                        .ifPresent(clickService::save);
+            }
+        } catch (Exception e) {
+            log.error("listen click event error: ", e);
+        }
+    }
+}
+```
 
 
 
