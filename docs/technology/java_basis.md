@@ -626,6 +626,148 @@ CycleBarrier
 
 
 
+## 线程的中断
+
+- interrupt()：通过运行的线程实例，给线程发送中段信号，至于**如何处理中段响应**需要看**被中断的线程**的实际处理逻辑
+
+  - 如果线程是正常运行中，且没有判断中段状态，那么线程就会一直执行
+
+  ```java
+  /**
+   * 线程执行3秒后并没有停止运行
+   */
+  private static void runNoStop() throws InterruptedException {
+      Thread thread = new Thread(() -> {
+          while (true) {
+              System.out.println("我还在运行中");
+          }
+      });
+  
+      thread.start();
+  
+      Thread.sleep(3000L);
+      thread.interrupt();
+  }
+  ```
+
+  ```
+  我还在运行中
+  我还在运行中
+  我还在运行中
+  我还在运行中
+  我还在运行中
+  我还在运行中
+  我还在运行中
+  我还在运行中
+  ```
+
+  - 如果线程被阻塞，那么线程会被抛出InterruptedException中段异常
+
+  ```java
+  /**
+   * 响应InterruptedException中段异常
+   */
+  private static void runWithBlockAndStop() throws InterruptedException {
+      Thread thread = new Thread(() -> {
+          while (true) {
+              System.out.println("我还在运行中");
+              try {
+                  Thread.sleep(2000L);
+              } catch (InterruptedException e) {
+                  System.out.println("我被中断了");
+                  return;
+              }
+          }
+      });
+  
+      thread.start();
+  
+      Thread.sleep(3000L);
+      thread.interrupt();
+  }
+  ```
+
+  ```
+  我还在运行中
+  我还在运行中
+  我被中断了
+  ```
+
+  - 如果线程是正常运行中，可以通过isInterrupted()判断自身的中段标记位
+
+  ```java
+  /**
+   * 响应中段标记位，不清除中断标记位
+   */
+  private static void runWithCheckInterruptWithoutClear() throws InterruptedException {
+      Thread thread = new Thread(() -> {
+          while (true) {
+              if (Thread.currentThread().isInterrupted()) {
+                  System.out.println("我被中段了");
+                  break;
+              } else {
+                  System.out.println("我还在运行中");
+              }
+          }
+          System.out.println("当前线程中断标志位：" + Thread.currentThread().isInterrupted());
+      });
+  
+      thread.start();
+  
+      Thread.sleep(3000L);
+      thread.interrupt();
+  }
+  ```
+
+  ```
+  我还在运行中：777445
+  我还在运行中：777446
+  我被中段了
+  我被中段了
+  我被中段了
+  我被中段了
+  ```
+
+- isInterrupted()：查询线程的中断标记位，具体用法见安上文样例
+
+- interrupted()：与isInterrupted()不同的是，这个方法是静态方法，调用后会**查询并且清除中断标记位**
+
+```java
+/**
+ * 响应中段标记位，并且清除中断标记位
+ */
+private static void runWithCheckInterruptAndClear() throws InterruptedException {
+    Thread thread = new Thread(() -> {
+        while (true) {
+            if (Thread.interrupted()) {
+                System.out.println("我被中段了");
+                break;
+            } else {
+                System.out.println("我还在运行中");
+            }
+        }
+        System.out.println("当前线程中断标志位：" + Thread.currentThread().isInterrupted());
+    });
+
+    thread.start();
+
+    Thread.sleep(1000L);
+    thread.interrupt();
+}
+```
+
+```
+我还在运行中
+我还在运行中
+我还在运行中
+我还在运行中
+我还在运行中
+我被中段了
+当前线程中断标志位：false
+```
+
+
+
 ### LockSupport
 
 ```java
