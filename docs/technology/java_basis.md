@@ -768,30 +768,114 @@ private static void runWithCheckInterruptAndClear() throws InterruptedException 
 
 
 
-### LockSupport
+### LockSupport工具
+
+正常使用方法：
 
 ```java
 public static void main(String[] args) throws InterruptedException {
-
     Thread thread = new Thread(() -> {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        System.out.println(LocalDateTime.now().format(dateTimeFormatter) + "子线程准备执行");
+        System.out.println("---------- 被阻塞进程执行 ----------");
         LockSupport.park();
-        System.out.println(LocalDateTime.now().format(dateTimeFormatter) + "子线程执行完毕");
+        System.out.println("---------- 被阻塞进程结束 ----------");
     });
-
     thread.start();
-    Thread.sleep(3000L);
 
+    Thread.sleep(2000L);
     LockSupport.unpark(thread);
-
+    System.out.println("释放了阻塞线程");
 }
 ```
 
 ```
-2020-06-05 16:11:35子线程准备执行
-2020-06-05 16:11:38子线程执行完毕
+---------- 被阻塞进程执行 ----------
+释放了阻塞线程
+---------- 被阻塞进程结束 ----------
+```
+
+对应的LockSupport内置一个**许可**
+
+- 许可在默认情况下**没有许可**，因此调用LockSupport.park()时默认会阻塞
+- 许可**最多有一个**，使用unpark()后给予线程一个许可，连续多次unpark()效果是一样的
+- 对于LockSupport.park()，它**不会抛出InterruptedException**，但是它也是**响应中断**的，若park时被中断，则会从LockSupport.park()下一行处继续执行，此时的中断标记位为true
+
+```java
+public static void main(String[] args) throws InterruptedException {
+    Thread thread = new Thread(() -> {
+        try {
+            Thread.sleep(5000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("---------- 被阻塞线程执行 ----------");
+        LockSupport.park();
+        System.out.println("---------- 被阻塞线程结束 ----------");
+    });
+    thread.start();
+
+    LockSupport.unpark(thread);
+    System.out.println("释放了阻塞线程");
+}
+```
+
+```
+释放了阻塞线程
+---------- 被阻塞线程执行 ----------
+---------- 被阻塞线程结束 ----------
+```
+
+```java
+public static void main(String[] args) throws InterruptedException {
+    Thread thread = new Thread(() -> {
+        try {
+            Thread.sleep(5000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("---------- 被阻塞线程执行 ----------");
+        LockSupport.park();
+        System.out.println("第一次消费许可");
+        LockSupport.park();
+        System.out.println("第二次消费许可");
+        System.out.println("---------- 被阻塞线程结束 ----------");
+    });
+    thread.start();
+
+    LockSupport.unpark(thread);
+    LockSupport.unpark(thread);
+    System.out.println("释放了阻塞线程");
+}
+```
+
+```
+释放了阻塞线程
+---------- 被阻塞线程执行 ----------
+第一次消费许可
+```
+
+```java
+public static void main(String[] args) throws InterruptedException {
+    Thread thread = new Thread(() -> {
+        System.out.println("---------- 被阻塞进程执行 ----------");
+        LockSupport.park();
+        System.out.println("被阻塞线程的中断标记位：" + Thread.currentThread().isInterrupted());
+        System.out.println("---------- 被阻塞进程结束 ----------");
+    });
+    thread.start();
+
+    Thread.sleep(2000L);
+    thread.interrupt();
+    System.out.println("释放了阻塞线程");
+}
+```
+
+```
+---------- 被阻塞进程执行 ----------
+释放了阻塞线程
+被阻塞线程的中断标记位：true
+---------- 被阻塞进程结束 ----------
 ```
 
 
