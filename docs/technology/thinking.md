@@ -1,4 +1,5 @@
 ## DDD领域驱动模型
+### 总览分析
 
 ![ddd层次调用](./images/ddd层次调用.png)
 
@@ -27,3 +28,15 @@
 - infrastructure：基础设施层，与所有层相交互，为用户表示层提供组件配置，为应用层提供传递消息的能力，为领域层提供持久化机制
   - eventImpl：应用层的event实现
   - persistence：持久化实现，为对应领域层中repository的实现
+
+### 资料参考
+- 结合《领域驱动设计》的工程：[领域驱动工程样例](https://github.com/citerus/dddsample-core)
+- 阿里DDD技术讲解：
+	- [阿里技术专家详解DDD系列 第一讲：Domain Primitive](https://juejin.cn/post/6844904177207001101)
+	- [阿里技术专家详解DDD系列 第二讲：应用架构](https://juejin.cn/post/6844904201575743495)
+	- [阿里技术专家详解DDD系列 第三讲：Repository模式](https://juejin.cn/post/6845166890554228744)
+	- [阿里技术专家详解DDD系列 第四讲：领域层设计规范](https://juejin.cn/post/6912228908075057166)
+	- [阿里技术专家详解DDD系列 第五讲：聊聊如何避免写流水账代码](https://juejin.cn/post/6953141151931039758)
+	- 对应工程代码：[工程代码](https://github.com/Air433/dddbook)
+- [美团DDD技术讲解](https://developer.aliyun.com/article/319159)
+- [COLA技术架构](https://github.com/alibaba/COLA)
