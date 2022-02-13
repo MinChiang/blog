@@ -69,84 +69,85 @@ import java.util.function.Function;
 import java.util.stream.Collectors;  
   
 #parse("File Header.java")  
-public enum ${NAME} {  
+public enum ${NAME} {
   
- /**  
- * 未知  
- */  
- UNKNOWN(0);  
+	/**  
+	* 未知  
+	*/  
+	UNKNOWN(0),
+	
+	;
   
- private static final Map<Integer, ${NAME}> ALL = Collections.unmodifiableMap(Arrays.stream(${NAME}.class.getEnumConstants()).collect(Collectors.toMap(value -> value.id, Function.identity())));  
+	private static final Map<Integer, ${NAME}> ALL = Collections.unmodifiableMap(Arrays.stream(${NAME}.class.getEnumConstants()).collect(Collectors.toMap(value -> value.id, Function.identity())));
   
- /**  
- * 转换  
- *  
- * @param id id  
- * @return 对应类别  
- */  
- public static ${NAME} from(int id) {  
- return ALL.get(id);  
- }  
-  
- /**  
- * 唯一标志  
- */  
- public final int id;  
-  
- ${NAME}(int id) {  
- this.id = id;  
- }  
+	/**  
+	* 转换  
+	*  
+	* @param id id  
+	* @return 对应类别  
+	*/  
+	public static ${NAME} from(int id) {
+		return ALL.get(id);
+	}  
+
+	/**  
+	* 唯一标志  
+	*/  
+	public final int id;  
+
+	${NAME}(int id) {
+		this.id = id;  
+	}
   
 }
 ```
 - Factory模板
 ```java
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
-  
+
 #parse("File Header.java")  
 public class ${NAME}Factory {  
-  
- public ${NAME}Factory() {  
-     }  
-  
- /**  
- * 创建牌组合  
- *  
- * @return 工厂创建对象  
- */  
- public ${NAME} create() {  
- return null;  
- }  
-  
+
+	public ${NAME}Factory() {
+	}
+
+	/**  
+	* 创建牌组合  
+	*  
+	* @return 工厂创建对象  
+	*/  
+	public ${NAME} create() {
+		return null;
+	}
+
 }
 ```
 - Singleton模板
 ```java
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
-  
+
 #parse("File Header.java")  
 public class ${NAME} {  
-  
- private ${NAME}() {  
-     }  
-  
- /**  
- * 获取单例对象  
- *  
- * @return 实例对象  
- */  
- public static ${NAME} getInstance() {  
- return ${NAME}Holder.INSTANCE;  
- }  
-  
- private static final class ${NAME}Holder {  
-  
- private static final ${NAME} INSTANCE = new ${NAME}();  
-  
- }  
-  
-}
 
+	private ${NAME}() {
+	}
+
+	/**  
+	* 获取单例对象  
+	*  
+	* @return 实例对象  
+	*/  
+	public static ${NAME} getInstance() {
+	return ${NAME}Holder.INSTANCE;
+	}  
+
+	private static final class ${NAME}Holder {
+
+	private static final ${NAME} INSTANCE = new ${NAME}();
+
+	}
+
+}
 ```
 - 标准头
 ```java

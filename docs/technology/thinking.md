@@ -40,3 +40,57 @@
 	- 对应工程代码：[工程代码](https://github.com/Air433/dddbook)
 - [美团DDD技术讲解](https://developer.aliyun.com/article/319159)
 - [COLA技术架构](https://github.com/alibaba/COLA)
+- [为什么域服务必须使用域对象作为参数和返回值？](https://stackoverflow.com/questions/14326230/why-must-domain-services-use-domain-objects-as-parameters-and-return-values)
+- [如何发布和处理领域事件](http://www.kamilgrzybek.com/design/how-to-publish-and-handle-domain-events/)
+- [DDD 限界上下文和 Java 模块](https://www.baeldung.com/java-modules-ddd-bounded-contexts)
+
+### 要点
+- application层只是做服务的编排，不做任何的计算逻辑
+- domain service只是对象状态的变更，不做save的操作，不能注入repository
+- domain service入参和出参都返回领域内的对象
+- CQE对象入参全为细颗粒度
+
+### 概述
+### Interface层：
+- 承接消息的入口，转化入口参数
+- interface层的表达不止为http协议，也有dubbo、soap、websocket、kafka等
+- 每种协议独立一套的表达方式，避免同一表达；需要注意出参要有同一的格式，例如http协议同一返回StandardReposese对象
+- 应该捕捉所有异常，避免异常信息的泄漏
+- 不应意识到domain层的内部对象
+
+### Application层：
+- application层做的是**服务的编排**，**不做任何的计算逻辑**；一般包含下面的操作
+	- 数据校验
+	- 通过Repository查询Entity
+	- 操作Entity，对Entity进行状态的变更
+	- 通过Repository保存Entity
+	- 发送领域事件
+- Command、Query、Event统称为CQE，他们三者作为application的入参，根据单ID查询的场景下可以直入；统一返回DTO对象，不能暴露domain的Entity和Value Object，使用DTO Assemble进行转换
+- 不同方法使用不同的CQE，因为不同方法的语义是不一样的，如果复用同一CQE对象，其中一个方法入参的变动会导致全体的参数变动
+- application层需要做简单的参数校验，例如：判空、字符串合法化判断，可以用Bean Validation解决
+- 有异常信息可以直接抛出，因为在上层的interface层已经捕获所有异常
+
+### Domain层：
+- Entity：
+	- 有对应的id，一个Entity对应有一个唯一的id
+	- 判断两个Entity是否相等应该直接判断id
+	- id需要用一个对象进行包裹，防止id的唯一性变更
+	- 一个Entity对应有一个Repository
+	- 封装业务的参数校验以及业务逻辑
+- Value Object：
+	- 没有id，参数都是不可变的，若改变里面的信息直接重新new一个即可
+	- 没有对应的Repository
+	- 有对应的业务操作函数，非纯POJO
+- Domain Service：
+	- 操作复杂的业务逻辑，往往含有两个以上的Entity的操作，如果只有操作一个Entity，可以把这些业务逻辑挪到这唯一的Entity里面
+	- Domain Service不应该依赖Repository，只做对Entity的状态的变更
+- Repository：
+	- 保存Entity的状态
+	- 本质上只有save和find两种的方法
+- Factory：
+	- 创建Entity对象，从0到1的过程
+	- 入参是领域对象，非基本类型
+	- 复杂构造的时候可能会依赖Repository
+
+### Infrastructure层：
+- 用ACL防腐层将外部依赖转化为内部代码，隔离外部的影响
