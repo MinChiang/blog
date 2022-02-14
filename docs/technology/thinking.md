@@ -38,6 +38,10 @@
 	- [阿里技术专家详解DDD系列 第四讲：领域层设计规范](https://juejin.cn/post/6912228908075057166)
 	- [阿里技术专家详解DDD系列 第五讲：聊聊如何避免写流水账代码](https://juejin.cn/post/6953141151931039758)
 	- 对应工程代码：[工程代码](https://github.com/Air433/dddbook)
+- vivo技术讲解：
+	- [领域驱动设计(DDD)实践之路(一)](https://juejin.cn/post/6844904071174815752)
+	- [领域驱动设计(DDD)实践之路(二)：事件驱动与CQRS](https://juejin.cn/post/6844904122659913735)
+	- [领域驱动设计(DDD)实践之路(三)：如何设计聚合](https://juejin.cn/post/6844904158449893389)
 - [美团DDD技术讲解](https://developer.aliyun.com/article/319159)
 - [COLA技术架构](https://github.com/alibaba/COLA)
 - [为什么域服务必须使用域对象作为参数和返回值？](https://stackoverflow.com/questions/14326230/why-must-domain-services-use-domain-objects-as-parameters-and-return-values)
