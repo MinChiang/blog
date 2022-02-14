@@ -47,6 +47,7 @@
 - [为什么域服务必须使用域对象作为参数和返回值？](https://stackoverflow.com/questions/14326230/why-must-domain-services-use-domain-objects-as-parameters-and-return-values)
 - [如何发布和处理领域事件](http://www.kamilgrzybek.com/design/how-to-publish-and-handle-domain-events/)
 - [DDD 限界上下文和 Java 模块](https://www.baeldung.com/java-modules-ddd-bounded-contexts)
+- [工厂的入参是原始对象还是value object](https://stackoverflow.com/questions/11395031/ddd-factory-entity-value-object?rq=1)
 
 ### 要点
 - application层只是做服务的编排，不做任何的计算逻辑
