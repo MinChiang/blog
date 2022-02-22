@@ -1,4 +1,12 @@
 ## 虚拟机环境搭建
+### Ubuntu Server系统安装
+- 安装完成VMware workstation后，在编辑->虚拟网络编辑器->更改设置->NAT设置，查看NAT模式的子网IP、网络掩码、网关IP等信息
+如下图所示
+子网IP：192.168.160.0
+子网掩码：255.255.255.0
+网关IP：192.168.160.2
+![虚拟机搭建1](./images/虚拟机搭建1.png)
+
 ### MySQL
 - 选择下载[地址源](https://dev.mysql.com/downloads/)
 这里选择APT Repository安装方式
@@ -53,6 +61,7 @@ sudo apt-get install redis-server
 ```
 
 ### Elaseticsearch
+- 安装Elaasticsearch
 ```
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 sudo apt-get install apt-transport-https
