@@ -521,13 +521,6 @@ keys和scan的区别：
 - scan是基于增量式迭代的，默认返回有限条数据，在scan返回数据的过程中，键值可能会被修改；
 
 
-
-## RocketMQ
-
-
-
-
-
 ## Kafka
 
 ### 架构模型
@@ -544,6 +537,9 @@ keys和scan的区别：
 - 异步复制：只要leader拿到数据后立即commit，再等follower进行复制，一致性差，可用性高；
 - ISR机制：不是完全同步异步的方式，leader副本会位置一个ISR（in-sync replicas）列表，当一个消息发送给leader的时候，leader会等待ISR中所有的副本告诉它已经接收了这个消息，如果一个副本失败了，那么它会被移除ISR。
 
+**自动提交**和**手动提交**
+- 自动提交：**enable.auto.commit=true**，不是拉取的时候马上提交；在每次poll数据之前，检查是否到达**auto.commit.interval.ms**的时间，如果到达，则提交拉取消息的最大偏移量
+- 手动提交：**enable.auto.commit=false**，需要通过commitAsync()或者commitSync()进行提交处理
 
 
 ### 详细用例
