@@ -39,3 +39,5 @@ logs/
 node_modules/
 dist/
 test/unit/coverage/
+.obsidian/
+*.assets/
