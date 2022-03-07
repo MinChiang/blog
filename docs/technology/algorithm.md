@@ -304,8 +304,6 @@ public class Permutations {
 
 
 
-
-
 ## 限流
 
 ### 计数器法
@@ -519,6 +517,8 @@ public class LeakyBucket {
 - 第2张牌随机交换下标为[2, 52)的牌
 - ...
 - 第50张牌随机交换下标为[51, 52)的牌
+
+以下是Java里面的java.util.Collections#shuffle(java.util.List<?>, java.util.Random)方法实现
 
 ```java
     public static void shuffle(List<?> list, Random rnd) {
