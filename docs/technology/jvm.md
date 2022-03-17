@@ -461,3 +461,8 @@ public static void main(String[] args) throws InterruptedException {
 直接执行jstack -l PID，可以自动检测到死锁的问题：
 
 ![Java死锁问题](./images/Java死锁问题.png)
+
+
+
+### 使用jvisualvm查看jvm状态
+
