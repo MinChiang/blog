@@ -2062,18 +2062,50 @@ ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 
 
 
-## 队列
+## 几个队列常用的API
 
-| 操作                | 异常 | 阻塞 | 所属接口      | 操作描述                                                     |
-| ------------------- | ---- | ---- | ------------- | ------------------------------------------------------------ |
-| boolean add(E e);   | 是   | 否   | Queue         | 添加一个元素，如果队列已满则抛出IllegalStateException        |
-| boolean offer(E e); | 否   | 否   | Queue         | 添加一个元素，并返回添加是否成功。如果队列未满（成功），返回true；如果已满（不成功），返回false |
-| E remove();         | 是   | 否   | Queue         | 取出队列中的头元素，如果队列为空则抛出NoSuchElementException |
-| E poll();           | 否   | 否   | Queue         | 取出队列中的头元素，如果队列为空则返回null                   |
-| E element();        | 是   | 否   | Queue         | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
-| E peek();           | 否   | 否   | Queue         | 获取队列中的头元素，如果队列为空则返回null                   |
-| void put(E e);      | 否   | 是   | BlockingQueue | 添加一个元素，如果队列为满则一直阻塞                         |
-| E take();           | 否   | 是   | BlockingQueue | 取出队列中的头元素，如果队列为空则一直阻塞                   |
+### Stack
+
+| 操作        | 描述                     |
+| ----------- | ------------------------ |
+| E peek()    | 弹出栈顶元素，但是不移除 |
+| E pop()     | 弹出栈顶元素，移除元素   |
+| E push(E e) | 压入元素到栈顶           |
+
+### Queue
+
+| 操作                | 异常 | 操作描述                                                     |
+| ------------------- | ---- | ------------------------------------------------------------ |
+| boolean add(E e);   | 是   | 添加一个元素到队尾，如果队列已满则抛出IllegalStateException  |
+| boolean offer(E e); | 否   | 添加一个元素到队尾，并返回添加是否成功                       |
+| E remove();         | 是   | 取出队列中的头元素，如果队列为空则抛出NoSuchElementException |
+| E poll();           | 否   | 取出队列中的头元素，如果队列为空则返回null                   |
+| E element();        | 是   | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
+| E peek();           | 否   | 获取队列中的头元素，如果队列为空则返回null                   |
+
+上述的方法均**不阻塞**，下面两个方法是摘自BlockingQueue的，下面两个方法均**阻塞**，因为是同步等待的，因此是不会抛出对应的异常的
+
+| 操作           | 异常 | 操作描述                                   |
+| -------------- | ---- | ------------------------------------------ |
+| void put(E e); | 否   | 添加一个元素，如果队列为满则一直阻塞       |
+| E take();      | 否   | 取出队列中的头元素，如果队列为空则一直阻塞 |
+
+### Deque
+
+| 操作                     | 异常 | 操作描述                                                     |
+| ------------------------ | ---- | ------------------------------------------------------------ |
+| boolean addFirst(E e);   | 是   | 添加一个元素到队头，如果队列已满则抛出IllegalStateException  |
+| boolean offerFirst(E e); | 否   | 添加一个元素到队头，并返回添加是否成功                       |
+| boolean addLast(E e);    | 是   | 添加一个元素到队尾，如果队列已满则抛出IllegalStateException  |
+| boolean offerFirst(E e); | 否   | 添加一个元素到队尾，并返回添加是否成功                       |
+| E removeFisrt();         | 是   | 取出队列中的头元素，如果队列为空则抛出NoSuchElementException |
+| E pollFirst();           | 否   | 取出队列中的头元素，如果队列为空则返回null                   |
+| E removeLast();          | 是   | 取出队列中的尾元素，如果队列为空则抛出NoSuchElementException |
+| E pollLast();            | 否   | 取出队列中的尾元素，如果队列为空则返回null                   |
+| E elementFirst();        | 是   | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
+| E peekFirst();           | 否   | 获取队列中的头元素，如果队列为空则返回null                   |
+| E elementLast();         | 是   | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
+| E peekLast();            | 否   | 获取队列中的头元素，如果队列为空则返回null                   |
 
 
 

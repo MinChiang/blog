@@ -16,14 +16,22 @@
  */
 public class BubbleSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
-    @Override
-    public void doSort(T[] arr) {
-        //外层是排序的趟数
+    /**
+     * 冒泡排序
+     * 两两交换元素，把较大的元素置换到后面，一轮结束后最大的元素放置到最后一位
+     * 比较轮次：arr.length - 1，因为到最后一轮只有一个元素，无需排序
+     * 两两交换次数：length - 1 - 当前轮次
+     *
+     * @param arr 排序的数组
+     */
+    public void sort(int[] arr) {
+        int tmp;
         for (int i = 0; i < arr.length - 1; i++) {
-            //内层当前趟数需要比较的次数
             for (int j = 0; j < arr.length - 1 - i; j++) {
-                if (arr[j].compareTo(arr[j + 1]) > 0) {
-                    swap(arr, j, j + 1);
+                if (arr[j] > arr[j + 1]) {
+                    tmp = arr[j + 1];
+                    arr[j + 1] = arr[j];
+                    arr[j] = tmp;
                 }
             }
         }
@@ -46,18 +54,20 @@ public class BubbleSort<T extends Comparable<T>> extends AbstractSortable<T> {
  */
 public class InsertSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
-    @Override
-    public void doSort(T[] arr) {
-        //外层控制需要比较的元素
+    /**
+     * 插入排序
+     * 从位置为1开始，如果当前的位置数字小于前面一个的数字，那么就进行交换处理
+     * 开始位置：位置为1，因为第一个元素不需要进行和前面的元素比较
+     *
+     * @param arr 待排序的数组
+     */
+    public void insertSort(int[] arr) {
         for (int i = 1; i < arr.length; i++) {
-            int index = i;
-            //内层遍历比较后的元素
-            for (int j = i - 1; j >= 0; j--) {
-                if (arr[index].compareTo(arr[j]) < 0) {
-                    swap(arr, index, j);
-                    index = j;
-                } else {
-                    break;
+            for (int j = i; j > 0; j--) {
+                if (arr[j] < arr[j - 1]) {
+                    int tmp = arr[j];
+                    arr[j] = arr[j - 1];
+                    arr[j - 1] = tmp;
                 }
             }
         }
@@ -80,20 +90,27 @@ public class InsertSort<T extends Comparable<T>> extends AbstractSortable<T> {
  */
 public class SelectSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
-    @Override
-    public void doSort(T[] arr) {
-        //外层控制排序
+    /**
+     * 选择排序（最好写的算法了）
+     * 循环遍历数组，开始时候以当前遍历的首个元素为基准
+     * 每一轮选择都选择本轮的最小的元素，当一轮结束后，把最小的元素和当前开始的元素进行交换
+     * 循环次数：次数为length - 1，最后的一个元素是不用进行遍历处理的
+     *
+     * @param arr 待排序的数组
+     */
+    public void sort(int[] arr) {
+        // 需要找出最小元素的所需轮次
         for (int i = 0; i < arr.length - 1; i++) {
-            T min = arr[i];
-            int minIndex = i;
-            //内层遍历剩余可选择的元素
+            int min = i;
+            // 因为需要和当前的第一个元素进行交换处理，因此要从i + 1开始
             for (int j = i + 1; j < arr.length; j++) {
-                if (min.compareTo(arr[j]) > 0) {
-                    min = arr[j];
-                    minIndex = j;
+                if (arr[j] < arr[min]) {
+                    min = j;
                 }
             }
-            swap(arr, i, minIndex);
+            int tmp = arr[min];
+            arr[min] = arr[i];
+            arr[i] = tmp;
         }
     }
 
@@ -113,69 +130,60 @@ public class SelectSort<T extends Comparable<T>> extends AbstractSortable<T> {
  * @date 2020-03-20 11:24
  */
 public class MergeSort<T extends Comparable<T>> extends AbstractSortable<T> {
-
-    @Override
-    public void doSort(T[] arr) {
-        this.doInnerSort(arr, 0, arr.length - 1);
+    
+    /**
+     * 归并排序
+     * 排序思想：分治法（递归）
+     * 停止条件：排序区域元素个数小于等于1，即begin >= end的情况
+     * 包含几个操作：
+     * 1. 分割：把当前的数组分割成为两个部分，直到不可分（begin >= end的情况）
+     * 2. 排序：两个数组分别定义left和right指针，分别指向左右两个数组，新建一个大小为end - begin + 1，把两个数组从小到大放入数组中
+     * 3. 合并：把临时数组中的内容拷贝回去原始数组中
+     *
+     * @param arr 待排序的数组
+     */
+    public void sort(int[] arr) {
+        recursion(arr, 0, arr.length - 1);
     }
 
-    private void doInnerSort(T[] arr, int from, int to) {
-        //当比较的元素仅有一个时，直接返回
-        if (from == to) {
+    /**
+     * 递归处理
+     *
+     * @param arr   待排序的数组
+     * @param begin 开始下标（包含）
+     * @param end   结束下标（包含）
+     */
+    private void recursion(int arr[], int begin, int end) {
+        if (begin >= end) {
             return;
         }
+        // half是表示这个位置前的下标元素都
+        int half = (end + begin) / 2;
 
-        //分割数组
-        int step = (to - from) / 2;
+        // 拆分处理
+        recursion(arr, begin, half);
+        recursion(arr, half + 1, end);
 
-        //排序左边
-        doInnerSort(arr, from, from + step);
-        //排序右边
-        doInnerSort(arr, from + step + 1, to);
-
-        int arrLen = to - from + 1;
-        //归并已经排序的数组
-        Object[] tmp = new Object[arrLen];
-
-        int left = from;
-        int right = from + step + 1;
-
-        //是否已经到达了结尾
-        boolean reachEnd = false;
-        //是否左边数组已经到达了结尾
-        boolean leftEnd = false;
-        for (int i = 0; i < arrLen; i++) {
-            if (reachEnd) {
-                if (leftEnd) {
-                    tmp[i] = arr[right];
-                    right++;
-                } else {
-                    tmp[i] = arr[left];
-                    left++;
-                }
+        // 新建数组进行临时存储，把左右两边的内容进行拷贝到临时数组中
+        int left = begin, right = half + 1, current = 0;
+        int[] tmp = new int[end - begin + 1];
+        while (left <= half && right <= end) {
+            if (arr[left] < arr[right]) {
+                tmp[current++] = arr[left++];
             } else {
-                if (((Comparable<T>) arr[left]).compareTo(arr[right]) < 0) {
-                    tmp[i] = arr[left];
-                    if (left == from + step) {
-                        reachEnd = true;
-                        leftEnd = true;
-                    }
-                    left++;
-                } else {
-                    tmp[i] = arr[right];
-                    if (right == to) {
-                        reachEnd = true;
-                        leftEnd = false;
-                    }
-                    right++;
-                }
+                tmp[current++] = arr[right++];
             }
-
+        }
+        while (left <= half) {
+            tmp[current++] = arr[left++];
+        }
+        while (right <= end) {
+            tmp[current++] = arr[right++];
         }
 
-        //把临时数组拷贝回来
+        // 把临时数组中的内容拷贝回原来的数组中
         for (int i = 0; i < tmp.length; i++) {
-            arr[from + i] = (T) tmp[i];
+            arr[begin + i] = tmp[i];
         }
     }
 
@@ -196,46 +204,54 @@ public class MergeSort<T extends Comparable<T>> extends AbstractSortable<T> {
  */
 public class QuickSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
-    @Override
-    public void doSort(T[] arr) {
-        this.doInnerSort(arr, 0, arr.length - 1);
+    /**
+     * 快速排序（最复杂的算法，但是效率最高）
+     * 本质上就是每轮选取一个基准，把所有小于此基准的元素放在基准左边，把大于此基准的元素放到右边
+     * 排序思想：分治法（递归）
+     * 基准选取：每轮的首元素
+     * 停止条件：排序区域元素个数小于等于1，即begin >= end的情况
+     * 排序原则：
+     * 1. 设置mark标记位，起始位置为pivot的位置，比pivot小的在左，比pivot大的在右
+     * 2. 当扫描到的元素比pivot小时，先移动mask（mask++），再交换mask所指元素和当前元素
+     * 3. 当轮排序完成后把mask所指元素和pivot交换
+     *
+     * @param arr 排序的数组
+     */
+    public void sort(int[] arr) {
+        recursion(arr, 0, arr.length - 1);
     }
 
-    public void doInnerSort(T[] arr, int from, int to) {
-        T pivot = arr[from];
-        int pivotIndex = from;
+    /**
+     * 递归处理
+     *
+     * @param arr   排序的数组
+     * @param begin 开始下标位置（包含）
+     * @param end   结束下标位置（包含）
+     */
+    private void recursion(int[] arr, int begin, int end) {
+        //递归结束条件
+        if (begin >= end) {
+            return;
+        }
 
-        int left = pivotIndex;
-        int right = pivotIndex;
-        for (int i = from + 1; i <= to; i++) {
-            int compare = pivot.compareTo(arr[i]);
-            if (compare > 0) {
-                if (right == pivotIndex) {
-                    left = i;
-                } else {
-                    swap(arr, right, i);
-                    left++;
-                    right++;
-                }
-            } else if (compare < 0) {
-                if (right == pivotIndex) {
-                    right = i;
-                }
+        // 设置一个比较的中间基准，小于此基准的都在左边，大于此基准的都在右边
+        int pivot = arr[begin], mark = begin;
+        for (int i = begin + 1; i <= end; i++) {
+            // 若遍历到的元素小于基准，则说明mark要右移一位
+            if (arr[i] < pivot) {
+                mark++;
+                int tmp = arr[i];
+                arr[i] = arr[mark];
+                arr[mark] = tmp;
             }
         }
-
-        //比较完成，将left指针与pivot交换
-        swap(arr, pivotIndex, left);
-        pivotIndex = left;
-
-        //排序左边
-        if (from < pivotIndex) {
-            doInnerSort(arr, from, pivotIndex - 1);
-        }
-        //排序右边
-        if (pivotIndex < right) {
-            doInnerSort(arr, pivotIndex + 1, to);
-        }
+        // 最后需要交换mark和基准的位置
+        int tmp = arr[mark];
+        arr[mark] = pivot;
+        arr[begin] = tmp;
+        // 递归处理
+        recursion(arr, begin, mark - 1);
+        recursion(arr, mark + 1, end);
     }
 
 }
