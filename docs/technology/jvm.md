@@ -462,5 +462,30 @@ public static void main(String[] args) throws InterruptedException {
 
 
 
-### 使用Jvisualvm查看jvm状态
+### 使用Jvisualvm查看JVM状态
 
+- 推荐安装插件：
+
+  - Visual GC
+  - VisualVM-JConsole
+  - VisualVM-MBeans
+  - Btrace Workbench
+  - Threads Inspector
+
+- 在程序启动时增加几个命令参数以启动JMX链接，此时可以通过Jvisualvm的JMX方式连接
+
+  - -Dcom.sun.management.jmxremote.authenticate=false
+  - -Dcom.sun.management.jmxremote.ssl=false
+  - -Dcom.sun.management.jmxremote.port=12345
+
+- 若想通过Visual GC监测GC的情况，可以通过在程序中启动Jstatd进行监控，方法是：
+
+  - 在java_home的bin目录下创建jstatd.all.policy文件，其中/usr/local/java/lib/tools.jar可以按照需求替换为${JAVA_HOME}/lib/tools.jar，前提是已经设置过JAVA_HOME环境变量
+
+  ```
+  grant codebase "file:/usr/local/java/lib/tools.jar" {
+     permission java.security.AllPermission;
+  };
+  ```
+
+  - 通过命令启动./jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostname=xxx.xxx.xxx.xxx -p xxxx -J-Djava.rmi.server.logCalls=true
