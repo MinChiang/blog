@@ -272,7 +272,7 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 ![对象的访问定位-直接指针](./images/对象的访问定位-直接指针.png)
 
 - 使用句柄：对象移动时不需要改变reference的指向，只改变句柄实例数据的指针；
-- 使用指针：直接访问，速度快。
+- 使用指针：直接访问，速度快，HotSpot虚拟机就是用**直接指针实现**的。
 
 
 
@@ -327,7 +327,7 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 2. 老年代：
    - Serial Old收集器：Serial的老年代版本，单线程、标记整理算法、老年代默认收集器（针对client虚拟机而言）；
    - Parallel Serial收集器：是Parallel Scavenge老年代算法，吞吐量优先、多线程、标记整理算法；
-   - CMS收集器：以**最短回收停顿为目标**，真正意义上的并发收集器。分为初始标记、并发标记、重新标记和并发清除四个步骤，使用**标记清除算法**，对CPU资源非常敏感、**无法清除浮动垃圾（边回收而且边产生的垃圾）**、收集结束会产生大量的**内存碎片**。
+   - CMS收集器：以**最短回收停顿为目标**，真正意义上的并发收集器。使用**标记清除算法**，对CPU资源非常敏感、**无法清除浮动垃圾（边回收而且边产生的垃圾）**、收集结束会产生大量的**内存碎片**；
 3. 共用：
    - G1收集器：**可预测的停顿**；整体使用标记整理算法，局部使用复制算法；把堆划分为**多个独立区域Region**，新生代和老年代**不再是物理隔离**的，跟踪各个Region中的堆积价值大小，**优先回收价值最大的Region**。
 
@@ -462,5 +462,5 @@ public static void main(String[] args) throws InterruptedException {
 
 
 
-### 使用jvisualvm查看jvm状态
+### 使用Jvisualvm查看jvm状态
 
