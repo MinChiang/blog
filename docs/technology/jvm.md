@@ -51,6 +51,29 @@
 
 
 
+### 调优样例
+
+-Xmx2688M
+-Xms2688M
+-Xmn1344M
+-Xss512K
+-XX:MaxMetaspaceSize=512M
+-XX:MetaspaceSize=512M
+-XX:+UseConcMarkSweepGC
+-XX:+UseCMSInitiatingOccupancyOnly
+-XX:CMSInitiatingOccupancyFraction=70
+-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses
+-XX:+CMSClassUnloadingEnabled
+-XX:+ParallelRefProcEnabled
+-XX:+CMSScavengeBeforeRemark
+-XX:ErrorFile=/tmp/hs_err_pid%p.log
+-Xloggc:/tmp/gc.log
+-XX:+PrintGCDetails
+-XX:+PrintGCDateStamps
+-XX:+PrintCommandLineFlags
+
+
+
 ### Client模式和Server模式的区别
 
 > 为了提高热点代码的执行效率，在运行时，虚拟机将会把这些代码编译成与本地平台相关的机器码，并进行各种层次的优化，完成这个任务的编译器叫做即时编译器（Just In Time Compiler，即JIT编译器），当程序需要迅速启动和执行的时候，解释器可以先发挥作用，省去编译的时间，立即执行。在程序运行后，随着时间的推移，编译器逐渐发挥作用，把越来越多的代码编译成本地代码之后，可以获取更高的执行效率。
