@@ -51,6 +51,29 @@
 
 
 
+### 调优样例
+
+-Xmx2688M
+-Xms2688M
+-Xmn1344M
+-Xss512K
+-XX:MaxMetaspaceSize=512M
+-XX:MetaspaceSize=512M
+-XX:+UseConcMarkSweepGC
+-XX:+UseCMSInitiatingOccupancyOnly
+-XX:CMSInitiatingOccupancyFraction=70
+-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses
+-XX:+CMSClassUnloadingEnabled
+-XX:+ParallelRefProcEnabled
+-XX:+CMSScavengeBeforeRemark
+-XX:ErrorFile=/tmp/hs_err_pid%p.log
+-Xloggc:/tmp/gc.log
+-XX:+PrintGCDetails
+-XX:+PrintGCDateStamps
+-XX:+PrintCommandLineFlags
+
+
+
 ### Client模式和Server模式的区别
 
 > 为了提高热点代码的执行效率，在运行时，虚拟机将会把这些代码编译成与本地平台相关的机器码，并进行各种层次的优化，完成这个任务的编译器叫做即时编译器（Just In Time Compiler，即JIT编译器），当程序需要迅速启动和执行的时候，解释器可以先发挥作用，省去编译的时间，立即执行。在程序运行后，随着时间的推移，编译器逐渐发挥作用，把越来越多的代码编译成本地代码之后，可以获取更高的执行效率。
@@ -272,7 +295,7 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 ![对象的访问定位-直接指针](./images/对象的访问定位-直接指针.png)
 
 - 使用句柄：对象移动时不需要改变reference的指向，只改变句柄实例数据的指针；
-- 使用指针：直接访问，速度快。
+- 使用指针：直接访问，速度快，HotSpot虚拟机就是用**直接指针实现**的。
 
 
 
@@ -327,7 +350,7 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 2. 老年代：
    - Serial Old收集器：Serial的老年代版本，单线程、标记整理算法、老年代默认收集器（针对client虚拟机而言）；
    - Parallel Serial收集器：是Parallel Scavenge老年代算法，吞吐量优先、多线程、标记整理算法；
-   - CMS收集器：以**最短回收停顿为目标**，真正意义上的并发收集器。分为初始标记、并发标记、重新标记和并发清除四个步骤，使用**标记清除算法**，对CPU资源非常敏感、**无法清除浮动垃圾（边回收而且边产生的垃圾）**、收集结束会产生大量的**内存碎片**。
+   - CMS收集器：以**最短回收停顿为目标**，真正意义上的并发收集器。使用**标记清除算法**，对CPU资源非常敏感、**无法清除浮动垃圾（边回收而且边产生的垃圾）**、收集结束会产生大量的**内存碎片**；
 3. 共用：
    - G1收集器：**可预测的停顿**；整体使用标记整理算法，局部使用复制算法；把堆划分为**多个独立区域Region**，新生代和老年代**不再是物理隔离**的，跟踪各个Region中的堆积价值大小，**优先回收价值最大的Region**。
 
@@ -462,5 +485,30 @@ public static void main(String[] args) throws InterruptedException {
 
 
 
-### 使用jvisualvm查看jvm状态
+### 使用Jvisualvm查看JVM状态
 
+- 推荐安装插件：
+
+  - Visual GC
+  - VisualVM-JConsole
+  - VisualVM-MBeans
+  - Btrace Workbench
+  - Threads Inspector
+
+- 在程序启动时增加几个命令参数以启动JMX链接，此时可以通过Jvisualvm的JMX方式连接
+
+  - -Dcom.sun.management.jmxremote.authenticate=false
+  - -Dcom.sun.management.jmxremote.ssl=false
+  - -Dcom.sun.management.jmxremote.port=12345
+
+- 若想通过Visual GC监测GC的情况，可以通过在程序中启动Jstatd进行监控，方法是：
+
+  - 在java_home的bin目录下创建jstatd.all.policy文件，其中/usr/local/java/lib/tools.jar可以按照需求替换为${JAVA_HOME}/lib/tools.jar，前提是已经设置过JAVA_HOME环境变量
+
+  ```
+  grant codebase "file:/usr/local/java/lib/tools.jar" {
+     permission java.security.AllPermission;
+  };
+  ```
+
+  - 通过命令启动./jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostname=xxx.xxx.xxx.xxx -p xxxx -J-Djava.rmi.server.logCalls=true
