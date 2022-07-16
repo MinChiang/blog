@@ -51,55 +51,61 @@
 - Git没有一个全局的版本号，而SVN有；
 - Git的内容完整性要优于SVN：Git的内容存储使用SHA-1哈希算法，确保内容的完整性。
 
-
 ## IDEA快速工具
+
 ### 最好用的版本推荐
+
 [IntelliJ IDEA Ultimate 2020.3.4](https://download.jetbrains.com/idea/ideaIU-2020.3.4.exe)
 
 ### 代码模板
+
 settings -> Editor -> Color Schema -> File and Code Templates
+
 - Enum模板
-```java
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
   
+  ```java
+  #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
+  ```
+
 import java.util.Arrays;  
 import java.util.Collections;  
 import java.util.Map;  
 import java.util.function.Function;  
 import java.util.stream.Collectors;  
-  
+
 #parse("File Header.java")  
 public enum ${NAME} {
-  
-	/**  
-	* 未知  
-	*/  
-	UNKNOWN(0),
-	
-	;
-  
-	private static final Map<Integer, ${NAME}> ALL = Collections.unmodifiableMap(Arrays.stream(${NAME}.class.getEnumConstants()).collect(Collectors.toMap(value -> value.id, Function.identity())));
-  
-	/**  
-	* 转换  
-	*  
-	* @param id id  
-	* @return 对应类别  
-	*/  
-	public static ${NAME} from(int id) {
-		return ALL.get(id);
-	}  
 
-	/**  
-	* 唯一标志  
-	*/  
-	public final int id;  
+    /**  
+    * 未知  
+    */  
+    UNKNOWN(0),
+    
+    ;
+    
+    private static final Map<Integer, ${NAME}> ALL = Collections.unmodifiableMap(Arrays.stream(${NAME}.class.getEnumConstants()).collect(Collectors.toMap(value -> value.id, Function.identity())));
+    
+    /**  
+    * 转换  
+    *  
+    * @param id id  
+    * @return 对应类别  
+    */  
+    public static ${NAME} from(int id) {
+        return ALL.get(id);
+    }  
+    
+    /**  
+    * 唯一标志  
+    */  
+    public final int id;  
+    
+    ${NAME}(int id) {
+        this.id = id;  
+    }
 
-	${NAME}(int id) {
-		this.id = id;  
-	}
-  
 }
+
 ```
 - Factory模板
 ```java
@@ -108,46 +114,50 @@ public enum ${NAME} {
 #parse("File Header.java")  
 public class ${NAME}Factory {  
 
-	public ${NAME}Factory() {
-	}
+    public ${NAME}Factory() {
+    }
 
-	/**  
-	* 创建牌组合  
-	*  
-	* @return 工厂创建对象  
-	*/  
-	public ${NAME} create() {
-		return null;
-	}
+    /**  
+    * 创建牌组合  
+    *  
+    * @return 工厂创建对象  
+    */  
+    public ${NAME} create() {
+        return null;
+    }
 
 }
 ```
+
 - Singleton模板
-```java
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
+  
+  ```java
+  #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
+  ```
 
 #parse("File Header.java")  
 public class ${NAME} {  
 
-	private ${NAME}() {
-	}
-
-	/**  
-	* 获取单例对象  
-	*  
-	* @return 实例对象  
-	*/  
-	public static ${NAME} getInstance() {
-	return ${NAME}Holder.INSTANCE;
-	}  
-
-	private static final class ${NAME}Holder {
-
-	private static final ${NAME} INSTANCE = new ${NAME}();
-
-	}
+    private ${NAME}() {
+    }
+    
+    /**  
+    * 获取单例对象  
+    *  
+    * @return 实例对象  
+    */  
+    public static ${NAME} getInstance() {
+    return ${NAME}Holder.INSTANCE;
+    }  
+    
+    private static final class ${NAME}Holder {
+    
+    private static final ${NAME} INSTANCE = new ${NAME}();
+    
+    }
 
 }
+
 ```
 - 标准头
 ```java
@@ -159,6 +169,7 @@ public class ${NAME} {
 ```
 
 ### 插件
+
 - Alibaba Java Coding Guidelines
 - Free MyBatis Plugin
 - GenerateSerialVersionUID
@@ -173,8 +184,10 @@ public class ${NAME} {
 - IDE Eval Rest（需要添加仓库地址：https://plugins.zhile.io）
 
 ### 配色方案
+
 将以下文件保存为Brackets.icls
 并在Settings -> Editor -> Color Scheme中进行导入处理
+
 ```xml
 <scheme name="Brackets" version="142" parent_scheme="Default">
   <option name="FONT_SCALE" value="1.0" />
@@ -766,4 +779,3 @@ public class ${NAME} {
   </attributes>
 </scheme>
 ```
-

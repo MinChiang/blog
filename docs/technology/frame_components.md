@@ -10,8 +10,6 @@
 - test：进行单元测试所用的包；
 - orm：整合orm的实现。
 
-
-
 ### Spring的优点
 
 - 通过DI和IOC降低类之间的耦合度；
@@ -19,8 +17,6 @@
 - 可以将对象的生命周期给容器进行托管（Singleton和Prototype）；
 - 与其他常见业务框架进行无缝整合；
 - 提供了常见的工具类。
-
-
 
 ### DI和IOC机制的理解
 
@@ -37,8 +33,6 @@
 - 去除了调用类与被调用类的耦合关系；
 - 当被调用类派生出很多子类时，可以进行快速替换处理。
 
-
-
 ### AOP的理解
 
 - 通过**反射**和**代理**的手段可以做到进行业务代码的分层与代码无入侵式的织入；
@@ -47,14 +41,10 @@
 
 - 是面向对象编程OOP的增强与补充，把代码拆分成几个层次，在层次中进行**额外代码的补充与增强**。
 
-
-
 ### ORM的理解
 
 - 通过描述对象和数据库之间的映射关系，将对象自动持久化到关系数据库中；
 - 可以去除写SQL的繁杂过程。
-
-
 
 ### Spring如何解决循环依赖的问题
 
@@ -85,8 +75,6 @@ public class B {
 3. 在ApplicationContext中没有发现B类，因此容器会去实例化B类的实体，实例化B类实体后，发现需要注入A类的实例对象，因此在ApplicationContext中寻找；
 4. 此时B类可以在ApplicationContext发现A类的实例对象（那个**半成品**对象），B类成功进行实例化和初始化；
 5. 后续进行反递归调用，寻找A类中的B类实例对象，进行注入处理。
-
-
 
 ### SpringMVC
 
@@ -229,14 +217,12 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 }
 ```
 
-
-
 ### Spring Cloud组件
 
 - eureka和consul：注册中心；
-
+  
   功能对比与组件选型：
-
+  
   - eureka：已经闭源，基于AP，没有对应的配置中心，没有主从节点，一个节点挂了自动切换到其他节点使用，去中心化；
   - consul：保证一致性，基于CP，需要进行集群搭建，某个节点失效首先需要选择新的leader，半数以上的节点不可用，则服务继续提供正常服务。
 
@@ -252,31 +238,25 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 
 ![hystrix原理](./images/hystrix原理.png)
 
-
-
 ### Spring、Spring Boot、Spring Cloud区别
 
 - Spring是最基础的实现，基础依赖包都囊括在spring，颗粒度最细；
 - Spring Boot就是集成好默认的Spring配置，约定大于配置；
 - Spring Cloud旨在解决微服务架构问题，提供服务注册发现、服务消费、熔断保护、网关和分布式调用链和分布式配置等。
 
-
-
 ### Spring事务
 
 #### 事务的传播属性
 
-| 级别                      | 详解                                                         |
-| ------------------------- | ------------------------------------------------------------ |
-| PROPAGATION_REQUIRED      | 支持当前运行的事务，如果不存在事务则创建一个新的事务，为Spring的默认传播级别 |
-| PROPAGATION_SUPPORTS      | 支持当前运行的事务，如果不存在事务则以非事务模式运行         |
-| PROPAGATION_MANDATORY     | 支持当前运行的事务，如果不存在事务则抛出异常                 |
-| PROPAGATION_REQUIRES_NEW  | 创建新事务运行，如果存在事务则挂起当前事务                   |
-| PROPAGATION_NOT_SUPPORTED | 不持支当前事务，总是以非事务方式执行                         |
-| PROPAGATION_NEVER         | 不支持当前事务，如果当前存在事务则抛出异常                   |
+| 级别                        | 详解                                                                 |
+| ------------------------- | ------------------------------------------------------------------ |
+| PROPAGATION_REQUIRED      | 支持当前运行的事务，如果不存在事务则创建一个新的事务，为Spring的默认传播级别                          |
+| PROPAGATION_SUPPORTS      | 支持当前运行的事务，如果不存在事务则以非事务模式运行                                         |
+| PROPAGATION_MANDATORY     | 支持当前运行的事务，如果不存在事务则抛出异常                                             |
+| PROPAGATION_REQUIRES_NEW  | 创建新事务运行，如果存在事务则挂起当前事务                                              |
+| PROPAGATION_NOT_SUPPORTED | 不持支当前事务，总是以非事务方式执行                                                 |
+| PROPAGATION_NEVER         | 不支持当前事务，如果当前存在事务则抛出异常                                              |
 | PROPAGATION_NESTED        | 以嵌套方式执行事务；外层事务失败会回滚内层事务，内层事务不会回滚外层事务。在A中执行B，A报错B会回滚，但B报错仅B回滚，A不会回滚 |
-
-
 
 #### Spring事务不生效的场景
 
@@ -289,16 +269,12 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 - 出现异常但是被方法内部捕获了，又没有向框架抛出异常
 - @Transactional抛出非RuntimeException或者Error异常，需要使用rollbackFor支持其他异常的回滚
 
-
-
 ## MyBatis
 
 ![mybatis缓存机制](./images/mybatis缓存机制.png)
 
 - 一级缓存：在开启一个数据库会话时，会新建一个SqlSession对象（含Executor），Executor在执行对应的SQL语句时，会去PerpetualCache对象中寻找对应的缓存，该缓存对象随着SqlSession对象死亡而释放；如果SqlSession调用了clearCache()、update()、delete()、insert()任意一个方法，都会**清空PerpetualCache的数据**；一级缓存默认为**开启**状态；
 - 二级缓存：默认是不开启二级缓存，默认原生二级缓存需要返回的POJO必须是可序列化的，一般通过LRU的算法来回收。
-
-
 
 ## Dubbo
 
@@ -317,8 +293,6 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 
 ![dubbo架构5](./images/dubbo架构5.jpg)
 
-
-
 ## Redis
 
 ### 数据类型&数据结构
@@ -333,18 +307,14 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 - Set：一个key对应多个value，value不可以重复，value之间没有顺序关系；
 - Sorted Set：一个key对应多个value，value不可以重复，有顺序关系，先按照score排序，再按照value排序。
 
-
-
 ### 持久化
 
 - RDB：生成数据库的快照，相当于直接dump出数据文件。分为手动触发和自动触发（设定x秒内存在y次数据变更时自动触发）
-
+  
   - 优点：加载恢复时很快；
   - 缺点：不能做到命令级别或者秒级的。
 
 - AOF：通过记录执行的命令进行记录，所有写命令直接追加到文件中，随着命令不断增加，AOF的文件逐渐变大，可以通过重写机制进行AOF文件的压缩。
-
-
 
 ### 键过期策略
 
@@ -353,8 +323,6 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
   - 缺点：占用内存。
 - 定期过期：每隔一段时间扫描expires字典中的key；
   - 优点：平衡CPU和内存资源。
-
-
 
 ### 内存淘汰策略
 
@@ -371,9 +339,8 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 - allkeys-lfu：从数据集中挑选使用频率最低的数据淘汰；
 
 - allkeys-random：从数据集中任意选择数据淘汰；
+
 - no-enviction：禁止驱逐数据，这也是**默认策略**。意思是当内存不足以容纳新入数据时，新写入操作就会报错，请求可以继续进行，线上任务也不能持续进行，采用no-enviction策略可以保证数据不被丢失。
-
-
 
 ### 内存&线程模型
 
@@ -384,8 +351,6 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 - 采用了非阻塞IO：IO多路复用。
 
 ![redis线程模型](./images/redis线程模型.png)
-
-
 
 ### 集群方案
 
@@ -398,8 +363,6 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 - 故障转移：如果 master node 挂掉了，会自动转移到 slave node 上；
 - 配置中心：如果故障转移发生了，通知 client 客户端新的 master 地址。
 
-
-
 #### 基于客户端分配模式
 
 ![基于客户端分配模式](./images/基于客户端分配.jpg)
@@ -409,8 +372,6 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 - 客户端决定数据存储到哪个Redis节点或者决定从哪个Redis节点读取数据，通过hash算法实现；
 - 代表为Redis Sharding，是在Redis Cluster出来前普遍使用的集群方法。
 
-
-
 #### Redis Cluster
 
 ![Redis Cluster模式](./images/RedisCluster模式.png)
@@ -418,8 +379,6 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 - 没有使用一致性hash（会有hash倾斜等问题）的方式，而是采用slot槽的概念；
 - 可以动态扩容，仅仅需要迁移**一部分**数据到新的节点；
 - key寻址时，先进行hash，然后按照一定的方向落到对应的槽点中进行数据处理。
-
-
 
 ### Redis-cluster使用案例
 
@@ -502,8 +461,6 @@ redis-cli --cluster del-node 127.0.0.1:7000 `<node-id>`
 redis-cli --cluster reshard 127.0.0.1:7000
 ```
 
-
-
 ### redis命令
 
 scan：
@@ -511,15 +468,17 @@ scan：
 - 可以控制返回的数量，使用count指定返回数据量，使用match来进行数据匹配SCAN cursor [MATCH pattern] [COUNT count]
 
 - SCAN命令用于迭代当前数据库中的数据库键；
+
 - SSCAN 命令用于迭代集合键中的元素；
+
 - HSCAN命令用于迭代哈希键中的键值对；
+
 - ZSCAN命令用于迭代有序集合中的元素（包括元素成员和元素分值）；
 
 keys和scan的区别：
 
 - keys处理拥有大量数据的场景时，由于redis是单线程的，可能阻塞服务器长达数秒；
 - scan是基于增量式迭代的，默认返回有限条数据，在scan返回数据的过程中，键值可能会被修改；
-
 
 ## Kafka
 
@@ -538,9 +497,9 @@ keys和scan的区别：
 - ISR机制：不是完全同步异步的方式，leader副本会位置一个ISR（in-sync replicas）列表，当一个消息发送给leader的时候，leader会等待ISR中所有的副本告诉它已经接收了这个消息，如果一个副本失败了，那么它会被移除ISR。
 
 **自动提交**和**手动提交**
+
 - 自动提交：**enable.auto.commit=true**，不是拉取的时候马上提交；在每次poll数据之前，检查是否到达**auto.commit.interval.ms**的时间，如果到达，则提交拉取消息的最大偏移量
 - 手动提交：**enable.auto.commit=false**，需要通过commitAsync()或者commitSync()进行提交处理
-
 
 ### 详细用例
 
@@ -582,10 +541,10 @@ test
 
 ```
 bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic test
-Topic: test	PartitionCount: 3	ReplicationFactor: 3	Configs: segment.bytes=1073741824
-	Topic: test	Partition: 0	Leader: 2	Replicas: 2,0,1	Isr: 2,0,1
-	Topic: test	Partition: 1	Leader: 1	Replicas: 1,2,0	Isr: 1,2,0
-	Topic: test	Partition: 2	Leader: 0	Replicas: 0,1,2	Isr: 0,1,2
+Topic: test    PartitionCount: 3    ReplicationFactor: 3    Configs: segment.bytes=1073741824
+    Topic: test    Partition: 0    Leader: 2    Replicas: 2,0,1    Isr: 2,0,1
+    Topic: test    Partition: 1    Leader: 1    Replicas: 1,2,0    Isr: 1,2,0
+    Topic: test    Partition: 2    Leader: 0    Replicas: 0,1,2    Isr: 0,1,2
 ```
 
 创建2个消费者，`--group`指定对应的消费者群组，注意需要指定消费群组，若不指定，则终端会默认自己创建一个默认的消费者群组，这样结果会导致生产者发送消息后，所有的消费者都会**消费到同一条信息**
@@ -609,8 +568,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 在test群组中多加入一个消费者时，消费者也可以继续消费。但是再加入一个后，test群组中的consumer数量为4，比分区数量3还多，因此有一个消费者**无法消费**信息。
 
-
-
 ### Kafka如何保证消息有序性
 
 - Kafka topic只设置一个partition分区：kafka默认保证同一个partition分区内的消息是有序的，设置全局一个分区这样就保证全局有序，但缺点是只能被consumer group里的一个消费者消费，不适合高并发的情况；
@@ -618,8 +575,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
   - 指定分区
   - 不指定分区，由指定key，根据key的hash规则确定发送到哪个分区
   - 不指定分区，不指定key，轮询发送
-
-
 
 ## Zookeeper
 
@@ -630,8 +585,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 - Observer：与follower类似，不参与投票，响应读请求，把写请求转发给leader。
 
 ![zookeeper模型](./images/zookeeper模型.png)
-
-
 
 #### 数据模型
 
@@ -649,29 +602,25 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 - persistent_sequential：持久化顺序编号目录节点；
 - ephemeral_sequential：暂时化顺序编号目录节点。
 
-
-
 #### Zab协议
 
 事务编号Zxid：共64位，低32位是单调递增的计数器，针对客户端每一个事务请求，计数器加1；高32位代表leader周期epoch的编号，每个当选的leader会从所有节点本地日志中选出最大的zxid，并读取其epoch值，然后加1，以此作为新的epoch，并将低32位从0开始计数。zxid是保持**单调递增**的。
 
 - 恢复模式：机器启动、leader崩溃、leader失去大部分follower支持都会进入该阶段
-
+  
   - Leader election（选举阶段）：***选出准leader***，集群节点处于looing状态，带上自己**服务器id和本地最新的zxid**，与其他节点进行通讯投票，当收到请求后，节点会用自身的zxid和其他节点的zxid做比较，如果发现其他节点的zxid比自己大（说明数据比自己新），那么重新发起投票，投票给目前**已知最大的zxid**所属节点。当一个节点得到超过半数节点的票数，那么可以当选**准leader**；
   - Discovery（发现阶段）：***接受提议、生成epoch、接受epoch***，follower和准leader进行通讯，准leader同步各个follower最新接收到的事务提议。在所有follower各自发来的**最新epoch值**中选出最大的epoch值加1，并以这个值作为最新的epoch，通知给所有follower；
   - Synchronization（同步阶段）：***同步follower副本***，利用上一个阶段获得的最新历史提议，同步到集群中的所有副本。只有大多数节点同步完成，准leader才会成为真诚的leader，**follower只会接受zxid比自己的最大zxid还大的提议**，此时leader的状态改为leading，follower的状态改为following。
 
 - 广播模式：zookeeper集群对外正式开始提供服务，并且leader可以进行消息广播，如果有新的节点计入，还需要对新节点进行同步。
-
+  
   ![zookeeper广播实例图](./images/zookeeper广播实例图.jpg)
-
+  
   1. 客户端发送写入请求到任意的follower；
   2. server把写入数据请求转发给leader；
   3. leader采用二段提交方式，发送propose广播给follower；
   4. follower接收到propose消息，写入日志成功后，返回ack消息给leader；
   5. leader接收到半数以上ack消息，返回成功给客户端，并且广播commit请求给follower。
-
-
 
 ## Flink
 
@@ -691,8 +640,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
   - 根据不同的slot执行对应的子任务
   - 数据的序列化与反序列化，数据网络交换
 
-
-
 #### 算子，槽，并行度概念
 
 ![算子，槽，并行度概念1](./images/算子，槽，并行度概念1.svg)
@@ -702,8 +649,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 - 算子：进行独立功能计算的功能对象方法
 - 槽（Slot）：内存分配的单位，不会与其他槽进行内存竞争（内存隔离），每一个槽都分配给一个独立的线程执行任务，因此**推荐槽与CPU数量呈1：1对应关系**，其他的例如TCP，CPU资源还是共享的关系；上图，表示2个TaskManger节点，每个节点有3个槽，每个槽占据每个TaskManager的内存的三分之一；可以理解为：**一台特定的机器上启动多少个并行执行的实例**
 - 并行度（Parallelism）：表示实际的子任务同时处理的数量，**最大只能设置为槽的数量**
-
-
 
 #### 核心数据功能
 
@@ -719,8 +664,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 ![原理图](./images/flink核心数据功能.jpg)
 
-
-
 ### flink中的注意点
 
 - 需要以**数据流**为切入点，如果需要做**复杂业务**处理flink是非常不合适的
@@ -734,8 +677,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 - 本质上不适合做很重业务逻辑性的操作，因为是CPU密集型的，会造成堵塞
 - 某个subtask提前finish导致savepoint失败
 
-
-
 ## Nginx
 
 目前Nginx集群没有好的解决方案，下面对应的技术方案可以简单实现：
@@ -743,9 +684,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 1. 构建DNS+CDN服务器
 2. 在多个公网IP中搭建多台Nginx服务器
 3. 通过DNS进行域名的动态切换，通过CDN进行动态流量输入
-
-
-
 
 ## Activiti
 
@@ -757,24 +695,21 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
   - TaskService：与正在执行的任务管理相关
   - HistroyService：查询历史服务接口
 
-
-
 ## ElasticSearch
 
-| ElasticSearch | 关系数据库      |
-| ------------- | --------------- |
-| Indices索引   | Databases数据库 |
-| Types类型     | Tables表        |
-| Documents文档 | Rows行          |
-| Fields域      | Columns列       |
+| ElasticSearch | 关系数据库        |
+| ------------- | ------------ |
+| Indices索引     | Databases数据库 |
+| Types类型       | Tables表      |
+| Documents文档   | Rows行        |
+| Fields域       | Columns列     |
 
-| 内容               | 语法                                                         |
-| ------------------ | ------------------------------------------------------------ |
-| 查看所有索引       | GET _cat/indices                                             |
-| 查看索引结构       | GET /local_es_order/_mapping                                 |
-| 新建索引           | PUT /local_my_test<br/>{"mappings":{"properties":{"gender":{"type":"integer"},"name":{"type":"keyword"},"age":{"type":"integer"}}}} |
-| 获取索引详细信息   | GET /local_my_test                                           |
-| 删除索引           | DELETE /local_my_test                                        |
-| 插入索引           | PUT /local_my_test/_doc/1<br/>{"gender":1,"name":"test","age":30} |
-| 根据id查找索引内容 | GET /local_my_test/_doc/1                                    |
-
+| 内容         | 语法                                                                                                                                  |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 查看所有索引     | GET _cat/indices                                                                                                                    |
+| 查看索引结构     | GET /local_es_order/_mapping                                                                                                        |
+| 新建索引       | PUT /local_my_test<br/>{"mappings":{"properties":{"gender":{"type":"integer"},"name":{"type":"keyword"},"age":{"type":"integer"}}}} |
+| 获取索引详细信息   | GET /local_my_test                                                                                                                  |
+| 删除索引       | DELETE /local_my_test                                                                                                               |
+| 插入索引       | PUT /local_my_test/_doc/1<br/>{"gender":1,"name":"test","age":30}                                                                   |
+| 根据id查找索引内容 | GET /local_my_test/_doc/1                                                                                                           |

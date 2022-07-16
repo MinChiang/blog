@@ -1,13 +1,16 @@
 ## JDK各个版本新特性
 
 - 1.8
+  
   - lambda表达式
   - Stream API
   - Interface默认方法
   - 新时间日期API
   - HashMap结构优化，新增红黑树和resize时的代码优化，ConcurrentHashMap采用CAS算法，不再使用分段锁，而且也引入了红黑树
   - **移除了永久代，增加直接内存区域**
+
 - 1.7
+  
   - switch可以使用String判断
   - 泛型实例化类型自动推断
   - 新的整数字面表达式方式：0b前缀和_连接符
@@ -15,13 +18,12 @@
   - 可以捕获多个异常类型：使用|可以把相同异常处理逻辑集中到一个catch中
 
 - 1.6
+  
   - 可以使用JAXB来实现对象与XML之间的映射转换
   - 新增STAX的XML处理API
   - 新增Compiler API
   - 轻量级的Http Server
   - 脚本语言的支持
-
-
 
 ## 你遇到什么比较难忘的坑
 
@@ -36,8 +38,6 @@
 - 做压力测试时，系统级错误导致JVM虚拟机崩溃报错；
 - 经验不足的时候，不知道spring是区分父子容器的，在spring mvc容器中扫描了所有类，不报错；但在spring中扫描所有类，就会报找不到controller异常。正常的做法是spring mvc容器扫描controller注解，而spring扫描其他的类；
 
-
-
 ## 分布式数据库和缓存双写一致性问题
 
 ### 先更新数据库，再更新缓存
@@ -47,16 +47,12 @@
 - B线程更新缓存；
 - 线程A更新缓存。
 
-
-
 ### 先删缓存，再更新数据库
 
 - A线程进行写，删除缓存；
 - B线程查询缓存不存在，去数据库查询得到旧值；
 - B线程把旧值写入缓存；
 - A线程将新值写入数据库。
-
-
 
 ### 先更新数据库，再删缓存（推荐默认使用方案）
 
@@ -66,8 +62,6 @@
 - B线程删除缓存；
 - A线程将查询到的旧值写入缓存。
 
-
-
 ## 使用过的高级场景
 
 ### 布隆过滤器
@@ -76,31 +70,27 @@
 
 使用布隆过滤器，设定参数误判率：**3%**，一共使用了72984408位进行存储，一共消耗内存为72984408（占用的位数） / 8 / 1024 / 1024 = **8.7（mb）**，数据压缩了24倍。
 
-
-
 ### Redis中的bitset
 
 记录用户的每天登录情况，每日创建一个登录一个bitset用于保存当天所有的用户登录情况，使用用户自增的id作为对应的key，**一千万用户量**每日仅仅使用**1.19mb**的内存，如果几天都登录，则直接把bitset与操作即可。每日进行跑批处理，删除前30天在redis中的登录记录，建立下一天的登录记录表，用户进行登录时通过异步的方式使redis对应的标记位值1。
 
-
-
 ### 设计模式的使用场景
 
-实现关系（Realization）：表现为实现接口，语义为like-a，虚线+空心箭头表示
+参考文章：[UML 类之间的关系](https://www.zhihu.com/question/268467998/answer/728020600)
 
-泛化关系（Generalization）：表现为继承，语义为is-a，实线+空心箭头表示
+**实现**关系（Realization）：表现为实现接口，语义为like-a，虚线+空心箭头表示
 
-依赖关系（Dependency）：是一种使用的关系，基于临时的关联，通过局部变量、方法参数或者静态方法调用另外一个类完成某些职责，虚线+箭头表示
+**泛化**关系（Generalization）：表现为继承，语义为is-a，实线+空心箭头表示
 
-关联关系（Association）：是对象之间一种引用的关系，最常用，实线+实心箭头表示
+**依赖**关系（Dependency）：是一种使用的关系，基于临时的关联，通过局部变量、方法参数或者静态方法调用另外一个类完成某些职责，虚线+箭头表示
 
-聚合关系（Aggregation）：强关联关系，是整体和部分的关系，部分能够超越整体的生命周期，语义为has-a，实线+空心菱形箭头
+**关联**关系（Association）：是对象之间一种引用的关系，对象之间并无严格的上下级以及包含的关系，实线+实心箭头表示
 
-组合关系（Composition）：最强的关联关系，是整体和部分的关系，部分不能脱离整体存在，语义为cxmatins-a关系，实线+实心菱形箭头
+**聚合**关系（Aggregation）：强关联关系，是整体和部分的关系，部分能够超越整体的生命周期，语义为has-a，实线+空心菱形箭头，**注意菱形在聚合方**
+
+**组合**关系（Composition）：最强的关联关系，是整体和部分的关系，部分不能脱离整体存在，语义为cxmatins-a关系，实线+实心菱形箭头，**注意菱形在组合方**
 
 ![类图表示](./images/类图表示.png)
-
-
 
 - 策略模式：电商订单，优惠计算器，不同类型的订单使用不同类型的优惠计算器；
 
@@ -123,11 +113,35 @@
 
 - 代理模式：
 
-
-
 ### 性能测试
 
-#### 测试流程
+### Jmeter测试（推荐）
+
+#### 测试准备
+
+- 去官网中下载对应的最新版本包：[Jmeter官网](https://jmeter.apache.org/)
+- 下载安装后，推荐安装必备插件
+  - 安装Plugins manager：[下载地址](https://jmeter-plugins.org/install/Install/)
+  - 把plugins-manager.jar放在Jmeter目录的lib/ext文件夹中
+  - 再次启动Jmeter，发现在选项中多了Plugins manager选项，打开并安装下列的插件
+    - 3 Basic Graphs
+    - PerfMon Metrics Collector
+    - jpgc - Standard Set
+  - 安装完成后记得重启Jmeter
+- 可以参考更加完善的文章：[Jmeter 学习路线 - 小菠萝测试笔记 - 博客园](https://www.cnblogs.com/poloyy/p/15257716.html)
+
+#### 简要说明
+
+- 新建测试的文件夹，保存测试计划场景（后缀为jmx）
+- 主要的布局描述如下图所示![jmeter性能测试1](./images/jmeter性能测试1.jpg)
+- 可以添加线程组，线程组下面添加的Request表示对应线程下所执行的任务，任务下还可以添加相应的测量结果和测试结果图![jmeter性能测试2](./images/jmeter性能测试2.jpg)![jmeter性能测试3](./images/jmeter性能测试3.jpg)
+
+#### 注意事项
+
+- 如果jmeter不存在包，则需要额外导入包（添加目录或jar包到ClassPath或直接把jar包放在lib下）
+- 如果把测试脚本放到远程中，则需要把jar包也一并放入
+
+#### LoadRunner测试流程（收费不推荐）
 
 1. 在Windows Server中安装并且配置LoadRunner；
 2. 调整Windows Server系统和Linux系统参数；
@@ -135,16 +149,12 @@
 4. 选择场景并运行压力测试，使用nmon采集对应的磁盘IO、内存使用率、CPU占用率等系统运行情况，使用jvisualvm采集JVM虚拟机的运行参数；
 5. 使用nmon analyser导出系统级参数报表。
 
-
-
 #### 名词解释
 
 - TPS：Transaction Per Second，每秒的交易量，确定在某一个时刻的机器负载情况；
 - ART：Average Transaction Reponse Time，每一个交易的平均处理时间；
 - CPU占用率：含系统内核与用户对CPU的占用；
 - 内存占用率：含系统内核与用户对内存的占用；
-
-
 
 #### 参数调优
 
@@ -165,8 +175,6 @@ vim /etc/security/limits.d/20-nproc.conf
 减小HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\TcpTimedWaitDelay对应的值
 ```
 
-
-
 ## 看过什么网站和有用的书籍
 
 - Stackoverflow：https://stackoverflow.com/
@@ -177,8 +185,6 @@ vim /etc/security/limits.d/20-nproc.conf
 - Java高并发程序设计
 - 深入理解JVM虚拟机
 - Head First Parttern Design
-
-
 
 ## 如何给下属分配安排任务
 
