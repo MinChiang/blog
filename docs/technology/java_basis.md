@@ -43,15 +43,13 @@ public ThreadPoolExecutor(int corePoolSize,
 - threadFactory：线程工厂；
 - handler：拒绝策略。
 
-
-
 三种常见的线程池：
 
-| 方法名称             | 使用的队列          | 队列类型     | 功能                                                         |
-| -------------------- | ------------------- | ------------ | ------------------------------------------------------------ |
-| FixedThreadPool      | LinkedBlockingQueue | 无界队列     | 创建固定大小的线程池，corePoolSize和maximumPoolSize相等，使用无界队列LinkedBlockingQueue，过多的任务将会**导致队列Runnable元素过多而造成内存溢出** |
-| SingleThreadExecutor | LinkedBlockingQueue | 无界队列     | 创建只有一个线程的线程池，corePoolSize和maximumPoolSize都为1 |
-| CachedThreadPool     | SynchronousQueue    | 直接提交队列 | 创建一个没有容量的线程池，任何**提交的任务都会立即执行**（复用线程或者创建线程），corePoolSize为0，maximumPoolSize为无穷，容易**创建线程过多导致内存溢出** |
+| 方法名称                 | 使用的队列               | 队列类型   | 功能                                                                                                     |
+| -------------------- | ------------------- | ------ | ------------------------------------------------------------------------------------------------------ |
+| FixedThreadPool      | LinkedBlockingQueue | 无界队列   | 创建固定大小的线程池，corePoolSize和maximumPoolSize相等，使用无界队列LinkedBlockingQueue，过多的任务将会**导致队列Runnable元素过多而造成内存溢出** |
+| SingleThreadExecutor | LinkedBlockingQueue | 无界队列   | 创建只有一个线程的线程池，corePoolSize和maximumPoolSize都为1                                                           |
+| CachedThreadPool     | SynchronousQueue    | 直接提交队列 | 创建一个没有容量的线程池，任何**提交的任务都会立即执行**（复用线程或者创建线程），corePoolSize为0，maximumPoolSize为无穷，容易**创建线程过多导致内存溢出**        |
 
 队列类型：
 
@@ -378,8 +376,6 @@ public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
 - scheduleAtFixedRate：以一定的速率执行，不管上一个任务有没有执行完毕；
 - scheduleWithFixedDelay：以固定的延时执行，上一个任务执行完后x秒再执行。
 
-
-
 ### 线程的6种状态
 
 ```java
@@ -415,8 +411,6 @@ sleep()让指定时间内暂停执行，但**不会释放锁**；
 
 wait()在使用时需要对监视对象进行synchronized。
 
-
-
 ### 线程池的高级用法
 
 #### 全局任务
@@ -434,8 +428,6 @@ new ThreadPoolExecutor(
                 (r, executor) -> log.info("drop trigger event!, normally you can ignore this message~")
         )
 ```
-
-
 
 #### 组件线程的控制
 
@@ -518,8 +510,6 @@ public void listenClick(List<ConsumerRecord<String, String>> records) {
 }
 ```
 
-
-
 ## 线程
 
 ### CountDownLatch和CycleBarrier
@@ -558,8 +548,6 @@ public static void main(String[] args) throws InterruptedException {
 线程2正在执行中
 主线程执行完毕
 ```
-
-
 
 ```java
 public static void main(String[] args) throws InterruptedException {
@@ -624,14 +612,12 @@ CycleBarrier
 - 可以重复使用
 - 本质上是在使计数变为0的线程中执行Runnable动作
 
-
-
 ## 线程的中断
 
 - interrupt()：通过运行的线程实例，给线程发送中段信号，至于**如何处理中段响应**需要看**被中断的线程**的实际处理逻辑
-
+  
   - 如果线程是正常运行中，且没有判断中段状态，那么线程就会一直执行
-
+  
   ```java
   /**
    * 线程执行3秒后并没有停止运行
@@ -649,7 +635,7 @@ CycleBarrier
       thread.interrupt();
   }
   ```
-
+  
   ```
   我还在运行中
   我还在运行中
@@ -660,9 +646,9 @@ CycleBarrier
   我还在运行中
   我还在运行中
   ```
-
+  
   - 如果线程被阻塞，那么线程会被抛出InterruptedException中段异常
-
+  
   ```java
   /**
    * 响应InterruptedException中段异常
@@ -686,15 +672,15 @@ CycleBarrier
       thread.interrupt();
   }
   ```
-
+  
   ```
   我还在运行中
   我还在运行中
   我被中断了
   ```
-
+  
   - 如果线程是正常运行中，可以通过isInterrupted()判断自身的中段标记位
-
+  
   ```java
   /**
    * 响应中段标记位，不清除中断标记位
@@ -718,7 +704,7 @@ CycleBarrier
       thread.interrupt();
   }
   ```
-
+  
   ```
   我还在运行中：777445
   我还在运行中：777446
@@ -765,8 +751,6 @@ private static void runWithCheckInterruptAndClear() throws InterruptedException 
 我被中段了
 当前线程中断标志位：false
 ```
-
-
 
 ### LockSupport工具
 
@@ -878,24 +862,20 @@ public static void main(String[] args) throws InterruptedException {
 ---------- 被阻塞进程结束 ----------
 ```
 
-
-
 ## 序列化与反序列化
 
 - 原生的JVM进行序列化和反序列化对象时需要实现Serializale接口，若被序列化的对象没有实现该接口，或者成员变量中含有引用类型但没实现该接口，则抛出NotSerializableException异常；
 - Serializale本质上来说是个空接口，需要开发人员覆盖serialVersionUID字段，JVM在反序列化的时候校验这个字段是否一致；
 - 使用时机：想把一个对象保存在一个文件或者数据库中，或者想通过RMI传输对象的时候。
 
-
-
 ## IO与NIO的区别与代码样例分析
 
-|                      | IO（传统的IO） | NIO      |
-| -------------------- | -------------- | -------- |
-| 面向对象             | 面向流         | 面向缓冲 |
-| 是否阻塞             | 阻塞IO         | 非阻塞IO |
-| 实现方式             | 数组           | Buffer   |
-| 客户端个数：IO线程数 | 1:1            | M:1      |
+|             | IO（传统的IO） | NIO    |
+| ----------- | --------- | ------ |
+| 面向对象        | 面向流       | 面向缓冲   |
+| 是否阻塞        | 阻塞IO      | 非阻塞IO  |
+| 实现方式        | 数组        | Buffer |
+| 客户端个数：IO线程数 | 1:1       | M:1    |
 
 ```java
 public class TestNIO {
@@ -1003,8 +983,6 @@ public class TestNIO {
 }
 ```
 
-
-
 ## 基础
 
 ### equals()、==、hashCode()和System.identityHashCode区别
@@ -1013,8 +991,6 @@ public class TestNIO {
 - ==比较的是两个对象的内存地址是否相等；
 - hashCode可以通过重写自定义对象的哈希值计算方式，而System.identityHashCode则是判断两个对象原生的hashcode（和内存地址相关的计算方式），无论这个对象hashCode是否被重写，因此System.identityHashCode可以直接判断两个对象是否内存相等（例如判断String是否内存相等）。
 
-
-
 ### String
 
 #### String、StringBuilder、StringBuffer的联系与区别
@@ -1022,8 +998,6 @@ public class TestNIO {
 - String天生是不可变的，因此是线程安全的；
 - StringBuilder是可以变的，但线程不安全；
 - StringBuffer是可以变的，线程安全。
-
-
 
 #### intern()方法以及各种String方式引用易错点
 
@@ -1064,22 +1038,16 @@ s3.intern():356573597
 - String s = "te" + "st"，在常量池中创建"te"、"st"和"test"，并返回"test"在常量池中的引用；
 - String s = new String("te") + new String("st")，在常量池中创建"te"，"st"，并在堆上创建字面量为"test"的对象并返回堆上引用。
 
-
-
 #### 为什么使用字符数组保存密码比使用String保存密码更好
 
 - String在java中是不可变的，字符串放在常量池中，直到执行GC才会被清除，任何能够访问内存的人都能直接看到密码，非常不安全；
 - 使用字符串在进行文本输出时，会存在风险，能够直接打印出来，但是字符数组打印的是对应的内存数组。
-
-
 
 #### String如何实现对象不可变
 
 - String类使用final修饰，子类无法对该类进行方法的重写；
 - 内部的字符数组使用final修饰，本质上无法变更其指向；
 - 内部所有的方法均返回一个新的String对象实例。
-
-
 
 ## 锁
 
@@ -1088,14 +1056,10 @@ s3.intern():356573597
 - 使用前必须获取锁对象的监视器，即需要进行synchronized上锁；
 - notify和notifyAll的区别是，notify去随机唤醒监视器队列中的一个等待线程，而notifyAll是唤醒全部线程，但是仍然需要进行等待处理（等待获取锁）。
 
-
-
 ### volatile关键字的作用
 
 - 保证可见性：保证对所有的线程可见，标记volatile的字段，在**写**操作时，会强制**刷新cpu缓存**，标记volatile的字段，每次读取都是**直接读内存**；
 - 保证有序性：在volatile写操作前插入StoreStore屏障，在写操作后插入StoreLoad屏障；在volatile读操作前插入LoadLoad屏障，在读操作后插入LoadStore屏障，**禁止了指令的重排**。
-
-
 
 ### Lock、tryLock和lockInterruptibly有什么区别
 
@@ -1103,9 +1067,8 @@ s3.intern():356573597
 - tryLock：马上返回，拿到锁就返回true，否则返回false；
 - lockInterruptibly：**响应interrupt中断**，并要求处理InterruptExcetpion。
 
-
-
 ### AQS的实现原理
+
 ### 数据结构部分
 
 AbstractQueuedSynchronizer的实现是**CLH的变体**，CLH本质上是一个不进行阻塞，后节点不断轮询前节点状态的虚拟队列；CLH适合用于低竞争，并发量少的场景，如果线程多，可能会导致CPU不断地空转，因此要解决这个问题就需要对线程状态进行控制，即不要让线程空轮询等待，而是让其进行挂起。
@@ -1139,7 +1102,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * 需要被广播唤醒
          */
         static final int PROPAGATE = -3;
-        
+
         /**
          * 节点的状态，表示上面的几个状态
          */
@@ -1201,8 +1164,6 @@ AbstractQueuedSynchronizer数据结构：
 - head：虚拟队列头节点
 - tail：虚拟队列尾节点，一般用CAS进行修改
 - state：当前获取锁的状态值，这个值对于不同的实现类的意义是不一样的，这个值是微观指令在宏观的表现；正常来说，判断一个资源是否有竞争，可以直接通过CAS进行修改state的状态，判断一下是否修改成功，如果成功意思说无竞争，程序可以继续执行；如果有竞争，则需要进入等待队列了
-
-
 
 ### 代码方法块详解
 
@@ -1268,8 +1229,6 @@ AbstractQueuedSynchronizer数据结构：
         throw new UnsupportedOperationException();
     }
 ```
-
-
 
 #### 获取执行权部分代码块
 
@@ -1376,22 +1335,22 @@ AbstractQueuedSynchronizer数据结构：
 - addWaiter先执行了快速入队处理，其实就是简单判断一下是否存在队尾节点，如果存在则进行快速入队
 
 - enq中，这个方法是做了完整的入队流程，其实按照本质上来说流程和上述的快速入队差不多
-
+  
   - 首先for循环保证了里面的入队逻辑是必须执行成功的
-
+  
   - 如果等待队列是空的，那么就要创建一个虚拟节点作为队头，注意不是把当前节点作为队头，而是新建的虚拟节点是队头；新建对头后，由于还在for循环中，那么会再次执行完整的逻辑入队处理
-
+  
   - 如果存在了等待队列，则执行以下三个动作，注意这三个动作**不是原子性**的
-
+    
     - 先把当前节点的前驱节点指向之前的队尾
     - 进行CAS操作，把当前节点设置为队尾
     - 把之前队尾的next节点指向当前节点
-
+    
     由于这3条执行指令的顺序性，那么能够说明下面两个重要点：
-
+    
     - 在执行compareAndSetTail成功后，**一定能够保证当前节点的前驱指针已经指向原来的队尾节点**
     - 在compareAndSetTail成功后，t.next = node执行前，可能存在一种中间状态：tail指针已经指向当前的节点，但是原来的队尾节点的next指针还未指向当前的节点
-
+    
     因此，如果需要**遍历**这个虚拟队列，最好从后往前遍历，因为队列中的prev指针是可靠的，而next指针是不可靠的
 
 ![AQS-入队流程](./images/AQS-入队流程.jpg)
@@ -1513,8 +1472,6 @@ AbstractQueuedSynchronizer数据结构：
     - 在执行park的时候，是不会抛出中断异常的，但是会响应中断标志位
     - 在被unpark后，做的第一个事情是Thread.interrupted()，查询并清除对应的中断标记位
 
-
-
 ### 释放执行权代码块
 
 ```java
@@ -1576,7 +1533,6 @@ AbstractQueuedSynchronizer数据结构：
 - tryRelease，尝试释放执行权，简单而言就是对state状态的变更，由子类去覆盖
 - unparkSuccessor具体唤醒在等待队列中的线程，在遍历时为什么要从后往前遍历呢？上文说过了prev指针是可靠的，在把一个节点设置成队尾前一定保证了prev节点指向原有的队尾，而next节点是不可靠的
 
-
 ### Lock和Synchronized区别
 
 共同点：
@@ -1595,8 +1551,6 @@ AbstractQueuedSynchronizer数据结构：
 - synchronized能锁住类、方法和代码块，但是lock只能锁范围的；
 - synchronized本质上调用底层mutex执行操作，需要使用monitorenter和monitorexit对代码块进行加锁，而lock是使用AQS实现的（AbstractQueuedSynchronizer）。
 
-
-
 ### 互斥锁和自旋锁
 
 自旋锁：自旋锁在执行单元在获取锁之前，如果发现有其他执行单元正在占用锁，则会不停的**循环判断锁状态**，直到锁被释放，期间并**不会阻塞**自己。所以自旋锁使用时，是非常**消耗CPU**资源的。
@@ -1606,8 +1560,6 @@ AbstractQueuedSynchronizer数据结构：
 - 如果是**多核**CPU，上下文切换的时间开销比预计获取锁的等待时间要短，使用**互斥锁**更好；
 - 如果是**多核**CPU，上下文切换的时间开销比预计获取锁的等待时间要长，使用**自旋锁**更好；
 - 如果是**单核**CPU，使用**互斥锁**。
-
-
 
 ### CAS和对应的问题
 
@@ -1625,33 +1577,32 @@ CAS操作时，需要判断V位置的值与预期值A是否相等，如果不相
 - 循环时间开销大：如果自旋CAS长时间不成功，会给CPU带来非常大的开销；
 - 只能保证一个共享的原子变量：当只有一个共享变量时，可以使用CAS进行原子操作，但对于多个变量操作时，循环CAS无法保证操作的原子性。
 
-
-
 ### 锁优化
 
 - 自旋锁与自适应自旋：
-
+  
   自旋锁：在JDK1.4时候引入，默认为关闭状态，JDK1.6时候默认开启。在获取锁的时候自旋，**避免了线程切换之间的开销**。缺点是如果锁被占用的时间很长，锁的自旋会白白**浪费处理器资源**。因此自旋锁有**自旋次数的限制**，默认为10次。
-
+  
   自适应自旋：自旋的**次数和时间不再固定**，由前一次在同一个锁上的自旋时间以及锁的拥有者状态决定。如果在同一个对象，自旋等待刚刚成功获得过锁，虚拟机认为本次自旋很有可能再次成功，允许自旋等待更长时间。如果自旋很少成功获得，以后则可能减少自旋时间或者略过自旋。
 
 - 锁消除：
-
+  
   对一些代码上要求同步，但被检测到**不可能存在共享数据竞争**的锁进行消除。
 
 - 锁粗化：
-
+  
   对同一个对象反复加锁，甚至加锁操作在循环体中出现，会**频繁互斥同步导致性能损耗**。因此可以使锁的范围粗化，减少反复加锁的次数。
 
 - 重量级锁和轻量级锁：
-
+  
   重量级锁：指的是传统意义上执行synchronized**同步代码块**时，加入字节码monitorenter和monitorexit指令来实现monitor的获取和释放，就是需要JVM通过字节码显式地去获取和释放monitor实现同步；使用synchronized**同步方法**时候，检查方法的ACC_SYNCHRONIZED标志是否被设置，如果设置了线程需要先去获取monitor。
-
+  
   ![重量级锁synchronized加锁流程](./images/重量级锁synchronized加锁流程.png)
-
+  
   轻量级锁：为了在没有多线程竞争的前提下，**减少传统重量级锁使用操作系统互斥量产生的性能消耗**。在进入同步块时，虚拟机首先在当前线程栈帧中建立一个Lock Record空间，用于存储锁对象目前的Mark Word拷贝（官方把这份拷贝加了一个Displaced前缀，即Displaced Mark Word），并尝试使用CAS操作将锁对象的Mark Word更新为指向Lock Record的指针。如果更新成功，则当前线程拥有了对象的锁，并且将对象Mark Word的锁标志位改为00（轻量级锁）状态。如果更新失败了，检查锁对象Mark Word是否指向当前线程的栈帧，若是则说明已经拥有锁，同步代码块继续执行，若否则说明被抢占了。如果有两条以上的线程争用同一个锁，轻量级锁久不再有效，**膨胀为重量级锁**。
-- 偏向锁：
 
+- 偏向锁：
+  
   ![对象头MarkWord简述](./images/对象头MarkWord简述.png)
 
 总结：
@@ -1660,8 +1611,6 @@ CAS操作时，需要判断V位置的值与预期值A是否相等，如果不相
 | 偏向锁   | **只有一个**线程进入临界区   | 加锁解锁速度非常快，和执行非同步方法仅存在纳秒级的差距 |
 | 轻量级锁 | 多个线程**交替**地进入临界区 | 竞争的线程不会阻塞，提高了程序的响应速度               |
 | 重量级锁 | **多个线程**同时进入临界区   | 线程进行挂起，不会消耗CPU                              |
-
-
 
 ### 死锁
 
@@ -1672,16 +1621,12 @@ CAS操作时，需要判断V位置的值与预期值A是否相等，如果不相
 - 请求与保持：进程已经保持了至少一个资源，但同时又提出了新的资源请求，而该资源已被其他进程占有，此时请求进程被阻塞，但对自己已获得的资源保持不放；
 - 循环等待：多个进程之间形成一种头尾相接的循环等待资源关系。
 
-
-
 #### 如何处理死锁
 
 - 预防死锁：破环上述四个条件的一个即可；
 - 避免死锁：保证**加锁的顺序**，**添加加锁的时限**
 - 死锁检测：允许系统中发生死锁，但可设置对应的死锁检测机制
 - 解除死锁：当检测到死锁后，采取适当措施将进程从死锁状态解脱出来
-
-
 
 ### ThreadLocal
 
@@ -1690,21 +1635,21 @@ CAS操作时，需要判断V位置的值与预期值A是否相等，如果不相
 
 ```java
 public class Thread implements Runnable {
-    
+
     //成员变量
     ThreadLocal.ThreadLocalMap threadLocals = null;
-    
+
 }
 ```
 
 ```java
 public class ThreadLocal<T> { 
-    
+
     static class ThreadLocalMap {
-		
+
         //与HashMap中的结构与想法类似
         private Entry[] table;
-        
+
         static class Entry extends WeakReference<ThreadLocal<?>> {
             Object value;
             Entry(ThreadLocal<?> k, Object v) {
@@ -1712,13 +1657,13 @@ public class ThreadLocal<T> {
                 value = v;
             }
         }
-        
+
         private void set(ThreadLocal<?> key, Object value) {}
-        
+
         private void remove(ThreadLocal<?> key) {}
-        
+
     }
-    
+
     public T get() {
         Thread t = Thread.currentThread();
         ThreadLocalMap map = getMap(t);
@@ -1732,7 +1677,7 @@ public class ThreadLocal<T> {
         }
         return setInitialValue();
     }
-    
+
     public void set(T value) {
         Thread t = Thread.currentThread();
         ThreadLocalMap map = getMap(t);
@@ -1743,12 +1688,6 @@ public class ThreadLocal<T> {
     }
 }
 ```
-
-
-
-
-
-
 
 ## 拷贝/克隆
 
@@ -1853,8 +1792,6 @@ Person{age=26, name='jm', address=Address{name='广州', type='home'}}
 Person{age=26, name='jm', address=Address{name='广州', type='office'}}
 ```
 
-
-
 ## 代理
 
 ### 静态代理
@@ -1923,14 +1860,10 @@ public class PersonProxy implements IPerson {
 我发言完毕了
 ```
 
-
-
 ### 动态代理
 
 - 动态代理是运行时动态生成的，编译完之后不生成字节码文件，而是运行时动态生成字节码文件并且自动加载到Jvm中使用的；
 - 如果有多个被代理类的增强实现都是一样的，例如：打印RPC调用的入参参数，其中由于RPC可以有多种调用方式（TCP、HTTP等），使用静态代理就需要创建很多代理类，略显繁琐，因此使用动态代理，可以把具体的增强业务逻辑放在InvocationHandler中，把产生的代理对象的逻辑放在Proxy中。
-
-
 
 #### JDK代理
 
@@ -1942,8 +1875,8 @@ JDK动态代理的对象无需实现被代理的接口，但是要求目标代�
 
 ```java
 public static Object newProxyInstance(ClassLoader loader,
-					  Class<?>[] interfaces,
-					  InvocationHandler h)
+                      Class<?>[] interfaces,
+                      InvocationHandler h)
 ```
 
 - java.lang.reflect.**InvocationHandler**：需要实现此接口，其中在invoke方法中需要对被代理对象执行发放的具体拦截分发。
@@ -1988,15 +1921,11 @@ public class PersonProxy implements IPerson {
 }
 ```
 
-
-
 #### CGLIB代理
 
 - 使用**CGLIB可以代理无接口的类**；
 - 本质上使用ASM工具，在ASM加载类之前，动态改变类的行为；
 - 比原生的JDK代理更加灵活，被代理类**无需实现接口**。
-
-
 
 ## 细节
 
@@ -2023,8 +1952,6 @@ HashMap、LinkedHashMap、TreeMap的关系：
 - TreeMap维护一个红黑树，迭代时按照自然排序或者自定义排序（常用入参为Comparator）;
 - HashMap和LinkedHashMap需要元素重写equals和hashcode方法，而TreeMap本质上是一个SortedMap，需要元素**实现Comparable接口**。
 
-
-
 ### List之间多个实现类以及衍生类的异同
 
 ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
@@ -2033,8 +1960,6 @@ ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 - LinkedList基于链表实现，无须动态扩容，根据index遍历比较慢，但是add或者delete速度较快，适合查少改多的场景；
 - Vector线程安全，但已经弃用，Vector可以使用Enumeration和Iterator进行元素遍历，ArrayList只提供了Iterator的方式；
 - CopyOnWriteArrayList线程安全，是牺牲内存空间的前提下，保证了数据的最终一致性。在CopyOnWriteArrayList进行增删改时，先进行加锁，然后把原数组拷贝到一个副本内，拷贝完成时把原数组指向副本数组，再解锁。在读取时，直接遍历内部的数组即可，保证了**最终一致性**。而Vector在进行for循环遍历时，使用vector.size()获取长度遍历，仍然存在其他线程修改vector.size()属性，导致vector遍历出现ArrayIndexOutOfBoundsException。
-
-
 
 ### ArrayList删除元素
 
@@ -2045,37 +1970,33 @@ ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 - 使用removeIf方法
 - 使用stream的filter进行元素过滤
 
-
-
 ## fail-fast机制和fail-safe机制
 
 - fail-fast（快速失败）：利用迭代器遍历集合时候，如果遍历过程中对内容进行修改，则会抛出ConcurrentModificationException。在遍历集合中的元素时，记录modCount变量，**如果集合发生变化，就会修改modCount的值**。遍历过程中（过程后）判断当前的modCount和遍历前modCount是否相等，如果是就返回遍历结果，否则抛出异常终止遍历；在java.util包下所有集合都是快速失败的，不能再多线程下并发修改。
 - fail-safe（安全失败）：在遍历时复制原有集合内容，在拷贝的集合上进行遍历。在遍历期间集合发生修改，迭代器是**无法感知**的。在java.util.concurrent包下容器都是安全失败的。
 
-|                                     | Fail Fast                           | Fail Safe                               |
-| ----------------------------------- | ----------------------------------- | --------------------------------------- |
-| 抛出ConcurrentModificationException | 是                                  | 否                                      |
-| 拷贝元素                            | 否                                  | 是                                      |
-| 是否会导致内存溢出                  | 否                                  | 是                                      |
-| 遍历时修改元素是否能被感知          | 是（抛出异常）                      | 否                                      |
+|                                   | Fail Fast                        | Fail Safe                              |
+| --------------------------------- | -------------------------------- | -------------------------------------- |
+| 抛出ConcurrentModificationException | 是                                | 否                                      |
+| 拷贝元素                              | 否                                | 是                                      |
+| 是否会导致内存溢出                         | 否                                | 是                                      |
+| 遍历时修改元素是否能被感知                     | 是（抛出异常）                          | 否                                      |
 | 用例                                | HashMap，Vector，ArrayList，HashSet | CopyOnWriteArrayList，ConcurrentHashMap |
-
-
 
 ## 几个队列常用的API
 
 ### Stack
 
-| 操作        | 描述                     |
-| ----------- | ------------------------ |
+| 操作          | 描述           |
+| ----------- | ------------ |
 | E peek()    | 弹出栈顶元素，但是不移除 |
-| E pop()     | 弹出栈顶元素，移除元素   |
-| E push(E e) | 压入元素到栈顶           |
+| E pop()     | 弹出栈顶元素，移除元素  |
+| E push(E e) | 压入元素到栈顶      |
 
 ### Queue
 
-| 操作                | 异常 | 操作描述                                                     |
-| ------------------- | ---- | ------------------------------------------------------------ |
+| 操作                  | 异常  | 操作描述                                      |
+| ------------------- | --- | ----------------------------------------- |
 | boolean add(E e);   | 是   | 添加一个元素到队尾，如果队列已满则抛出IllegalStateException  |
 | boolean offer(E e); | 否   | 添加一个元素到队尾，并返回添加是否成功                       |
 | E remove();         | 是   | 取出队列中的头元素，如果队列为空则抛出NoSuchElementException |
@@ -2085,15 +2006,15 @@ ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 
 上述的方法均**不阻塞**，下面两个方法是摘自BlockingQueue的，下面两个方法均**阻塞**，因为是同步等待的，因此是不会抛出对应的异常的
 
-| 操作           | 异常 | 操作描述                                   |
-| -------------- | ---- | ------------------------------------------ |
-| void put(E e); | 否   | 添加一个元素，如果队列为满则一直阻塞       |
+| 操作             | 异常  | 操作描述                  |
+| -------------- | --- | --------------------- |
+| void put(E e); | 否   | 添加一个元素，如果队列为满则一直阻塞    |
 | E take();      | 否   | 取出队列中的头元素，如果队列为空则一直阻塞 |
 
 ### Deque
 
-| 操作                     | 异常 | 操作描述                                                     |
-| ------------------------ | ---- | ------------------------------------------------------------ |
+| 操作                       | 异常  | 操作描述                                      |
+| ------------------------ | --- | ----------------------------------------- |
 | boolean addFirst(E e);   | 是   | 添加一个元素到队头，如果队列已满则抛出IllegalStateException  |
 | boolean offerFirst(E e); | 否   | 添加一个元素到队头，并返回添加是否成功                       |
 | boolean addLast(E e);    | 是   | 添加一个元素到队尾，如果队列已满则抛出IllegalStateException  |
@@ -2106,8 +2027,6 @@ ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 | E peekFirst();           | 否   | 获取队列中的头元素，如果队列为空则返回null                   |
 | E elementLast();         | 是   | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
 | E peekLast();            | 否   | 获取队列中的头元素，如果队列为空则返回null                   |
-
-
 
 ## SPI
 
@@ -2157,23 +2076,17 @@ com.api.Cat
 com.api.Dog
 ```
 
-
-
-
-
 ## 分布式事务
 
 ### 基础理论
 
 > CAP定理：任何一个系统都只能满足CAP中的任意两个方面
->
+> 
 > C：consistency，一致性，A：Avaliability，可用性，P：Partition Tolerance，分区容错性
 
 > BASE理论：保证核心功能可用，允许系统中存在中间状态，最终一致
->
+> 
 > BA：Basically avaliable，基本可用，S：Soft state，软状态，E：Eventually consistent，最终一致性
-
-
 
 ### 实现方式
 
@@ -2191,8 +2104,6 @@ com.api.Dog
 - 对协调者的依赖很严重，如果协调者单点故障，则无法正常工作；
 - 会出现脑裂的情况，有些参与者收到并执行了事务，有些没有收到事务就没有执行。
 
-
-
 #### TCC
 
 Try、Confirm和Cancel单词的缩写，也是简化版的3段提交协议（把询问阶段和准备阶段合并在一起），本质上是把一个事务**拆分成两个事务**进行操作，也需要业务进行改造支持处理
@@ -2206,8 +2117,6 @@ Try、Confirm和Cancel单词的缩写，也是简化版的3段提交协议（把
 - 业务入侵性强，改造成本高；
 - 需要实现Confirm和Cancel接口的幂等性，因为第二阶段可能存在不断重试的情况；
 
-
-
 #### 本地事务表+消息队列
 
 发送方增加一张消息表和一个轮询查表的线程，发送方不直接发送到消息队列，而是把具体业务和写消息表放在同一个事务中。轮询查表线程不断轮询，不断地捞取消息并把消息传给消息队列，经过消息队列ACK机制说明发送成功，没有经过ACK，则说明失败需要重传。服务提供方需要增加判重表，记录成功处理消息ID和消息中间件对应的offset（保证消息幂等），提供方宕机后定位到offset位置继续进行消费。
@@ -2218,8 +2127,6 @@ Try、Confirm和Cancel单词的缩写，也是简化版的3段提交协议（把
 - 需要在发送方增加无用的消息表和后台线程；
 - 增加了业务的耦合度。
 
-
-
 #### RocketMQ事务消息
 
 1. 消费方调用RocketMQ的prepare接口，预发送消息。此时消息保存在消息中间件里，但消息中间件不会把消息发送给消费方；
@@ -2228,56 +2135,40 @@ Try、Confirm和Cancel单词的缩写，也是简化版的3段提交协议（把
 
 **当步骤2或3失败时，RocketMQ会回调给发送方，询问消息是要发送还是要取消。**
 
-
-
 ## 统一登录流程
 
 ### CAS登录流程
 
 ![CAS登录流程](./images/CAS登录流程.jpg)
 
-
-
 ### Oauth登录流程
 
 ![oauth认证流程](./images/oauth认证流程.png)
-
-
 
 ### 授权码模式
 
 ![oauth2授权码模式](./images/oauth2授权码模式.png)
 
-
-
 ### 简化模式
 
 ![oauth2简化模式](./images/oauth2简化模式.png)
-
-
 
 ### 密码模式
 
 ![oauth2密码模式](./images/oauth2密码模式.png)
 
-
-
 ### 客户端模式
 
 ![oauth2客户端模式](./images/oauth2客户端模式.png)
 
-
-
 ### 4种模式的区别
 
-| 模式       | 场景                                                         | 备注                                                         |
-| ---------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 授权码模式 | 不信任的第三方机构组织使用                                   | 非常安全但对接li联调的复杂度和成本很高，重要的流程是以code获取access_token的步骤（第三方后台自主获取token，不通过前端浏览器），签发access_token的同时可以签发fresh_token |
-| 简化模式   | 公司系统内部子系统使用                                       | 本质上对接的流程都在前端浏览器完成，不可以签发fresh_token，在浏览器的local storage中保存对应的access_token |
-| 密码模式   | 高度信任的机构或内部系统使用，前提是保存不保存用户信息       | 不安全，需要高度信任第三方机构组织，所以一般很少使用         |
-| 客户端模式 | 不是以用户个人名义获取资源，而是以客户端自己的名义获取资源，开放权限的颗粒度比较高 | 需要授予第三方账号比较高的权限                               |
-
-
+| 模式    | 场景                                        | 备注                                                                                                          |
+| ----- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 授权码模式 | 不信任的第三方机构组织使用                             | 非常安全但对接li联调的复杂度和成本很高，重要的流程是以code获取access_token的步骤（第三方后台自主获取token，不通过前端浏览器），签发access_token的同时可以签发fresh_token |
+| 简化模式  | 公司系统内部子系统使用                               | 本质上对接的流程都在前端浏览器完成，不可以签发fresh_token，在浏览器的local storage中保存对应的access_token                                     |
+| 密码模式  | 高度信任的机构或内部系统使用，前提是保存不保存用户信息               | 不安全，需要高度信任第三方机构组织，所以一般很少使用                                                                                  |
+| 客户端模式 | 不是以用户个人名义获取资源，而是以客户端自己的名义获取资源，开放权限的颗粒度比较高 | 需要授予第三方账号比较高的权限                                                                                             |
 
 ## 高可用和稳定性
 
@@ -2292,8 +2183,6 @@ Try、Confirm和Cancel单词的缩写，也是简化版的3段提交协议（把
 - 熔断：根据请求的失败率和请求时间判断服务是否可用；
 - 降级：保证系统核心功能仍然可用，而一些非核心非重要的功能可以以有损的方式提供服务。
 
-
-
 ## 缓存穿透、缓存击穿、缓存雪崩
 
 ### 缓存穿透
@@ -2304,16 +2193,12 @@ Try、Confirm和Cancel单词的缩写，也是简化版的3段提交协议（把
 - 若从数据库读取不到数据，也将null值设置到缓存中，并设置过期时间
 - 使用布隆过滤器
 
-
-
 ### 缓存击穿
 
 指缓存中没有但数据库有的数据，由于并发量特别多，同时把压力落到数据库中
 
 - 使用冷加载方式，先读取数据到缓存中
 - 增加互斥锁，平滑流量
-
-
 
 ### 缓存雪崩
 

@@ -26,30 +26,26 @@
 - 永久代（Permanent Generation）：JDK1.7（含）之前存在的区域，JDK1.8后剔除，可以通过设置-XX:PermSize调整；
 - 元空间（Metaspace）：JDK1.8（含）存在的区域；
 
-
-
 ### JVM调优参数
 
-| 选项                                | 解释                                                         |
-| :---------------------------------- | :----------------------------------------------------------- |
-| -Xms                                | 初始堆大小。如：-Xms256m                                     |
-| -Xmx                                | 最大堆大小。如：-Xmx512m                                     |
+| 选项                                  | 解释                                                                                         |
+|:----------------------------------- |:------------------------------------------------------------------------------------------ |
+| -Xms                                | 初始堆大小。如：-Xms256m                                                                           |
+| -Xmx                                | 最大堆大小。如：-Xmx512m                                                                           |
 | -Xmn                                | 新生代大小。通常为 Xmx 的 1/3 或 1/4。新生代 = Eden + 2 个 Survivor 空间。实际可用空间为 = Eden + 1 个 Survivor，即 90% |
-| -Xss                                | JDK1.5+ 每个线程堆栈大小为 1M，一般来说如果栈不是很深的话， 1M 是绝对够用了的 |
-| -XX:NewRatio                        | 新生代与老年代的比例，如 –XX:NewRatio=2，则新生代占整个堆空间的1/3，老年代占2/3 |
-| -XX:SurvivorRatio                   | 新生代中 Eden 与 Survivor 的比值。默认值为 8。即 Eden 占新生代空间的 8/10，另外两个 Survivor 各占 1/10 |
-| -XX:MetaspaceSize                   | JDK1.8（含）直接内存内存元空间的初始大小                     |
-| -XX:MaxMetaspaceSize                | JDK1.8（含）直接内存内存元空间的最大值                       |
-| -XX:+HeapDumpOnOutOfMemoryError     | 让虚拟机在发生内存溢出时 Dump 出当前的内存堆转储快照，以便分析用 |
-| -XX:ErrorFile                       | Java进程crash时候产生的日志文件                              |
-| -Xloggc                             | GC日志路径                                                   |
-| -XX:+PrintGCDetails                 | 打印GC的详情信息                                             |
-| -XX:+PrintGCDateStamps              | 打印GC的时间                                                 |
-| -Dcom.sun.management.jmxremote.port | jmx端口                                                      |
-| -XX:PermSize                        | JDK1.7（含）前永久代（方法区）的初始大小，已经弃用           |
-| -XX:MaxPermSize                     | JDK1.7（含）前永久代（方法区）的最大值，已经弃用             |
-
-
+| -Xss                                | JDK1.5+ 每个线程堆栈大小为 1M，一般来说如果栈不是很深的话， 1M 是绝对够用了的                                             |
+| -XX:NewRatio                        | 新生代与老年代的比例，如 –XX:NewRatio=2，则新生代占整个堆空间的1/3，老年代占2/3                                         |
+| -XX:SurvivorRatio                   | 新生代中 Eden 与 Survivor 的比值。默认值为 8。即 Eden 占新生代空间的 8/10，另外两个 Survivor 各占 1/10                  |
+| -XX:MetaspaceSize                   | JDK1.8（含）直接内存内存元空间的初始大小                                                                    |
+| -XX:MaxMetaspaceSize                | JDK1.8（含）直接内存内存元空间的最大值                                                                     |
+| -XX:+HeapDumpOnOutOfMemoryError     | 让虚拟机在发生内存溢出时 Dump 出当前的内存堆转储快照，以便分析用                                                        |
+| -XX:ErrorFile                       | Java进程crash时候产生的日志文件                                                                       |
+| -Xloggc                             | GC日志路径                                                                                     |
+| -XX:+PrintGCDetails                 | 打印GC的详情信息                                                                                  |
+| -XX:+PrintGCDateStamps              | 打印GC的时间                                                                                    |
+| -Dcom.sun.management.jmxremote.port | jmx端口                                                                                      |
+| -XX:PermSize                        | JDK1.7（含）前永久代（方法区）的初始大小，已经弃用                                                               |
+| -XX:MaxPermSize                     | JDK1.7（含）前永久代（方法区）的最大值，已经弃用                                                                |
 
 ### 调优样例
 
@@ -72,16 +68,12 @@
 -XX:+PrintGCDateStamps
 -XX:+PrintCommandLineFlags
 
-
-
 ### Client模式和Server模式的区别
 
 > 为了提高热点代码的执行效率，在运行时，虚拟机将会把这些代码编译成与本地平台相关的机器码，并进行各种层次的优化，完成这个任务的编译器叫做即时编译器（Just In Time Compiler，即JIT编译器），当程序需要迅速启动和执行的时候，解释器可以先发挥作用，省去编译的时间，立即执行。在程序运行后，随着时间的推移，编译器逐渐发挥作用，把越来越多的代码编译成本地代码之后，可以获取更高的执行效率。
 
 - Server模式：与C2编译器共同运行，更注重编译质量，启动速度慢，但是运行效率高，适合在服务器环境下运行，针对生产环境进行了优化处理；
 - Client模式：与C1编译器共同运行，更注重编译速度，启动速度快，更适合在客户端版本下，针对GUI进行了优化处理。
-
-
 
 ### 内存交互操作概念
 
@@ -98,14 +90,10 @@
 - store：作用于工作内存，把工作内存中一个变量值传送到主内存中，一边随后的write操作使用；
 - write：作用于主内存，把store操作从工作内存中得到的变量的值放入主内存的变量中。
 
-
-
 ### 内存泄漏和内存溢出
 
 - 内存溢出（out of memory）：程序在申请内存，没有足够的空间
 - 内存泄漏（memory leak）：程序申请内存后，无法释放已申请的内存空间
-
-
 
 ### 线程模型
 
@@ -120,22 +108,23 @@
 #### 具体实现分类
 
 - 内核线程模型
-
+  
   - 特点：
-
+    
     - JVM的线程UT本质上是LWP的一个实例对象，也就是jvm的线程是轻量级线程的一个具体映射，LWP映射为KLT，在内核中执行
-
+    
     - UT和LWP是**一对一**的
-
+    
     - 是目前主流语言的线程模型，目前高版本的JVM都是用这种模型
-
+  
   - 优点：
+    
     - UT阻塞了不影响其他内核KLT的执行，因为有Thread Scheduler进行切换协调
-
+  
   - 缺点：
-
+    
     - 操作线程需要在**用户态**和**内核态**中来回切换，因为本质上都要反映到KTL中，消耗一定的资源
-
+    
     - 受到Linux内核创建的资源限制
 
 ![内核调度线程模型](./images/内核调度线程模型.jpg)
@@ -163,8 +152,6 @@
 
 ![用户线程模型](./images/混合线程模型.jpg)
 
-
-
 ## 类相关
 
 ### 类的加载过程
@@ -176,8 +163,6 @@
   - 解析：把常量池中的符号引用转为直接引用
 - 初始化：为类静态变量进行初始化，赋**初始值**
 
-
-
 ### 类加载的时机
 
 - 创建类的实例对象（new方式）
@@ -186,8 +171,6 @@
 - 反射
 - 初始化某个类的子类，父类也会被初始化
 - 虚拟机启动时被表明为启动类的类
-
-
 
 ### 双亲委派机制
 
@@ -238,8 +221,6 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 }
 ```
 
-
-
 ## 对象相关
 
 ### 对象创建流程
@@ -247,17 +228,17 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 - **类加载检查**：定位检查指令参数是否能在常量池定位到类符号的引用，检查判断类是否被加载过、解析和初始化过；
 
 - **分配内存**：根据Java堆**是否规整**决定分配方式，分配方式包含两种：
-
+  
   - 指针碰撞：**内存需要绝对规整**，挪动开辟对象所需的区域大小即可；
   - 空闲列表：记录哪部分区域是空闲的。
-
+  
   而Java堆是否规整又由采用的**垃圾收集器是否带压缩整理功能**决定的，并发内存分配为以下规则：
-
+  
   - TLAB：在线程初始化时默认分配空间，JVM在线程中分配内存时先在TLAB（TLAB区域也是在堆上，但**线程专属**）分配，不存在线程的竞争。当分配对象大于TLAB剩余内存时，采用CAS+失败重试的方法创建；
   - CAS+失败重试：虚拟机采用CAS配上失败重试的方式保证更新操作的原子性，该方法是指在传统的堆上进行对象的创建，会导致激烈的竞争；
-
+  
   额外：
-
+  
   - 栈上分配，如果一个对象的作用域不会逃逸到方法之外，那这个对象可以分配到栈上，随着栈帧出栈而销毁；而且不会逃逸的对象所占比例很大，销毁时无需通过垃圾收集器回收，可以减小垃圾收集器的压力负载。如果JVM需要进行类似栈上分配的好处，则需要开启以下两个功能操作：
     - 逃逸分析：在server模式下，启用-XX:+DoEscapeAnalysis，默认开启；
     - 变量替换：启用-XX:+EliminateAllocations，默认打开；
@@ -270,23 +251,19 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 
 ![对象创建空间分配流程](./images/对象创建空间分配流程.png)
 
-
-
 ### 对象内存布局
 
 - 对象头：
-
+  
   - Mark Word（运行时数据）：如哈希码，GC分代年龄，锁状态标志位；
-
+  
   ![对象头MarkWord简述](./images/对象头MarkWord简述.png)
-
+  
   - 类型指针（元数据指针）：指向类元素据的指针，确定对象是哪个类的实例；
 
 - 实例数据：真正存储对象有效信息的部分；
 
 - 对齐填充：起占位符的作用，要求真实地址必须是8字节的整数倍。
-
-
 
 ### 对象访问定位
 
@@ -297,14 +274,10 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 - 使用句柄：对象移动时不需要改变reference的指向，只改变句柄实例数据的指针；
 - 使用指针：直接访问，速度快，HotSpot虚拟机就是用**直接指针实现**的。
 
-
-
 ### 对象存活判断
 
 - 引用计数法：对象存有被引用的次数，简单但无法解决**循环引用**的问题；
 - 可达性分析：Hotspot使用**枚举根节点**的方式，需要**发生STW**，可以解决循环引用等问题。
-
-
 
 ### 对象的引用
 
@@ -313,15 +286,11 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 - 弱引用：引用的对象只能生存到**下一次垃圾回收**之前，无论内存是否足够，都进行回收，使用**WeakReference**；
 - 虚引用：最弱的引用关系，目的是对象被回收时**收到一个系统通知，跟踪对象垃圾回收的状态**，使用**PhantomReference**。
 
-
-
 ### Finalize函数
 
 - finalize在对象被回收前触发的函数，只要在此时重新与引用链上的任何对象关联即可逃脱被回收；
 - 任何一个对象的finalize方法都只会被系统自动调用一次，如果对象面临下一次回收，finalize方法不会被再次执行；
 - 运行代价高昂，不确定性太大，无法保证各个对象的调用顺序，不推荐使用。
-
-
 
 ## 垃圾回收相关
 
@@ -339,8 +308,6 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 
 ![标记整理算法](./images/标记整理算法.jpg)
 
-
-
 ### 垃圾收集器
 
 1. 新生代：
@@ -354,15 +321,11 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 3. 共用：
    - G1收集器：**可预测的停顿**；整体使用标记整理算法，局部使用复制算法；把堆划分为**多个独立区域Region**，新生代和老年代**不再是物理隔离**的，跟踪各个Region中的堆积价值大小，**优先回收价值最大的Region**。
 
-
-
 ### GC名词解释
 
 - MinorGC：次要的GC，发生在新生代，都会发生STW；
 - MajorGC：主要的GC，发生在老年代；
 - FullGC：整个堆的GC。
-
-
 
 ### OOM
 
@@ -370,8 +333,6 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 - 虚拟机栈和本地方法栈溢出：请求的栈深大于虚拟机所需最大深度，或扩展栈时无法申请到足够的内存空间，使用-Xss调整栈的内存容量；
 - 方法区和运行时常量池溢出（JDK1.8以前）：在方法区和运行时常量池中加载内容过多，例如字符串实例导致内存溢出，使用-XX:PermSize -XX:MaxPermSize调整；
 - 本机直接内存溢出（JDK1.8以后）：加载的类信息或者元数据过多，使用-XX:MaxDirectMemorySize调整。
-
-
 
 ### 命令工具
 
@@ -392,8 +353,6 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 - jstack：当前线程执行的快照，jstack -l PID
 - VisualVM：上面工具的集合，一般用此工具，省力省心。
 
-
-
 ## JVM操作样例
 
 ### 如何合理设置线程池大小
@@ -401,8 +360,6 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 - 根据当前的执行任务是**CPU密集型**还是**IO密集型**：如果是CPU密集型应用，则线程池大小设置为CPU数量 + 1，如果是IO密集型应用，则线程池大小设置为2 * CPU数量 + 1，该设置偏理论方式；
 - 根据CPU的等待时间进行计算：最佳线程数目 = (线程等待时间 / 线程CPU时间 + 1) * CPU数量，由于线程等待时间和线程CPU时间很难确定，该公式很难进行实际使用；
 - 动态设置线程池数量的大小，美团技术团队使用JDK原生的threadpool，其可以调用setMaximumPoolSize和setCorePoolSize动态设置大小，并且实现自定义的ResizableCapacityLinkedBlockingQueue动态设置队列大小
-
-
 
 ### 如何查看与定位CPU100%的问题
 
@@ -435,8 +392,6 @@ private static final class MyWhile {
 ![CPU100%问题3](./images/CPU100问题3.png)
 
 如果查看到对应线程为GC线程，那么极有可能是**频繁的GC**导致CPU100%的，那么需要使用jstat来观察对应的GC运行信息（jstat -gc PID [监视频率毫秒]），倘若频繁发生GC，那么需要进一步通过jmap分析内存对象占用信息，观察是否有内存泄漏的问题存在
-
-
 
 ### 如何定位死锁的问题
 
@@ -483,12 +438,10 @@ public static void main(String[] args) throws InterruptedException {
 
 ![Java死锁问题](./images/Java死锁问题.png)
 
-
-
 ### 使用Jvisualvm查看JVM状态
 
 - 推荐安装插件：
-
+  
   - Visual GC
   - VisualVM-JConsole
   - VisualVM-MBeans
@@ -496,19 +449,19 @@ public static void main(String[] args) throws InterruptedException {
   - Threads Inspector
 
 - 在程序启动时增加几个命令参数以启动JMX链接，此时可以通过Jvisualvm的JMX方式连接
-
+  
   - -Dcom.sun.management.jmxremote.authenticate=false
   - -Dcom.sun.management.jmxremote.ssl=false
   - -Dcom.sun.management.jmxremote.port=12345
 
 - 若想通过Visual GC监测GC的情况，可以通过在程序中启动Jstatd进行监控，方法是：
-
+  
   - 在java_home的bin目录下创建jstatd.all.policy文件，其中/usr/local/java/lib/tools.jar可以按照需求替换为${JAVA_HOME}/lib/tools.jar，前提是已经设置过JAVA_HOME环境变量
-
+  
   ```
   grant codebase "file:/usr/local/java/lib/tools.jar" {
      permission java.security.AllPermission;
   };
   ```
-
+  
   - 通过命令启动./jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostname=xxx.xxx.xxx.xxx -p xxxx -J-Djava.rmi.server.logCalls=true

@@ -2,8 +2,6 @@
 
 ![排序算法属性](./images/排序算法属性.png)
 
-
-
 ### 冒泡排序
 
 ```java
@@ -40,8 +38,6 @@ public class BubbleSort<T extends Comparable<T>> extends AbstractSortable<T> {
 }
 ```
 
-
-
 ### 插入排序
 
 ```java
@@ -75,8 +71,6 @@ public class InsertSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
 }
 ```
-
-
 
 ### 选择排序
 
@@ -117,8 +111,6 @@ public class SelectSort<T extends Comparable<T>> extends AbstractSortable<T> {
 }
 ```
 
-
-
 ### 归并排序
 
 ```java
@@ -130,7 +122,7 @@ public class SelectSort<T extends Comparable<T>> extends AbstractSortable<T> {
  * @date 2020-03-20 11:24
  */
 public class MergeSort<T extends Comparable<T>> extends AbstractSortable<T> {
-    
+
     /**
      * 归并排序
      * 排序思想：分治法（递归）
@@ -189,8 +181,6 @@ public class MergeSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
 }
 ```
-
-
 
 ### 快速排序
 
@@ -257,15 +247,13 @@ public class QuickSort<T extends Comparable<T>> extends AbstractSortable<T> {
 }
 ```
 
-
-
 ## BFS
 
 ```
 result = []
 def permute(已经选择的路径, 剩余选择列表):
     if 满足结束条件:
-    	// 此时注意路径的可变动方式，若为数组或者列表需要new一个新的
+        // 此时注意路径的可变动方式，若为数组或者列表需要new一个新的
         result.add(已经选择的路径)
         return
 
@@ -318,8 +306,6 @@ public class Permutations {
 }
 ```
 
-
-
 ## 限流
 
 ### 计数器法
@@ -360,8 +346,6 @@ public class Counter {
 
 }
 ```
-
-
 
 ### 滑动窗口
 
@@ -443,8 +427,6 @@ public class RollingWindow {
 }
 ```
 
-
-
 ### 漏桶算法
 
 ```java
@@ -467,12 +449,12 @@ public class LeakyBucket {
         this.milliseconds = milliseconds / windowSize;
         this.maxTransaction = maxTransaction;
         this.singlePeriodTransaction = maxTransaction / windowSize;
-        
-		//设置桶和桶大小
+
+        //设置桶和桶大小
         queue = new LinkedBlockingQueue<>(new Long(maxTransaction).intValue());
         //单线程的任务执行器
         this.executor = Executors.newSingleThreadScheduledExecutor();
-		//启动任务，循环漏水
+        //启动任务，循环漏水
         executor.scheduleAtFixedRate(() -> {
             int count = 0;
             while (count++ < singlePeriodTransaction) {
@@ -486,9 +468,9 @@ public class LeakyBucket {
     }
 
     /**
-	* 注水
-	* @param water 注入的水
-	*/
+    * 注水
+    * @param water 注入的水
+    */
     public void fillWater(Water water) {
         this.queue.add(water);
     }
@@ -502,15 +484,11 @@ public class LeakyBucket {
 }
 ```
 
-
-
 ### 令牌桶算法
 
 ```java
 
 ```
-
-
 
 ## 随机算法
 
@@ -519,8 +497,6 @@ public class LeakyBucket {
 ```java
 
 ```
-
-
 
 ### 洗牌算法
 
@@ -562,8 +538,6 @@ public class LeakyBucket {
     }
 ```
 
-
-
 ### Leetcode
 
 #### 必会
@@ -577,94 +551,90 @@ public class LeakyBucket {
 7. 字符串
 8. LRU+LFU
 
-
-
 #### Hard15题目
 
-- 25
-- 23
-- 42
-- 124
-- 72
-- 4
-- 76
-- 239
-- 41
-- 32
-- 297
-- 460
-- 剑指51
-- 224
-- 135
-
-
+- 25：[力扣](https://leetcode.cn/problems/reverse-nodes-in-k-group/)
+- 23：[力扣](https://leetcode.cn/problems/merge-k-sorted-lists/)
+- 42：[力扣](https://leetcode.cn/problems/trapping-rain-water/)
+- 124：[力扣](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)
+- 72：[力扣](https://leetcode.cn/problems/edit-distance/)
+- 4：[力扣](https://leetcode.cn/problems/median-of-two-sorted-arrays/)
+- 76：[力扣](https://leetcode.cn/problems/minimum-window-substring/)
+- 239：[力扣](https://leetcode.cn/problems/sliding-window-maximum/)
+- 41：[力扣](https://leetcode.cn/problems/first-missing-positive/)
+- 32：[力扣](https://leetcode.cn/problems/longest-valid-parentheses/)
+- 297：[力扣](https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/)
+- 460：[力扣](https://leetcode.cn/problems/lfu-cache/)
+- 剑指51：[力扣](https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/)
+- 224：[力扣](https://leetcode.cn/problems/basic-calculator)
+- 135：[力扣](https://leetcode.cn/problems/candy)
 
 #### 中等67
 
-- 3
-- 146
-- 215
-- 15
-- 102
-- 103
-- 236
-- 33
-- 5
-- 200
-- 46
-- 92
-- 142
-- 54
-- 300
-- 143
-- 199
-- 56
-- 19
-- 82
-- 8
-- 148
-- 2
-- 151
-- 93
-- 105
-- 31
-- 1143
-- 22
-- 129
-- 113
-- 98
-- 43
-- 78
-- 470
-- 322
-- 64
-- 718
-- 48
-- 165
-- 39
-- 34
-- 153
-- 62
-- 128
-- 221
-- 240
-- 24
-- 695
-- 198
-- 498
-- 662
-- 79
-- 145
-- 402
-- 59
-- 230
-- 328
-- 61
-- 50
-- 47
-- 450
-- 74
-- 189
-- 40
-- 11
-- 114
+- 3：[力扣](https://leetcode.cn/problems/longest-substring-without-repeating-characters)
+- 146：[力扣](https://leetcode.cn/problems/lru-cache)
+- 215：[力扣](https://leetcode.cn/problems/kth-largest-element-in-an-array)
+- 15：[力扣](https://leetcode.cn/problems/3sum)
+- 102：[力扣](https://leetcode.cn/problems/binary-tree-level-order-traversal)
+- 103：[力扣](https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal)
+- 236：[力扣](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree)
+- 33：[力扣](https://leetcode.cn/problems/search-in-rotated-sorted-array)
+- 5：[力扣](https://leetcode.cn/problems/longest-palindromic-substring)
+- 200：[力扣](https://leetcode.cn/problems/number-of-islands)
+- 46：[力扣](https://leetcode.cn/problems/permutations)
+- 92：[力扣](https://leetcode.cn/problems/reverse-linked-list-ii)
+- 142：[力扣](https://leetcode.cn/problems/linked-list-cycle-ii)
+- 54：[力扣](https://leetcode.cn/problems/spiral-matrix)
+- 300：[力扣](https://leetcode.cn/problems/longest-increasing-subsequence)
+- 143：[力扣](https://leetcode.cn/problems/reorder-list)
+- 199：[力扣](https://leetcode.cn/problems/binary-tree-right-side-view)
+- 56：[力扣](https://leetcode.cn/problems/merge-intervals)
+- 19：[力扣](https://leetcode.cn/problems/remove-nth-node-from-end-of-list)
+- 82：[力扣](https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii)
+- 8：[力扣](https://leetcode.cn/problems/string-to-integer-atoi)
+- 148：[力扣](https://leetcode.cn/problems/sort-list)
+- 2：[力扣](https://leetcode.cn/problems/add-two-numbers)
+- 151：[力扣](https://leetcode.cn/problems/reverse-words-in-a-string)
+- 93：[力扣](https://leetcode.cn/problems/restore-ip-addresses)
+- 105：[力扣](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal)
+- 31：[力扣](https://leetcode.cn/problems/next-permutation)
+- 1143：[力扣](https://leetcode.cn/problems/longest-common-subsequence)
+- 22：[力扣](https://leetcode.cn/problems/generate-parentheses)
+- 129：[力扣](https://leetcode.cn/problems/sum-root-to-leaf-numbers)
+- 113：[力扣](https://leetcode.cn/problems/path-sum-ii)
+- 98：[力扣](https://leetcode.cn/problems/validate-binary-search-tree)
+- 43：[力扣](https://leetcode.cn/problems/multiply-strings)
+- 78：[力扣](https://leetcode.cn/problems/subsets)
+- 470：[力扣](https://leetcode.cn/problems/implement-rand10-using-rand7)
+- 322：[力扣](https://leetcode.cn/problems/coin-change)
+- 64：[力扣](https://leetcode.cn/problems/minimum-path-sum)
+- 718：[力扣](https://leetcode.cn/problems/maximum-length-of-repeated-subarray)
+- 48：[力扣](https://leetcode.cn/problems/rotate-image)
+- 165：[力扣](https://leetcode.cn/problems/compare-version-numbers)
+- 39：[力扣](https://leetcode.cn/problems/combination-sum)
+- 34：[力扣](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array)
+- 153：[力扣](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array)
+- 62：[力扣](https://leetcode.cn/problems/unique-paths)
+- 128：[力扣](https://leetcode.cn/problems/longest-consecutive-sequence)
+- 221：[力扣](https://leetcode.cn/problems/maximal-square)
+- 240：[力扣](https://leetcode.cn/problems/search-a-2d-matrix-ii)
+- 24：[力扣](https://leetcode.cn/problems/swap-nodes-in-pairs)
+- 695：[力扣](https://leetcode.cn/problems/max-area-of-island)
+- 198：[力扣](https://leetcode.cn/problems/house-robber)
+- 498：[力扣](https://leetcode.cn/problems/diagonal-traverse)
+- 662：[力扣](https://leetcode.cn/problems/maximum-width-of-binary-tree)
+- 79：[力扣](https://leetcode.cn/problems/word-search)
+- 145：[力扣](https://leetcode.cn/problems/binary-tree-postorder-traversal)
+- 402：[力扣](https://leetcode.cn/problems/remove-k-digits)
+- 59：[力扣](https://leetcode.cn/problems/spiral-matrix-ii)
+- 230：[力扣](https://leetcode.cn/problems/kth-smallest-element-in-a-bst)
+- 328：[力扣](https://leetcode.cn/problems/odd-even-linked-list)
+- 61：[力扣](https://leetcode.cn/problems/rotate-list)
+- 50：[力扣](https://leetcode.cn/problems/powx-n)
+- 47：[力扣](https://leetcode.cn/problems/permutations-ii)
+- 450：[力扣](https://leetcode.cn/problems/delete-node-in-a-bst)
+- 74：[力扣](https://leetcode.cn/problems/search-a-2d-matrix)
+- 189：[力扣](https://leetcode.cn/problems/rotate-array)
+- 40：[力扣](https://leetcode.cn/problems/combination-sum-ii)
+- 11：[力扣](https://leetcode.cn/problems/container-with-most-water)
+- 114：[力扣](https://leetcode.cn/problems/flatten-binary-tree-to-linked-list)
