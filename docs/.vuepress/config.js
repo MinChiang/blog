@@ -35,6 +35,7 @@ module.exports = {
             { title: "编程思想", path: "thinking" },
             { title: "大数据", path: "bigdata" },
             { title: "业务", path: "business" },
+            { title: "Python", path: "python" },
             { title: "工具", path: "tools" },
             { title: "其他", path: "other" },
           ],
