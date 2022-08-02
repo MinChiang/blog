@@ -14,7 +14,7 @@
   
   - 展示若如下：
     
-    ![](../../images/eeaccfdde559a82bf6f702ff97dc813822827373.jpg)
+    ![更换pip下载包路径](./images/更换pip下载包路径.jpg)
   
   - 则需要更换pip的安装包路径
   
@@ -55,24 +55,4 @@
   
   - windows下需要添加-X utf8启动，否则会出现读取文件失败的情况
   
-  ![](../../images/10c098f0cf6e32333336a037fbff4af462bf1af7.jpg)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  ![pycharm启动参数调整](./images/pycharm启动参数调整.jpg)
