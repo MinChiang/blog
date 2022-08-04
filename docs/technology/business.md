@@ -49,28 +49,28 @@
 
 ### 技术分享
 
-![渠道投放数据传递链路](./images/渠道分享ppt2.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt2.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt3.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt3.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt4.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt4.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt5.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt5.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt6.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt6.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt7.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt7.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt8.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt8.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt9.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt9.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt10.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt10.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt11.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt11.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt12.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt12.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt13.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt13.jpg)
 
-![渠道投放数据传递链路](./images/渠道分享ppt14.JPG)
+![渠道投放数据传递链路](./images/渠道分享ppt14.jpg)
