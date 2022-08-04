@@ -16,6 +16,7 @@ module.exports = {
     nav: [
       { text: "首页", link: "/" },
       { text: "技术", link: "/technology/java_basis" },
+      { text: "旅游", link: "/travel/shantou" },
       { text: "杂谈", link: "/chat/develop_experience" },
       { text: "关于我", link: "/about/now" },
     ],
@@ -38,6 +39,15 @@ module.exports = {
             { title: "Python", path: "python" },
             { title: "工具", path: "tools" },
             { title: "其他", path: "other" },
+          ],
+        },
+      ],
+      "/travel/": [
+        {
+          title: "旅游",
+          collapsable: false,
+          children: [
+            { title: "汕头南澳", path: "shantou" },
           ],
         },
       ],
