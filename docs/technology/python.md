@@ -33,7 +33,31 @@
   pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
   ```
 
-- pipreqs使用准备
+- venv虚拟环境
+  
+  - 安装venv虚拟环境
+
+    ```bash
+    python3 -m venv venv
+    ```
+
+  - 激活虚拟环境
+
+    ```bash
+    cd .\venv\Scripts
+    activate
+    ```
+  
+  - 退出虚拟环境
+
+    ```bash
+    cd .\venv\Scripts
+    deactivate
+    ```
+  
+  - 删除venv虚拟环境：直接删除对应的venv文件夹即可
+
+- pipreqs使用
   
   - 安装pipreqs库
     
@@ -48,6 +72,12 @@
     ```
   
   - 输出时会扫描对应用到的包，只有依赖的包才会进入requirements.txt文件中
+
+  - 如果需要从**requirements.txt**中安装内容
+
+    ```bash
+    pip install -r .\requirements.txt
+    ```
 
 - pycharm启动参数调整
   
