@@ -1,3 +1,63 @@
+## ACME.sh
+
+### 介绍
+
+- 一个自动申请域名与自动续签的linux脚本
+
+- [官网](https://github.com/acmesh-official/acme.sh)
+
+- [中文说明](https://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E)
+
+### 托管平台（Namesilo为例）申请API密钥
+
+- [NameSilo API托管地址](https://www.namesilo.com/account_api.php)
+
+- 记录下申请的key
+
+### 安装
+
+```bash
+export Namesilo_Key="上面步骤申请的key"
+curl https://get.acme.sh | sh -s email=448725235@qq.com
+```
+
+### 申请证书
+
+```bash
+acme.sh --issue --dns dns_namesilo --dnssleep 1800 -d *.minchiang.info
+```
+
+### 安装证书
+
+```bash
+acme.sh --install-cert -d *.minchiang.info \
+--key-file       /etc/nginx/ssl/*.minchiang.info/key.pem  \
+--fullchain-file /etc/nginx/ssl/*.minchiang.info/cert.pem \
+--reloadcmd     "/etc/init.d/nginx force-reload"
+```
+
+### 后续维护
+
+- 强制续约：
+  
+  ```bash
+  acme.sh --renew -d *.minchiang.info --force
+  ```
+
+- 查看证书列表：
+  
+  ```bash
+  acme.sh --list 
+  ```
+
+- 查看是否已经注册到crontab中
+  
+  ```bash
+  crontab -l
+  ```
+
+
+
 ## Git
 
 - 版本库初始化：git init
