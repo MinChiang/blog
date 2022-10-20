@@ -3,7 +3,8 @@
 ### 事前准备工作
 
 1. 一张大容量的TF卡，实时证明128G还是有点小，最好256G起步
-2. 把TF格式化为FAT32
+2. 用DiskGenius把TF格式化为FAT32，簇大小默认就好
+3. 需要一点翻墙的手段，毕竟要下载一些东西
 
 ### 通过DeepSea直接下载整合包
 
@@ -15,13 +16,13 @@
 
 2. 通过[SdSetup](https://www.sdsetup.com/console?switch)制定对应的整合包，一般来说需要进行整合定制，推荐使用**Recommended Defaults**即可
 3. 将 sd 卡里面的内容全部复制到 TF 卡根目录
-	- 如果是硬破机器：将 payloads 中 `hekate_ctcaer_x.x.x.bin` 更名成 `payload.bin` 放入 TF 卡根目录，因为硬破机器会优先读取TF卡里面的payload.bin文件
+	- 如果是硬破机器：将 payloads 中 `hekate_ctcaer_x.x.x.bin` 更名成 `payload.bin` 放入 TF 卡根目录，因为硬破机器会优先读取TF卡里面的`payload.bin`文件
 	- 如果是软破机器：需要用TegraRcmGUI进行启动注入
 
 ## 下载安装Sigpatch
 
 1. 通过[Sigpatch](https://sigmapatches.coomer.party/)下载对应的包，把其中的内容全部复制到对应的上述根目录文件夹中
-2. 注意需要覆盖一些文件
+2. 注意需要覆盖一些文件，直接全部覆盖即可
 
 ## 备份重要的文件（如果已经做过可忽略）
 
@@ -47,6 +48,19 @@
 1. 下载[固件](https://darthsternie.net/switch-firmwares/)，下载对应的固件并且放入TF卡
 2. 打开相册，打开Daybreak，选择对应的固件文件夹，确定即可
 
+## 精简系统（虚拟系统）
+
+1. 进入hekate选择Payloads，使用`Lockpick_RCM.bin`，选择`Dump from EmuNAND`，注意不要选错选项了，下面的keyset有误一般都是这里选错选项
+3. 拔出TF卡，插入电脑，然后在switch文件夹下复制prod.keys到本地电脑
+4. 下载[NxNandManager](https://github.com/eliboa/NxNandManager)
+5. 选择`File -> Open File`，选择TF卡里面的`emuMMC->SD0->eMMC`下的00文件
+6. 选择`Options -> Configure keyset -> Import keys from file`，导入对步骤1所导出的prod.keys
+7. 选择`Tools -> Resize NAND`，勾选Format USER，New size for USER填2048MB，自定义填写Output file，点击确定
+8. 通过NxNandManager重新打开刚才导出的resized文件，在Partitions中选择PRODINFO中，点击wipe personal清除序列号信息
+9. 选择`File -> Save as(advanced)`，勾选Split output，设置大小为4000MB，设置导出路径，导出完之后把RAWNAND.bin.xxx改名为00，01，02，以此类推
+10. 把原来的eMMC重命名为eMMC_bak，新建eMMC文件夹，把刚才的00，01，02...所有文件拷贝进来，再复制eMMC_bak里面的BOOT0和BOOT1文件到eMMC文件夹中
+11. 开机查看使用内存
+
 ## 后续的一些补充操作
 
 - 删除/隐藏虚拟系统的序列号：复制atmosphere/config_templates/exosphere.ini到根目录下，并且修改exosphere.ini文件内容，把`blank_prodinfo_emummc`改为1
@@ -55,10 +69,11 @@
 	- 下载[emummc.txt](https://nh-server.github.io/switch-guide/files/emummc.txt)文件并放在`/atmosphere/hosts`里面
 	- 启动机器，查看`/atmosphere/logs/dns_mitm_startup.log`，如果有对应**Redirections xxx.nintendo.xxx -> xxx**，说明成功
 	- 详情可以见：[NH Switch Guide](https://nh-server.github.io/switch-guide/extras/blocking_nintendo/)
+- 游戏渠道：建议不要去破解游戏论坛里面下载，里面的好多需要回帖付费，直接去淘宝花10块钱买个百度网盘内容分享地址，全游戏下载美滋滋
 
 ## 一些其他的软件
 
-- ~~~~下载 [ITotalJustice/patches](https://github.com/ITotalJustice/patches)，直接解压到根目录，这样才能运行破解游戏
+- 下载 [ITotalJustice/patches](https://github.com/ITotalJustice/patches)，直接解压到根目录，这样才能运行破解游戏
 - [dbi](https://github.com/rashevskyv/dbi)，可以直接从电脑直接安装游戏
 - [Awoo-Installer](https://github.com/Huntereb/Awoo-Installer)，安装器
 - [NxNandManager](https://github.com/eliboa/NxNandManager)，可以修改对应的分区大小

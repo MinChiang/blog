@@ -18,7 +18,8 @@ module.exports = {
       { text: "技术", link: "/technology/java_basis" },
       { text: "旅游", link: "/travel/shantou" },
       { text: "杂谈", link: "/chat/develop_experience" },
-      { text: "关于我", link: "/about/now" },
+      { text: "娱乐", link: "/entertainment/switch" },
+      { text: "关于", link: "/about/now" },
     ],
     sidebar: {
       "/technology/": [
@@ -61,9 +62,18 @@ module.exports = {
           ],
         },
       ],
+      "/entertainment/": [
+        {
+          title: "娱乐",
+          collapsable: false,
+          children: [
+            { title: "switch游戏", path: "switch" },
+          ],
+        },
+      ],
       "/about/": [
         {
-          title: "关于我",
+          title: "关于",
           collapsable: false,
           children: [
             { title: "现在", path: "now" },
