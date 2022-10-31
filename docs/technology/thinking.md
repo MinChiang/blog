@@ -34,11 +34,11 @@
 
 - 结合《领域驱动设计》的工程：[领域驱动工程样例](https://github.com/citerus/dddsample-core)
 - 阿里DDD技术讲解：
-  - [阿里技术专家详解DDD系列 第一讲：Domain Primitive](https://juejin.cn/post/6844904177207001101)
-  - [阿里技术专家详解DDD系列 第二讲：应用架构](https://juejin.cn/post/6844904201575743495)
-  - [阿里技术专家详解DDD系列 第三讲：Repository模式](https://juejin.cn/post/6845166890554228744)
-  - [阿里技术专家详解DDD系列 第四讲：领域层设计规范](https://juejin.cn/post/6912228908075057166)
-  - [阿里技术专家详解DDD系列 第五讲：聊聊如何避免写流水账代码](https://juejin.cn/post/6953141151931039758)
+  - [阿里技术专家详解DDD系列 第一讲：Domain Primitive](https://mp.weixin.qq.com/s?__biz=MzAxNDEwNjk5OQ==&mid=2650403892&idx=1&sn=a91fa477392e80f9420a8ca4d26bcace&chksm=83953c2cb4e2b53a6af3b5a82c3b7d7ed932bfe83f59877a935445ae89edd0ff4ee1c4e82fba&scene=21#wechat_redirect)
+  - [阿里技术专家详解DDD系列 第二讲：应用架构](https://mp.weixin.qq.com/s?__biz=MzAxNDEwNjk5OQ==&mid=2650404060&idx=1&sn=cacf40d19528f6c2d9fd165151d6e8b4&chksm=83953cc4b4e2b5d2bd4426e0d2103f2e95715b682f3b7ff333dbb123eaa79d3e5ad24f64beac&scene=21#wechat_redirect)
+  - [阿里技术专家详解DDD系列 第三讲：Repository模式](https://mp.weixin.qq.com/s?__biz=MzAxNDEwNjk5OQ==&mid=2650406692&idx=1&sn=4a4ac4168299d8ca1905a4f457ae4c59&chksm=8395373cb4e2be2a2d066a5ea4e631fd6270e969ce61883b488f61c1ce33fbc0b362ec9cbf7b&scene=21#wechat_redirect)
+  - [阿里技术专家详解DDD系列 第四讲：领域层设计规范](https://mp.weixin.qq.com/s?__biz=MzAxNDEwNjk5OQ==&mid=2650414919&idx=1&sn=0ad1df1a1b0e2488f7faa21008fdbdd0&chksm=8396d75fb4e15e49341b07022780dcb8dca66a0efb7f129d4de86a5ef5d8a890f6e0d2fd6432&scene=21#wechat_redirect)
+  - [阿里技术专家详解DDD系列 第五讲：聊聊如何避免写流水账代码](https://mp.weixin.qq.com/s?__biz=MzAxNDEwNjk5OQ==&mid=2650427571&idx=1&sn=bfc3c1c6f189965a1a4c7f3918012405&chksm=839698abb4e111bd5e02344f27d86c928ccfe4d3da1649817b02924c07f681fc1a7ea818f442&scene=178&cur_album_id=1452661944472977409#rd)
   - 对应工程代码：[工程代码](https://github.com/Air433/dddbook)
 - vivo技术讲解：
   - [领域驱动设计(DDD)实践之路(一)](https://juejin.cn/post/6844904071174815752)
@@ -60,15 +60,16 @@
 
 ### 概述
 
-### Interface层：
+#### Interface层：
 
 - 承接消息的入口，转化入口参数
 - interface层的表达不止为http协议，也有dubbo、soap、websocket、kafka等
 - 每种协议独立一套的表达方式，避免同一表达；需要注意出参要有同一的格式，例如http协议同一返回StandardReposese对象
 - 应该捕捉所有异常，避免异常信息的泄漏
 - 不应意识到domain层的内部对象
+- 用Bean Validation做对CQE对象的校验
 
-### Application层：
+#### Application层：
 
 - application层做的是**服务的编排**，**不做任何的计算逻辑**；一般包含下面的操作
   - 数据校验
@@ -81,7 +82,7 @@
 - application层需要做简单的参数校验，例如：判空、字符串合法化判断，可以用Bean Validation解决
 - 有异常信息可以直接抛出，因为在上层的interface层已经捕获所有异常
 
-### Domain层：
+#### Domain层：
 
 - Entity：
   - 有对应的id，一个Entity对应有一个唯一的id
@@ -89,6 +90,7 @@
   - id需要用一个对象进行包裹，防止id的唯一性变更
   - 一个Entity对应有一个Repository
   - 封装业务的参数校验以及业务逻辑
+  - 推荐用全局唯一的EventBus发送事件
 - Value Object：
   - 没有id，参数都是不可变的，若改变里面的信息直接重新new一个即可
   - 没有对应的Repository
@@ -99,11 +101,34 @@
 - Repository：
   - 保存Entity的状态
   - 本质上只有save和find两种的方法
+  - 实现类完成数据库存储的细节
 - Factory：
   - 创建Entity对象，从0到1的过程
   - 入参是领域对象，非基本类型
   - 复杂构造的时候可能会依赖Repository
 
-### Infrastructure层：
+#### Infrastructure层：
 
 - 用ACL防腐层将外部依赖转化为内部代码，隔离外部的影响
+
+### 使用ACL的好处
+
+- 适配器：便于适配其他服务接口
+- 缓存：可以缓存频繁请求的数据
+- 兜底：防止其他服务不可用导致核心功能的不可用
+- 易于测试：可以方便地通过mock和stub进行单元测试
+- 功能开关：控制功能的实现
+
+### CQE的概念与使用
+
+|        | Command            | Query           | Event            |
+| ------ | ------------------ | --------------- | ---------------- |
+| 语义   | "希望"能触发的操作 | 各种查询条件    | 已经发生过的事情 |
+| 读/写  | 写                 | 只读            | 写               |
+| 返回值 | DTO或Boolean       | DTO或Collection | Void             |
+
+- CQE在interfaces层做校验，推荐使用Bean Validation实现
+- 不要复用CQE对象，因为不同行为后续的差异会越来越大
+
+
+

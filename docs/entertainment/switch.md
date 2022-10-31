@@ -79,3 +79,4 @@
 - [NxNandManager](https://github.com/eliboa/NxNandManager)，可以修改对应的分区大小
 - [Switch_90DNS_tester](https://github.com/meganukebmp/Switch_90DNS_tester)，判断当前系统是否有block任天堂的地址
 - [Tinfoil](https://tinfoil.io/Download)，从多个渠道安装游戏
+- [N中文数据整理](https://shimo.im/sheets/m5kv9zpQ6Dha82qX/MODOC)，直接使用文档下载游戏（需要配合百度网盘）
