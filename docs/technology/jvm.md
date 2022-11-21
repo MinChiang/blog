@@ -284,7 +284,130 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 - 强引用：指代码普遍存在的引用方式，只要强引用存在，则永远不会对其进行垃圾回收；
 - 软引用：在系统发生**内存溢出异常**之前对其进行垃圾回收，使用**SoftReference**；
 - 弱引用：引用的对象只能生存到**下一次垃圾回收**之前，无论内存是否足够，都进行回收，使用**WeakReference**；
-- 虚引用：最弱的引用关系，目的是对象被回收时**收到一个系统通知，跟踪对象垃圾回收的状态**，使用**PhantomReference**。
+- 虚引用：最弱的引用关系，目的是对象被回收时**收到一个系统通知，跟踪对象垃圾回收的状态**，使用**PhantomReference**，本质上都不能通过get()方法获取实例，因为get()方法实现是return null
+
+```java
+public SoftReference(T referent);
+public SoftReference(T referent, ReferenceQueue<? super T> q);
+
+public WeakReference(T referent);
+public WeakReference(T referent, ReferenceQueue<? super T> q);
+
+public PhantomReference(T referent, ReferenceQueue<? super T> q);
+```
+
+
+
+注意：在各个Reference中，构造签名里面的T referent均是指：**被引用的对象**，也叫**被回收的对象**；而持有xxxReference的对象指的是**引用对象**；当被引用对象回收后，引用对象仍然持有xxxReference对象，但是无法通过xxxReference.get()方法获取到被引用的对象，下面的样例中：Person是被引用的对象，Registration是引用对象，回收是回收Person实例，而不是Registration，回收后Registration依然能够被获取到
+
+```java
+public class WeakReferenceTest {
+
+    @ToString
+    @Getter
+    private static final class Person {
+
+        private String name;
+
+        public Person(String name) {
+            this.name = name;
+        }
+
+        @Override
+        protected void finalize() {
+            System.out.println(this.name + "已被回收（挂了）");
+        }
+
+    }
+
+    @ToString
+    @Getter
+    private static final class Registration extends WeakReference<Person> {
+
+        private String ownerName;
+
+        public Registration(Person referent, ReferenceQueue<? super Person> q) {
+            super(referent, q);
+            this.ownerName = referent.getName();
+        }
+
+    }
+
+    @Getter
+    private static final class House {
+
+        private String name;
+        private Registration registration;
+        private ReferenceQueue<Person> historyOwner;
+
+        public House(Person person) {
+            this.historyOwner = new ReferenceQueue<>();
+            this.name = person.getName() + "的房子";
+            this.registration = new Registration(person, this.historyOwner);
+        }
+
+        public Person getPerson() {
+            return registration.get();
+        }
+
+        public List<Registration> getHistoryRegistration() {
+            List<Registration> result = new ArrayList<>();
+            Registration poll;
+            while ((poll = (Registration) historyOwner.poll()) != null) {
+                result.add(poll);
+            }
+            return result;
+        }
+
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        Person person = new Person("张三");
+        House house = new House(person);
+
+        System.out.println("房子所属人：" + house.getPerson());
+        System.out.println("房子登记信息：" + house.getRegistration());
+        printHistoryRegistration(house.getHistoryRegistration());
+
+        // 将指针指向null，让person再无引用
+        person = null;
+        System.gc();
+        Thread.sleep(5000L);
+
+        System.out.println("------- 发生回收后 -------");
+
+        System.out.println("房子所属人：" + house.getPerson());
+        System.out.println("房子登记信息：" + house.getRegistration());
+        printHistoryRegistration(house.getHistoryRegistration());
+
+    }
+
+    public static void printHistoryRegistration(List<Registration> list) {
+        System.out.println("****** 房子历史登记信息begin ******");
+        for (Registration registration : list) {
+            System.out.println("拥有人姓名：" + registration.getOwnerName());
+            System.out.println("拥有人信息：" + registration.get());
+        }
+        System.out.println("****** 房子历史登记信息end ******");
+    }
+
+}
+```
+
+```
+房子所属人：WeakReferenceTest.Person(name=张三)
+房子登记信息：WeakReferenceTest.Registration(ownerName=张三)
+****** 房子历史登记信息begin ******
+****** 房子历史登记信息end ******
+张三已被回收（挂了）
+------- 发生回收后 -------
+房子所属人：null
+房子登记信息：WeakReferenceTest.Registration(ownerName=张三)
+****** 房子历史登记信息begin ******
+拥有人姓名：张三
+拥有人信息：null
+****** 房子历史登记信息end ******
+```
 
 ### Finalize函数
 

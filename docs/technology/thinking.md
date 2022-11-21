@@ -45,6 +45,7 @@
   - [领域驱动设计(DDD)实践之路(二)：事件驱动与CQRS](https://juejin.cn/post/6844904122659913735)
   - [领域驱动设计(DDD)实践之路(三)：如何设计聚合](https://juejin.cn/post/6844904158449893389)
 - [美团DDD技术讲解](https://developer.aliyun.com/article/319159)
+- [后端开发实践系列——领域驱动设计(DDD)编码实践](https://juejin.cn/post/6844903903104860174)
 - [COLA技术架构](https://github.com/alibaba/COLA)
 - [为什么域服务必须使用域对象作为参数和返回值？](https://stackoverflow.com/questions/14326230/why-must-domain-services-use-domain-objects-as-parameters-and-return-values)
 - [如何发布和处理领域事件](http://www.kamilgrzybek.com/design/how-to-publish-and-handle-domain-events/)
@@ -81,6 +82,7 @@
 - 不同方法使用不同的CQE，因为不同方法的语义是不一样的，如果复用同一CQE对象，其中一个方法入参的变动会导致全体的参数变动
 - application层需要做简单的参数校验，例如：判空、字符串合法化判断，可以用Bean Validation解决
 - 有异常信息可以直接抛出，因为在上层的interface层已经捕获所有异常
+- 接收domain或者domain service里面抛出的领域事件，发布对应的领域事件
 
 #### Domain层：
 
@@ -90,14 +92,15 @@
   - id需要用一个对象进行包裹，防止id的唯一性变更
   - 一个Entity对应有一个Repository
   - 封装业务的参数校验以及业务逻辑
-  - 推荐用全局唯一的EventBus发送事件
+  - 写方法一般来说返回是void，可以直接扔出领域事件，让application层进行事件抛出
 - Value Object：
-  - 没有id，参数都是不可变的，若改变里面的信息直接重新new一个即可
+  - 没有id，参数都是**不可变**的，若改变里面的信息需要直接new一个实体
   - 没有对应的Repository
   - 有对应的业务操作函数，非纯POJO
 - Domain Service：
   - 操作复杂的业务逻辑，往往含有两个以上的Entity的操作，如果只有操作一个Entity，可以把这些业务逻辑挪到这唯一的Entity里面
   - Domain Service不应该依赖Repository，只做对Entity的状态的变更
+  - 注意和Application的区别，domain service是一个不必要的妥协，应该越少越好
 - Repository：
   - 保存Entity的状态
   - 本质上只有save和find两种的方法
