@@ -1632,6 +1632,7 @@ CAS操作时，需要判断V位置的值与预期值A是否相等，如果不相
 
 - 在高并发时可以使用ThreadLocal为每个线程单独分配一个对象，把共享对象拆分到具体一个线程一个，以空间换取时间的做法；
 - ThreadLocal可能导致内存泄漏，Thread中有一个类型为ThreadLocal.ThreadLocalMap成员变量threadLocals，而ThreadLocal.ThreadLocalMap内部是使用Entry结构类型存储数据的，Entry本质上继承了WeakReference类，**在发生GC时候，若ThreadLocal没有被外部强引用，则会被回收，若使用了ThreadLocal进行set的线程一直运行（典型情况下在线程池中运行），那么这个Entry对象的key值变为null，导致value值可能一直不能回收**，从而发生内存泄漏；使用ThreadLocal类的set方法后，**显式调用remove方法**可以有效规避内存泄漏的问题；
+- 参考文章：[面试官：小伙子，听说你看过ThreadLocal源码？（万字图文深度解析ThreadLocal）](https://segmentfault.com/a/1190000022663697)
 
 ```java
 public class Thread implements Runnable {
