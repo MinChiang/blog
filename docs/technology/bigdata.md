@@ -1,6 +1,6 @@
 ## Hadoop
 
-![Hadoop架构](./images/Hadoop架构.png)
+![Hadoop架构](../images/Hadoop架构.png)
 可以分为3个核心组件：
 
 1. HDFS：分布式文件系统，将文件分布式存储在多个服务器上

@@ -7,7 +7,7 @@
   子网IP：192.168.160.0
   子网掩码：255.255.255.0
   网关IP：192.168.160.2
-  ![虚拟机搭建1](./images/虚拟机搭建1.png)
+  ![虚拟机搭建1](../images/虚拟机搭建1.png)
 
 - 创建虚拟机
   打开VMware，文件->新建虚拟机
@@ -24,7 +24,7 @@
   磁盘：创建新虚拟磁盘
   磁盘容量：最大磁盘大小：20G，拆分成多个文件，名字为Ubuntu_Dev.vmdk
   自定义硬件：去除USB控制器、声卡、打印机，在新CD/DVD中选择使用ISO，打开ubuntu-16.04.6-server-amd64.iso
-  ![虚拟机搭建2](./images/虚拟机搭建2.png)
+  ![虚拟机搭建2](../images/虚拟机搭建2.png)
 
 - 打开虚拟机，进入安装流程
   **语言选项：English**
@@ -78,107 +78,110 @@
   ```
   sudo cp /etc/apt/sources.list /etc/apt/sources_bak.list
   sudo vi /etc/apt/sources.list
+  
+  将整个文件修改为下面内容：
+  deb http://mirrors.aliyun.com/ubuntu/ xenial main
+  deb-src http://mirrors.aliyun.com/ubuntu/ xenial main
+  
+  deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main
+  deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main
+  
+  deb http://mirrors.aliyun.com/ubuntu/ xenial universe
+  deb-src http://mirrors.aliyun.com/ubuntu/ xenial universe
+  deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+  deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+  
+  deb http://mirrors.aliyun.com/ubuntu/ xenial-security main
+  deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main
+  deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe
+  deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe
   ```
 
-将整个文件修改为：
-deb http://mirrors.aliyun.com/ubuntu/ xenial main
-deb-src http://mirrors.aliyun.com/ubuntu/ xenial main
+  - 执行命令
 
-deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main
-deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main
+    ```
+    sudo apt-get update
+    sudo apt-get upgrade
+    ```
 
-deb http://mirrors.aliyun.com/ubuntu/ xenial universe
-deb-src http://mirrors.aliyun.com/ubuntu/ xenial universe
-deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
-deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
-
-deb http://mirrors.aliyun.com/ubuntu/ xenial-security main
-deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main
-deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe
-deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe
-
-sudo apt-get update
-sudo apt-get upgrade
-
-```
-- 最后重启电脑，即可用ssh进行登录
+  - 最后重启电脑，即可用ssh进行登录
 
 ### MySQL
+
 - 选择下载[地址源](https://dev.mysql.com/downloads/)
-这里选择APT Repository安装方式
-![MySQL安装截图1](./images/MySQL安装截图1.png)
+
+  这里选择APT Repository安装方式
+  ![MySQL安装截图1](../images/MySQL安装截图1.png)
+
 - 安装期间设置root密码为root
-```
 
-sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb
-sudo apt-get update
-sudo apt-get install mysql-server
+  ```
+  sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb
+  sudo apt-get update
+  sudo apt-get install mysql-server
+  ```
 
-```
-- 配置监听地址字符集编码等
-```
+- 配置监听地址字符集编码等（需要重启mysql）
 
-vim /etc/mysql/my.cnf
+  ```
+  vim /etc/mysql/my.cnf
+  
+  最下面加入
+  [client]
+  default-character-set = utf8mb4
+  
+  [mysql]
+  default-character-set = utf8mb4
+  
+  [mysqld]
+  bind-address            = 0.0.0.0
+  character-set-server = utf8mb4
+  ```
 
-最下面加入
-[client]
-default-character-set = utf8mb4
-
-[mysql]
-default-character-set = utf8mb4
-
-[mysqld]
-bind-address            = 0.0.0.0
-character-set-server = utf8mb4
-
-需要重启mysql
-
-```
 - 配置root远程登陆和密码
-```
 
-mysql -u root -proot
-use mysql
-update user set host = '%' where user = 'root';
-flush privileges;
+  ```
+  mysql -u root -proot
+  use mysql
+  update user set host = '%' where user = 'root';
+  flush privileges;
+  ```
 
-```
 - 启动调整
-```
 
-禁止开机自启 update-rc.d mysql remove
-开机自启 update-rc.d mysql defaults
-启动 /etc/init.d/mysql start
-关闭 /etc/init.d/mysql stop
+  - 禁止开机自启 update-rc.d mysql remove
+  - 开机自启 update-rc.d mysql defaults
+  - 启动 /etc/init.d/mysql start
+  - 关闭 /etc/init.d/mysql stop
 
-```
 ### Redis
 - 安装redis
-```
 
-sudo apt-get install redis-server
+  ```
+  sudo apt-get install redis-server
+  ```
 
-```
 - 修改监听地址
-```
 
-把bind 127.0.0.1
-修改为bind 0.0.0.0
+  ```
+  把bind 127.0.0.1
+  修改为bind 0.0.0.0
+  ```
+
+### Elasetcsearch
+
+安装Elaasticsearch
 
 ```
-### Elaseticsearch
-- 安装Elaasticsearch
-```
-
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 sudo apt-get install apt-transport-https
 echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
 sudo apt-get update && sudo apt-get install elasticsearch
-
 ```
+
 ### 启动命令
-```
 
+```
 systemctl start postgresql
 systemctl start mysql
 systemctl start nginx

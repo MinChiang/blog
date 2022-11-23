@@ -1,4 +1,4 @@
-![](./images/wechat.jpg)
+![微信联系方式](../images/wechat.jpg)
 
 微信：Denny_Jarmin
 

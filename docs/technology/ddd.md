@@ -1,12 +1,10 @@
-## DDD领域驱动模型
+## 总览分析
 
-### 总览分析
+![ddd层次调用](../images/ddd层次调用.png)
 
-![ddd层次调用](./images/ddd层次调用.png)
+![ddd层级划分](../images/ddd层级划分.png)
 
-![ddd层级划分](./images/ddd层级划分.png)
-
-![ddd数据流转](./images/ddd数据流转.png)
+![ddd数据流转](../images/ddd数据流转.png)
 
 项目结构
 
@@ -30,7 +28,7 @@
   - eventImpl：应用层的event实现
   - persistence：持久化实现，为对应领域层中repository的实现
 
-### 资料参考
+## 资料参考
 
 - 结合《领域驱动设计》的工程：[领域驱动工程样例](https://github.com/citerus/dddsample-core)
 - 阿里DDD技术讲解：
@@ -52,14 +50,14 @@
 - [DDD 限界上下文和 Java 模块](https://www.baeldung.com/java-modules-ddd-bounded-contexts)
 - [工厂的入参是原始对象还是value object](https://stackoverflow.com/questions/11395031/ddd-factory-entity-value-object?rq=1)
 
-### 要点
+## 要点
 
 - application层只是做服务的编排，不做任何的计算逻辑
 - domain service只是对象状态的变更，不做save的操作，不能注入repository
 - domain service入参和出参都返回领域内的对象
 - CQE对象入参全为细颗粒度
 
-### 概述
+## 概述
 
 #### Interface层：
 
@@ -114,7 +112,7 @@
 
 - 用ACL防腐层将外部依赖转化为内部代码，隔离外部的影响
 
-### 使用ACL的好处
+## 使用ACL的好处
 
 - 适配器：便于适配其他服务接口
 - 缓存：可以缓存频繁请求的数据
@@ -122,7 +120,7 @@
 - 易于测试：可以方便地通过mock和stub进行单元测试
 - 功能开关：控制功能的实现
 
-### CQE的概念与使用
+## CQE的概念与使用
 
 |        | Command            | Query           | Event            |
 | ------ | ------------------ | --------------- | ---------------- |

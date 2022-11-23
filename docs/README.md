@@ -12,6 +12,6 @@ features:
   details: 推崇敏捷开发、DevOps和DDD（领域驱动模型），让项目从启动到上线符合“流水线”的思想
 - title: 规范化
   details: 以主流合理的规范进行代码开发，整合项目中技术知识并沉淀归档
-recordNumber: 备案号：粤ICP备18140430号-1
-recordNumberLink: https://beian.miit.gov.cn/
+# recordNumber: 备案号：粤ICP备18140430号-1
+# recordNumberLink: https://beian.miit.gov.cn/
 ---

@@ -1,14 +1,16 @@
-## VIM
-
-### 基本使用与安装
+## 基本使用与安装
 
 - 下载：[NeoVim下载地址](https://github.com/neovim/neovim/releases)
 - 配置：把[Nvim配置](https://github.com/MinChiang/nvim)，通过git克隆到C:\Users\YY\AppData\Local下
 - 打开NeoVim-qt.ext即可
 
+## 一些建议和使用方法
 
+[快捷键用法](https://vim.rtorr.com/lang/zh_cn)
 
-### 使用技巧
+![](../images/vi-vim-cheat-sheet.gif)
+
+## 使用技巧
 
 - 快速给某些地方添加内容
 

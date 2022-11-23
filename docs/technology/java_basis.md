@@ -59,7 +59,7 @@ public ThreadPoolExecutor(int corePoolSize,
 
 内部源码实现：
 
-![线程池源码流程图](./images/线程池源码流程图.jpg)
+![线程池源码流程图](../images/线程池源码流程图.jpg)
 
 ```java
 public Future<?> submit(Runnable task) {
@@ -397,7 +397,7 @@ public class Thread implements Runnable {
 }
 ```
 
-![线程状态](./images/线程状态.png)
+![线程状态](../images/线程状态.png)
 
 RUNNABLE是指**等待运行和运行中**的集合状态：在Thread.start()执行后，线程就可以被CPU接纳执行；
 
@@ -1072,7 +1072,7 @@ s3.intern():356573597
 ### 数据结构部分
 
 AbstractQueuedSynchronizer的实现是**CLH的变体**，CLH本质上是一个不进行阻塞，后节点不断轮询前节点状态的虚拟队列；CLH适合用于低竞争，并发量少的场景，如果线程多，可能会导致CPU不断地空转，因此要解决这个问题就需要对线程状态进行控制，即不要让线程空轮询等待，而是让其进行挂起。
-![线程状态](./images/AQS-AQS数据结构.jpg)
+![线程状态](../images/AQS-AQS数据结构.jpg)
 
 ```java
 public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchronizer implements java.io.Serializable {
@@ -1353,11 +1353,11 @@ AbstractQueuedSynchronizer数据结构：
     
     因此，如果需要**遍历**这个虚拟队列，最好从后往前遍历，因为队列中的prev指针是可靠的，而next指针是不可靠的
 
-![AQS-入队流程](./images/AQS-入队流程.jpg)
+![AQS-入队流程](../images/AQS-入队流程.jpg)
 
-![AQS-竞争情况](./images/AQS-竞争情况.jpg)
+![AQS-竞争情况](../images/AQS-竞争情况.jpg)
 
-![](./images/AQS-中间状态.jpg)
+![](../images/AQS-中间状态.jpg)
 
 ```java
     /**
@@ -1597,13 +1597,13 @@ CAS操作时，需要判断V位置的值与预期值A是否相等，如果不相
   
   重量级锁：指的是传统意义上执行synchronized**同步代码块**时，加入字节码monitorenter和monitorexit指令来实现monitor的获取和释放，就是需要JVM通过字节码显式地去获取和释放monitor实现同步；使用synchronized**同步方法**时候，检查方法的ACC_SYNCHRONIZED标志是否被设置，如果设置了线程需要先去获取monitor。
   
-  ![重量级锁synchronized加锁流程](./images/重量级锁synchronized加锁流程.png)
+  ![重量级锁synchronized加锁流程](../images/重量级锁synchronized加锁流程.png)
   
   轻量级锁：为了在没有多线程竞争的前提下，**减少传统重量级锁使用操作系统互斥量产生的性能消耗**。在进入同步块时，虚拟机首先在当前线程栈帧中建立一个Lock Record空间，用于存储锁对象目前的Mark Word拷贝（官方把这份拷贝加了一个Displaced前缀，即Displaced Mark Word），并尝试使用CAS操作将锁对象的Mark Word更新为指向Lock Record的指针。如果更新成功，则当前线程拥有了对象的锁，并且将对象Mark Word的锁标志位改为00（轻量级锁）状态。如果更新失败了，检查锁对象Mark Word是否指向当前线程的栈帧，若是则说明已经拥有锁，同步代码块继续执行，若否则说明被抢占了。如果有两条以上的线程争用同一个锁，轻量级锁久不再有效，**膨胀为重量级锁**。
 
 - 偏向锁：
   
-  ![对象头MarkWord简述](./images/对象头MarkWord简述.png)
+  ![对象头MarkWord简述](../images/对象头MarkWord简述.png)
 
 总结：
 | 锁类型   | 面向的场景                   | 优点                                                   |
@@ -2140,27 +2140,27 @@ Try、Confirm和Cancel单词的缩写，也是简化版的3段提交协议（把
 
 ### CAS登录流程
 
-![CAS登录流程](./images/CAS登录流程.jpg)
+![CAS登录流程](../images/CAS登录流程.jpg)
 
 ### Oauth登录流程
 
-![oauth认证流程](./images/oauth认证流程.png)
+![oauth认证流程](../images/oauth认证流程.png)
 
 ### 授权码模式
 
-![oauth2授权码模式](./images/oauth2授权码模式.png)
+![oauth2授权码模式](../images/oauth2授权码模式.png)
 
 ### 简化模式
 
-![oauth2简化模式](./images/oauth2简化模式.png)
+![oauth2简化模式](../images/oauth2简化模式.png)
 
 ### 密码模式
 
-![oauth2密码模式](./images/oauth2密码模式.png)
+![oauth2密码模式](../images/oauth2密码模式.png)
 
 ### 客户端模式
 
-![oauth2客户端模式](./images/oauth2客户端模式.png)
+![oauth2客户端模式](../images/oauth2客户端模式.png)
 
 ### 4种模式的区别
 

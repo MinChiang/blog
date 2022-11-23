@@ -78,7 +78,7 @@ public class B {
 
 ### SpringMVC
 
-![springmvc原理](./images/springmvc原理.png)
+![springmvc原理](../images/springmvc原理.png)
 
 DispatcherServlet部分源码：
 
@@ -232,11 +232,11 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 
 - feign：关于interfact的http远程调用；
 
-![feign原理](./images/feign原理.png)
+![feign原理](../images/feign原理.png)
 
 - hystrix：熔断器。
 
-![hystrix原理](./images/hystrix原理.png)
+![hystrix原理](../images/hystrix原理.png)
 
 ### Spring、Spring Boot、Spring Cloud区别
 
@@ -271,27 +271,27 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 
 ## MyBatis
 
-![mybatis缓存机制](./images/mybatis缓存机制.png)
+![mybatis缓存机制](../images/mybatis缓存机制.png)
 
 - 一级缓存：在开启一个数据库会话时，会新建一个SqlSession对象（含Executor），Executor在执行对应的SQL语句时，会去PerpetualCache对象中寻找对应的缓存，该缓存对象随着SqlSession对象死亡而释放；如果SqlSession调用了clearCache()、update()、delete()、insert()任意一个方法，都会**清空PerpetualCache的数据**；一级缓存默认为**开启**状态；
 - 二级缓存：默认是不开启二级缓存，默认原生二级缓存需要返回的POJO必须是可序列化的，一般通过LRU的算法来回收。
 
 ## Dubbo
 
-![dubbo架构1](./images/dubbo架构1.jpg)
+![dubbo架构1](../images/dubbo架构1.jpg)
 
 - 图中左边淡蓝背景的为服务消费方使用的接口，右边淡绿色背景的为服务提供方使用的接口，位于中轴线上的为双方都用到的接口。
 - 图中从下至上分为十层，各层均为单向依赖，右边的黑色箭头代表层之间的依赖关系，每一层都可以剥离上层被复用，其中，Service 和 Config 层为 API，其它各层均为 SPI。
 - 图中绿色小块的为扩展接口，蓝色小块为实现类，图中只显示用于关联各层的实现类。
 - 图中蓝色虚线为初始化过程，即启动时组装链，红色实线为方法调用过程，即运行时调时链，紫色三角箭头为继承，可以把子类看作父类的同一个节点，线上的文字为调用的方法。
 
-![dubbo架构2](./images/dubbo架构2.jpg)
+![dubbo架构2](../images/dubbo架构2.jpg)
 
-![dubbo架构3](./images/dubbo架构3.jpg)
+![dubbo架构3](../images/dubbo架构3.jpg)
 
-![dubbo架构4](./images/dubbo架构4.jpg)
+![dubbo架构4](../images/dubbo架构4.jpg)
 
-![dubbo架构5](./images/dubbo架构5.jpg)
+![dubbo架构5](../images/dubbo架构5.jpg)
 
 ## Redis
 
@@ -350,13 +350,13 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 - 采用了单线程，避免了上下文切换和竞争条件；注意是处理网络请求的时候只有一个线程来处理；
 - 采用了非阻塞IO：IO多路复用。
 
-![redis线程模型](./images/redis线程模型.png)
+![redis线程模型](../images/redis线程模型.png)
 
 ### 集群方案
 
 #### 哨兵模式
 
-![哨兵模式](./images/redis哨兵模式.png)
+![哨兵模式](../images/redis哨兵模式.png)
 
 - 集群监控：负责监控 redis master 和 slave 进程是否正常工作；
 - 消息通知：如果某个 redis 实例有故障，那么哨兵负责发送消息作为报警通知给管理员；
@@ -365,7 +365,7 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 
 #### 基于客户端分配模式
 
-![基于客户端分配模式](./images/基于客户端分配.jpg)
+![基于客户端分配模式](../images/基于客户端分配.jpg)
 
 - 配置简单，结构简单，容易搭建，不需要第三方的组件；
 - 本质上通过key映射到某Redis中的某个节点，**不适合动态扩容（最重要缺点）**；
@@ -374,7 +374,7 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 
 #### Redis Cluster
 
-![Redis Cluster模式](./images/RedisCluster模式.png)
+![Redis Cluster模式](../images/RedisCluster模式.png)
 
 - 没有使用一致性hash（会有hash倾斜等问题）的方式，而是采用slot槽的概念；
 - 可以动态扩容，仅仅需要迁移**一部分**数据到新的节点；
@@ -484,7 +484,7 @@ keys和scan的区别：
 
 ### 架构模型
 
-![kafka架构模型](./images/kafka架构模型.png)
+![kafka架构模型](../images/kafka架构模型.png)
 
 正常情况下，kafka里的数据都不能只有一份。假设我们保存了N个副本，即topic每个partition都有N个副本（Replica）。并且**副本的个数一定小于broker个数**（因为每份数据的副本必须保存在不同的broker，否则没有意义，因为如果一份数据的副本保存在同一个broker，那么这个broker挂了，则数据依然丢）。所以对于每个partition而言，每个broker上最多**只有一个**副本，因此我们常常使用broker-id表示副本。kafka还有个机制，就是会默认将副本均匀分布到所有的broker上。当replication-factor为N时，Partition会有N个副本，其中N为leader和follower的**总和**。
 
@@ -564,7 +564,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 >4
 ```
 
-![kafka消费结果](./images/kafka消费结果.png)
+![kafka消费结果](../images/kafka消费结果.png)
 
 在test群组中多加入一个消费者时，消费者也可以继续消费。但是再加入一个后，test群组中的consumer数量为4，比分区数量3还多，因此有一个消费者**无法消费**信息。
 
@@ -584,7 +584,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 - Follower：响应leader的心跳请求，响应客户端的读请求，并将写请求转发给leader处理；
 - Observer：与follower类似，不参与投票，响应读请求，把写请求转发给leader。
 
-![zookeeper模型](./images/zookeeper模型.png)
+![zookeeper模型](../images/zookeeper模型.png)
 
 #### 数据模型
 
@@ -614,7 +614,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 - 广播模式：zookeeper集群对外正式开始提供服务，并且leader可以进行消息广播，如果有新的节点计入，还需要对新节点进行同步。
   
-  ![zookeeper广播实例图](./images/zookeeper广播实例图.jpg)
+  ![zookeeper广播实例图](../images/zookeeper广播实例图.jpg)
   
   1. 客户端发送写入请求到任意的follower；
   2. server把写入数据请求转发给leader；
@@ -628,7 +628,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 #### 集群功能任务介绍
 
-![flink执行原理图](./images/集群功能任务介绍.svg)
+![flink执行原理图](../images/集群功能任务介绍.svg)
 
 - JobManager：
   - 分布式协调调度
@@ -642,9 +642,9 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 #### 算子，槽，并行度概念
 
-![算子，槽，并行度概念1](./images/算子，槽，并行度概念1.svg)
+![算子，槽，并行度概念1](../images/算子，槽，并行度概念1.svg)
 
-![算子，槽，并行度概念2](./images/算子，槽，并行度概念2.svg)
+![算子，槽，并行度概念2](../images/算子，槽，并行度概念2.svg)
 
 - 算子：进行独立功能计算的功能对象方法
 - 槽（Slot）：内存分配的单位，不会与其他槽进行内存竞争（内存隔离），每一个槽都分配给一个独立的线程执行任务，因此**推荐槽与CPU数量呈1：1对应关系**，其他的例如TCP，CPU资源还是共享的关系；上图，表示2个TaskManger节点，每个节点有3个槽，每个槽占据每个TaskManager的内存的三分之一；可以理解为：**一台特定的机器上启动多少个并行执行的实例**
@@ -662,7 +662,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
   - Reduce：
   - Window：数据归窗
 
-![原理图](./images/flink核心数据功能.jpg)
+![原理图](../images/flink核心数据功能.jpg)
 
 ### flink中的注意点
 
