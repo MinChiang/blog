@@ -13,6 +13,7 @@ module.exports = {
     sidebarDepth: 2,
     displayAllHeaders: false,
     smoothScroll: true,
+    activeHeaderLinks: true,
     nav: [
       { text: "首页", link: "/" },
       { text: "技术", link: "/technology/java_basis" },

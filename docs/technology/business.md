@@ -74,3 +74,25 @@
 ![渠道投放数据传递链路](../images/渠道分享ppt13.jpg)
 
 ![渠道投放数据传递链路](../images/渠道分享ppt14.jpg)
+
+
+
+###  职级答辩（3-1）
+
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片1-16818121157231.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片2.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片3.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片4.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片5.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片6.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片7.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片8.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片9.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片10.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片11.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片12.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片13.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片14.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片15.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片16.JPG)
+![渠道投放数据传递链路](business.assets/职级评比3-1幻灯片17.JPG)

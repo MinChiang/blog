@@ -19,7 +19,7 @@
   - event：为对应的事件接口
 - domain：领域层，主要负责表达业务概念，业务状态信息和业务规则，几乎所有的业务逻辑均在该层实现
   - entity：实体，具有为已标志的对象
-  - vo（value object）：值对象，无需唯一标志的对象
+  - value object：值对象，无需唯一标志的对象
   - service（domain service）：领域服务，一些行为无法归类到实体对象或值对象上，本质是一些操作而非事物
   - aggregate：聚合根，一组具有内聚关系的相关对象或者集合
   - factory：工厂，创建复杂对象时，隐藏创建的细节
@@ -49,6 +49,7 @@
 - [如何发布和处理领域事件](http://www.kamilgrzybek.com/design/how-to-publish-and-handle-domain-events/)
 - [DDD 限界上下文和 Java 模块](https://www.baeldung.com/java-modules-ddd-bounded-contexts)
 - [工厂的入参是原始对象还是value object](https://stackoverflow.com/questions/11395031/ddd-factory-entity-value-object?rq=1)
+- [DDD, Hexagonal, Onion, Clean, CQRS, … How I put it all together](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/)
 
 ## 要点
 
@@ -72,9 +73,9 @@
 
 - application层做的是**服务的编排**，**不做任何的计算逻辑**；一般包含下面的操作
   - 数据校验
-  - 通过Repository查询Entity
-  - 操作Entity，对Entity进行状态的变更
-  - 通过Repository保存Entity
+  - 通过Repository查询聚合根
+  - 操作聚合根，对聚合根进行状态的变更
+  - 通过Repository保存聚合根
   - 发送领域事件
 - Command、Query、Event统称为CQE，他们三者作为application的入参，根据单ID查询的场景下可以直入；统一返回DTO对象，不能暴露domain的Entity和Value Object，使用DTO Assemble进行转换
 - 不同方法使用不同的CQE，因为不同方法的语义是不一样的，如果复用同一CQE对象，其中一个方法入参的变动会导致全体的参数变动
@@ -88,7 +89,7 @@
   - 有对应的id，一个Entity对应有一个唯一的id
   - 判断两个Entity是否相等应该直接判断id
   - id需要用一个对象进行包裹，防止id的唯一性变更
-  - 一个Entity对应有一个Repository
+  - 一个聚合根对应有一个Repository
   - 封装业务的参数校验以及业务逻辑
   - 写方法一般来说返回是void，可以直接扔出领域事件，让application层进行事件抛出
 - Value Object：

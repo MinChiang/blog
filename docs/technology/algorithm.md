@@ -247,19 +247,27 @@ public class QuickSort<T extends Comparable<T>> extends AbstractSortable<T> {
 }
 ```
 
-## BFS
+## DFS
+
+特点：
+
+- 其实就是回溯算法
+- 穷举，暴力算法
+- 空间复杂度比较小
+
+伪代码如下：
 
 ```
 result = []
-def permute(已经选择的路径, 剩余选择列表):
+def backtrack(已经选择的路径, 剩余选择列表):
     if 满足结束条件:
         // 此时注意路径的可变动方式，若为数组或者列表需要new一个新的
         result.add(已经选择的路径)
         return
 
     for 选择 in 剩余选择列表:
-        做选择（其实就是路径的变动，把剩余选择列表中变为路径）
-        permute(路径, 选择列表)
+        // 做选择（其实就是路径的变动，把剩余选择列表中变为路径）
+        backtrack(路径, 选择列表)
         撤销选择（回滚路径的变动）
 ```
 
