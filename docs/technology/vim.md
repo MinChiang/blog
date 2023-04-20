@@ -4,11 +4,15 @@
 - 配置：把[Nvim配置](https://github.com/MinChiang/nvim)，通过git克隆到C:\Users\YY\AppData\Local下
 - 打开NeoVim-qt.ext即可
 
+
+
 ## 一些建议和使用方法
 
 [快捷键用法](https://vim.rtorr.com/lang/zh_cn)
 
 ![](../images/vi-vim-cheat-sheet.gif)
+
+
 
 ## 使用技巧
 
@@ -94,5 +98,93 @@ public enum CardFigureEnum {
     
 	// 省略其他无用代码
 }
+```
+
+
+
+### 去除空号，每行的末尾添加逗号，多行合并为一行
+
+```txt
+http://1337.abcvg.info:80/announce
+
+http://bt.endpot.com:80/announce
+
+http://bt.okmp3.ru:2710/announce
+
+http://dn42.smrsh.net:6969/announce
+
+http://nyaa.tracker.wf:7777/announce
+
+http://open.acgnxtracker.com:80/announce
+
+http://p2p.0g.cx:6969/announce
+
+http://parag.rs:6969/announce
+
+http://share.camoe.cn:8080/announce
+
+http://t.acg.rip:6699/announce
+
+http://t.nyaatracker.com:80/announce
+
+http://torrentsmd.com:8080/announce
+
+http://tr.cili001.com:8070/announce
+
+http://tracker.bt4g.com:2095/announce
+
+http://tracker.files.fm:6969/announce
+```
+
+#### 去除空行
+
+g/^$/d
+
+```txt
+http://1337.abcvg.info:80/announce
+http://bt.endpot.com:80/announce
+http://bt.okmp3.ru:2710/announce
+http://dn42.smrsh.net:6969/announce
+http://nyaa.tracker.wf:7777/announce
+http://open.acgnxtracker.com:80/announce
+http://p2p.0g.cx:6969/announce
+http://parag.rs:6969/announce
+http://share.camoe.cn:8080/announce
+http://t.acg.rip:6699/announce
+http://t.nyaatracker.com:80/announce
+http://torrentsmd.com:8080/announce
+http://tr.cili001.com:8070/announce
+http://tracker.bt4g.com:2095/announce
+http://tracker.files.fm:6969/announce
+```
+
+#### 每行的末尾添加逗号
+
+%s/$/,
+
+```txt
+http://1337.abcvg.info:80/announce,
+http://bt.endpot.com:80/announce,
+http://bt.okmp3.ru:2710/announce,
+http://dn42.smrsh.net:6969/announce,
+http://nyaa.tracker.wf:7777/announce,
+http://open.acgnxtracker.com:80/announce,
+http://p2p.0g.cx:6969/announce,
+http://parag.rs:6969/announce,
+http://share.camoe.cn:8080/announce,
+http://t.acg.rip:6699/announce,
+http://t.nyaatracker.com:80/announce,
+http://torrentsmd.com:8080/announce,
+http://tr.cili001.com:8070/announce,
+http://tracker.bt4g.com:2095/announce,
+http://tracker.files.fm:6969/announce,
+```
+
+#### 多行合并为一行
+
+%s/\n/
+
+```txt
+http://1337.abcvg.info:80/announce,http://bt.endpot.com:80/announce,http://bt.okmp3.ru:2710/announce,http://dn42.smrsh.net:6969/announce,http://nyaa.tracker.wf:7777/announce,http://open.acgnxtracker.com:80/announce,http://p2p.0g.cx:6969/announce,http://parag.rs:6969/announce,http://share.camoe.cn:8080/announce,http://t.acg.rip:6699/announce,http://t.nyaatracker.com:80/announce,http://torrentsmd.com:8080/announce,http://tr.cili001.com:8070/announce,http://tracker.bt4g.com:2095/announce,http://tracker.files.fm:6969/announce,
 ```
 
