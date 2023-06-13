@@ -614,7 +614,7 @@ CycleBarrier
 
 ## 线程的中断
 
-- interrupt()：通过运行的线程实例，给线程发送中段信号，至于**如何处理中段响应**需要看**被中断的线程**的实际处理逻辑
+- interrupt()：通过运行的线程实例，**给线程发送中段信号，仅仅设置线程的中断标志位，并没有额外的其余操作**，至于**如何处理中段响应**需要看**被中断的线程**的实际处理逻辑
   
   - 如果线程是正常运行中，且没有判断中段状态，那么线程就会一直执行
   
@@ -1232,7 +1232,7 @@ AbstractQueuedSynchronizer数据结构：
 
 #### 获取执行权部分代码块
 
-我认为，在AQS中，不应该引入“锁”这个观念，因为在锁这个概念一般是指ReentrantLock重入锁，而ReentrantLock又是以AQS进行实现的，总不能以具体的实现来理解高层次的抽象；因此我认为网文上指“获取到锁”是泛指的概念，应该理解为：**“获取到执行权”**更加精确
+我认为，在AQS中，不应该引入“锁”这个观念，因为在锁这个概念一般是指ReentrantLock重入锁，而ReentrantLock又是以AQS进行实现的，总不能以具体的实现来理解高层次的抽象；因此我认为网文上指**获取到锁**是泛指的概念，应该理解为：**获取到执行权**更加精确
 
 ```java
     /**
@@ -1283,7 +1283,7 @@ AbstractQueuedSynchronizer数据结构：
         if (pred != null) {
             // 这里有个疑问是，如果compareAndSetTail执行失败不就导致设置错了么？
             // 其实不会，因为如果compareAndSetTail执行失败，则会执行enq
-            //在enq方法里面进行了对prev节点的重新设置
+            // 在enq方法里面进行了对prev节点的重新设置
             node.prev = pred;
             if (compareAndSetTail(pred, node)) {
                 pred.next = node;
@@ -1466,7 +1466,7 @@ AbstractQueuedSynchronizer数据结构：
 - acquireQueued：进入同步等待队列，其中主要逻辑主体为一个大自旋操作，自选逻辑为：
   - 判断当前节点的前驱节点是否为头节点，如果是，则尝试获取执行权，如果成功，则把队列头节点改为本节点，否则执行shouldParkAfterFailedAcquire
     - 为什么还需要执行tryAcquire方法获取执行权呢？
-    - 是因为第一个进入的线程，是不用进入等待队列的，此时有可能出现一种情况，即第一个线程已经释放了资源，但是判断队尾没有等待队列，因此不做唤醒处理；后面又进来一个需要执行的线程，如果此时没有再进行tryAcquire，那么这个新线程是没玩法执行的
+    - 是因为第一个进入的线程，是不用进入等待队列的，此时有可能出现一种情况，即第一个线程已经释放了资源，但是判断队尾没有等待队列，因此不做唤醒处理；后面又进来一个需要执行的线程，如果此时没有再进行tryAcquire，那么这个新线程是没办法执行的
   - shouldParkAfterFailedAcquire做了一些判断修改的动作，保证在挂起前前驱节点处于SIGNAL状态
   - parkAndCheckInterrupt，把当前的线程直接挂起，LockSupport.park(this)是线程运行状态->等待状态的转换点；当线程被unpark时，出口执行的第一个代码行为Thread.interrupted()
     - 在执行park的时候，是不会抛出中断异常的，但是会响应中断标志位
