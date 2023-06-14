@@ -1544,11 +1544,11 @@ AbstractQueuedSynchronizer数据结构：
 不同点：
 
 - lock可以在申请锁时候**限时等待**，但synchronized不行；
-- lock可以实现**公平锁**，但synchronized是非公平的；
+- lock可以实现**公平锁**，但synchronized是**非公平**的；
 - lock可以**响应线程中断**，但synchronized不行；
 - lock是一个接口，synchronized是关键字，synchronized的实现原理是通过底层虚拟机以及内核实现的；
 - synchronized会自动释放锁，lock手动释放；
-- synchronized能锁住类、方法和代码块，但是lock只能锁范围的；
+- synchronized能锁住类、方法和代码块，但是lock只能锁范围**代码块**的；
 - synchronized本质上调用底层mutex执行操作，需要使用monitorenter和monitorexit对代码块进行加锁，而lock是使用AQS实现的（AbstractQueuedSynchronizer）。
 
 ### 互斥锁和自旋锁

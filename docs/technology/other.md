@@ -28,15 +28,37 @@
 ## 你遇到什么比较难忘的坑
 
 - Spring里面，service层自调用本类方法导致@Transactional注解不生效；
+
 - 遇到同事在使用分布式锁时，事务没有在分布式锁内提交，导致仍然出现脏数据的问题；
+
 - Mysql join查询时，参与join字段的字符集编码不同，导致性能严重下降；
+
 - 使用静态常量的Runtime Exception导致异常堆栈信息打印不正确；
+
 - 使用Hystrix线程隔离导致在上下文中获取不到当前用户；
+
 - 使用缓存时，需要先更新数据库，再删除缓存；
+
 - mysql一般存储采用utf8mb4（4个字节），而不是utf8（3个字节）；
+
 - 在spring里面使用编程式事务（TransactionDefinition）时，需要指定setTimeout和isolationLevel，因为没有显式地提交事务（代码中忘记写commit语句），就事务一直在等待，但是事务默认的setTimeout为-1，因此导致事务一直在等待的状态；
+
 - 做压力测试时，系统级错误导致JVM虚拟机崩溃报错；
+
 - 经验不足的时候，不知道spring是区分父子容器的，在spring mvc容器中扫描了所有类，不报错；但在spring中扫描所有类，就会报找不到controller异常。正常的做法是spring mvc容器扫描controller注解，而spring扫描其他的类；
+
+- 做渠道的重构，遇到一个疑似内存泄露的现象：
+
+  ![druid版本的坑1](../images/druid版本的坑1.png)
+
+  ![druid版本的坑2](../images/druid版本的坑2.png)
+
+  ![druid版本的坑3](../images/druid版本的坑3.png)
+
+  - 内存里面有过多的ZipEntry的实例，却都无引用的；
+  - 2.Druid的loadClass()方法吃了非常多的CPU资源。
+  - 原因是druid的版本+Mysql8.0驱动导致的问题，详情可见解决方案：https://blog.csdn.net/qq_40378034/article/details/117851207
+
 
 ## 分布式数据库和缓存双写一致性问题
 

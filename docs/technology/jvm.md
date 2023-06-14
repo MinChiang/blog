@@ -1,6 +1,51 @@
 ## Java虚拟机
 
-### 1.8运行时内存区域（内存布局）
+## volatile与JMM内存模型
+
+```java
+public class VolatileTest {
+
+    public static boolean flag = true;
+
+    public static void main(String[] args) throws InterruptedException {
+        new Thread(() -> {
+            System.out.print("开始执行线程1 -> ");
+            while (flag) {
+            }
+            System.out.print("线程1执行完成 -> ");
+        }).start();
+
+        Thread.sleep(3000);
+
+        new Thread(() -> {
+            System.out.print("开始执行线程2 -> ");
+            flag = false;
+            System.out.print("线程2执行完成 -> ");
+        }).start();
+    }
+
+}
+```
+
+上述代码的结果是：**开始执行线程1 -> 开始执行线程2 -> 线程2执行完成 -> **，进程一直不会停止而是卡着
+
+原因是因为上述的flag并非是volatile导致的，正确应该在flag上加上volatile，volatile能够保证**可见性**和**有序性**
+
+- 可见性：加入volatile关键字的时候，汇编中会多出一个lock指令，实际是一个内存屏障
+
+![flag值的变化情况](../images/flag值的变化情况.jpg)
+
+![物理内存模型](../images/物理内存模型.jpg)
+
+JMM是什么：
+
+- Java为了屏蔽各个CPU以及不同架构带来的差异，同一成JMM内存模型
+- JMM是一种抽象的概念，实际上并不存在；JMM与物理硬件之间存在着交叉的关系
+- JMM规定线程操作变量时候，需要从主内存中拷贝一份到工作内存中，在工作内存中操作并写回主内存
+
+
+
+### 1.8运行时内存区域
 
 ![运行时内存](../images/运行时内存.png)
 
@@ -14,8 +59,7 @@
   - 本地方法栈：调用本地native的方法服务，通过JNI来调用非Java的代码，需要其他语言实现；
 - 线程共享：
   - 堆：存放对象实例，可以细分为新生代和老年代（TLAB空间也在此）；
-  - 元空间：在JDK1.8后出现，此时移除了永久代，增加元空间，保存着类信息的元数据；
-  - 方法区：用于存储已被虚拟机加载类信息、常量、静态变量和即时编译后的代码等；方法区是Java虚拟机中规范的定义，永久代是HotSpot虚拟机中的规范。**方法区是规范、永久代是实现**；
+  - 元空间：在JDK1.8后出现，此时移除了**永久代**，增加元空间，保存着类信息的元数据；在JVM的逻辑概念里面可以称为方法区，用于存储已被虚拟机加载**类信息、常量、静态变量和即时编译后的代码**等；方法区是Java虚拟机中规范的定义，永久代是HotSpot虚拟机中的规范。**方法区是规范、元空间和永久代是实现**；
 
 ![运行时内存区域](../images/运行时内存区域.jpg)
 
