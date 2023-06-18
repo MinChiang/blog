@@ -1,3 +1,40 @@
+## 内存映射与零拷贝
+
+![内存映射](..\images\内存映射.jpg)
+
+- 对于缓冲IO：有3次数据拷贝，应用程序<->用户缓冲区，用户缓冲区<->内核缓冲区，内核缓冲区<->磁盘
+- 对于直接直接IO：有2次数据拷贝，应用程序<->内核缓冲区，内核缓冲区<->磁盘
+- 对于内存映射：有1次数据拷贝，内核缓冲区<->磁盘，本质上应用程序和内核缓冲区共用一段内存地址，用同一份数据
+
+![零拷贝](..\images\零拷贝.jpg)
+
+
+
+- 直接IO方式（传统方式）：数据从磁盘发送到网络，有4次拷贝，磁盘->内核缓冲区->应用程序->socket缓冲区->网络
+- 零拷贝：有2次拷贝，磁盘->内核缓冲区，socket缓冲区->网络，其中零拷贝是针对内存而言的，数据没有在内存里面发生过拷贝的动作
+
+下面是一个零拷贝的demo例子：数据从test.log里面零拷贝到socket里面，打开程序，打开cmd并输入telnet 127.0.0.1 8888，会立即回显test.log里面的内容
+
+```java
+public class ZerocopyTest {
+
+    public static void main(String[] args) throws IOException {
+        File file = new File("test.log");
+        RandomAccessFile raf = new RandomAccessFile(file, "r");
+        FileChannel channel = raf.getChannel();
+        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+        serverSocketChannel.bind(new InetSocketAddress(8888));
+        while (true) {
+            SocketChannel accept = serverSocketChannel.accept();
+            channel.transferTo(0, channel.size(), accept);
+        }
+    }
+
+}
+```
+
+
+
 ## CPU密集型与IO密集型
 
 | 类型     | 定义                                                                                                |
