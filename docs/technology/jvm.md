@@ -65,7 +65,7 @@ JMM是什么：
 
 堆区分为几个区域：
 
-- 新生代（Young Generation）：分为Eden和两个Survivor区，新创建的对象分配在Eden区，在执行一次的MinorGC后，如果对象继续存活，则移动到其中一个Survivor区，如果继续存活，则在下一次MinorGC时移动到另一块Survivor区。Eden区和Survivor区的比值为8：2，可以通过-XX:SurvivorRatio调整。一般来说，新生代占整个堆大小的1/4或者1/3比较合适，可以通过-Xmn调整。-XX:NewRatio也是可以调整新生代和老年代的比值，如果设定了-Xmn，则优先使用-Xmn；
+- 新生代（Young Generation）：分为Eden和两个Survivor区，新创建的对象分配在Eden区，在执行一次的MinorGC后，如果对象继续存活，则移动到其中一个Survivor区，如果继续存活，则在下一次MinorGC时移动到另一块Survivor区。Eden区和Survivor区的比值为8：1，可以通过-XX:SurvivorRatio调整。一般来说，新生代占整个堆大小的1/4或者1/3比较合适，可以通过-Xmn调整。-XX:NewRatio也是可以调整新生代和老年代的比值，如果设定了-Xmn，则优先使用-Xmn；
 - 老年代（Old Generation）：一般使用标记整理算法，主要会发生MajorGC，比较适合标记整理算法（CMS垃圾回收器除外）；
 - 永久代（Permanent Generation）：JDK1.7（含）之前存在的区域，JDK1.8后剔除，可以通过设置-XX:PermSize调整；
 - 元空间（Metaspace）：JDK1.8（含）存在的区域；
@@ -93,24 +93,24 @@ JMM是什么：
 
 ### 调优样例
 
--Xmx2688M
--Xms2688M
--Xmn1344M
--Xss512K
--XX:MaxMetaspaceSize=512M
--XX:MetaspaceSize=512M
--XX:+UseConcMarkSweepGC
--XX:+UseCMSInitiatingOccupancyOnly
--XX:CMSInitiatingOccupancyFraction=70
--XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses
--XX:+CMSClassUnloadingEnabled
--XX:+ParallelRefProcEnabled
--XX:+CMSScavengeBeforeRemark
--XX:ErrorFile=/tmp/hs_err_pid%p.log
--Xloggc:/tmp/gc.log
--XX:+PrintGCDetails
--XX:+PrintGCDateStamps
--XX:+PrintCommandLineFlags
+-Xmx2688M：最大堆大小为2688M
+-Xms2688M：最大小大小为2688M
+-Xmn1344M：新生代大小为1344M
+-Xss512K：线程栈大小512K
+-XX:MaxMetaspaceSize=512M：元空间大小为512M
+-XX:MetaspaceSize=512M：元空间初始大小512M
+-XX:+UseConcMarkSweepGC：使用CMS收集器
+-XX:+UseCMSInitiatingOccupancyOnly：与下面配合使用，只使用回收阈值（下面指定的70%），如果不指定JVM仅第一次使用，后续自动调整
+-XX:CMSInitiatingOccupancyFraction=70：在内存占用70%的时候开始GC（CMS会有浮动垃圾，提前收集）
+-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses：该参数保证当有系统GC调用时，永久代也被包括进CMS垃圾回收的范围内
+-XX:+CMSClassUnloadingEnabled：对永久代进行垃圾回收
+-XX:+ParallelRefProcEnabled：并行处理reference，提高处理效率，缩短耗时
+-XX:+CMSScavengeBeforeRemark：在cms gc remark之前做一次ygc，减少gc roots扫描的对象数，从而提高remark的效率，默认关闭
+-XX:ErrorFile=/tmp/hs_err_pid%p.log：error错误日志
+-Xloggc:/tmp/gc.log：gc日志
+-XX:+PrintGCDetails：打印GC日志
+-XX:+PrintGCDateStamps：打印GC时间戳
+-XX:+PrintCommandLineFlags：打印程序使用的JVM参数
 
 ### Client模式和Server模式的区别
 
@@ -121,7 +121,7 @@ JMM是什么：
 
 ### 内存交互操作概念
 
-> Java内存模型中定义了一下8种内存变量交换的操作，虚拟机必须保证这8种操作都是原子的，不可再分的。
+> Java内存模型中定义了一下8种内存变量交换的操作，虚拟机必须保证这8种操作都是**原子**的，不可再分的。
 
 ![内存交互操作](../images/内存交互操作.png)
 
@@ -469,7 +469,7 @@ public class WeakReferenceTest {
 
 - 复制：划分区域，每次使用其中1块区域，使用完之后把存活的数据复制到另外一块中，Hotspot新生代默认使用，划分为1个Eden和2个Survivor，大小比例为8：1，Survivor空间不足时**使用老年代分配担保**；
 
-![复制算法](../images/复制算法.jpg)
+![复制算法](../images/复制算法.jpg) 
 
 - 标记整理：先标记，然后把存活对象向空间一端移动，适合**老年代**使用的算法。
 
@@ -486,7 +486,8 @@ public class WeakReferenceTest {
    - Parallel Serial收集器：是Parallel Scavenge老年代算法，吞吐量优先、多线程、标记整理算法；
    - CMS收集器：以**最短回收停顿为目标**，真正意义上的并发收集器。使用**标记清除算法**，对CPU资源非常敏感、**无法清除浮动垃圾（边回收而且边产生的垃圾）**、收集结束会产生大量的**内存碎片**；
 3. 共用：
-   - G1收集器：**可预测的停顿**；整体使用标记整理算法，局部使用复制算法；把堆划分为**多个独立区域Region**，新生代和老年代**不再是物理隔离**的，跟踪各个Region中的堆积价值大小，**优先回收价值最大的Region**。
+   - G1收集器：**可预测的停顿**；整体使用标记整理算法，局部使用复制算法；把堆划分为**多个独立区域Region**，新生代和老年代**不再是隔离**的，跟踪各个Region中的堆积价值大小，**优先回收价值最大的Region**。
+   - ZGC：ZGC在指针上做标记，在访问指针时加入**Load Barrier（读屏障）**，当对象正被GC移动，指针上的颜色就会不对，这个屏障就会先把指针更新为有效地址再返回；因此在访问对象的时候会变慢，但不会为了保持应用与GC一致而粗暴整体的STW
 
 ### GC名词解释
 
@@ -527,6 +528,39 @@ public class WeakReferenceTest {
 - 根据当前的执行任务是**CPU密集型**还是**IO密集型**：如果是CPU密集型应用，则线程池大小设置为CPU数量 + 1，如果是IO密集型应用，则线程池大小设置为2 * CPU数量 + 1，该设置偏理论方式；
 - 根据CPU的等待时间进行计算：最佳线程数目 = (线程等待时间 / 线程CPU时间 + 1) * CPU数量，由于线程等待时间和线程CPU时间很难确定，该公式很难进行实际使用；
 - 动态设置线程池数量的大小，美团技术团队使用JDK原生的threadpool，其可以调用setMaximumPoolSize和setCorePoolSize动态设置大小，并且实现自定义的ResizableCapacityLinkedBlockingQueue动态设置队列大小
+
+### 如何解决内存溢出问题
+
+- 先找出进程对应的pid
+- 用命令jmap -histo:live pid可以看到存活的对象列表以及占用的大小
+- 用命令jmap -dump:live,format=b,file=test.bin pid可以dump出整个内存，可以用jvisualvm看到所有的对象详情
+
+### 如何查看GC的情况
+
+jstat -gccapacity pid
+
+输出结果说明如下表（C代表capacity，U代表USED）
+
+| 字段名 | 说明（单位KB）       |
+| ------ | -------------------- |
+| NGCMN  | 新生代最小大小       |
+| NGCMX  | 新生代最大大小       |
+| NGC    | 当前新生代的大小     |
+| S0C    | 第一个Survivor的大小 |
+| S1C    | 第二个Survivor的大小 |
+| EC     | Eden区的大小         |
+| OGCMN  | 老年代最小大小       |
+| OGCMX  | 老年代最大大小       |
+| OGC    | 当前老年代的大小     |
+| OC     | 当前老年代的大小     |
+| MCMN   | 元空间的最小大小     |
+| MCMX   | 元空间的最大大小     |
+| MC     | 当前元空间的大小     |
+| CCSMN  | 最小压缩类空间大小   |
+| CCSMX  | 最大压缩类空间大小   |
+| CCSC   | 当前压缩类空间大小   |
+| YGC    | 年轻代GC次数         |
+| FGC    | Full GC的次数        |
 
 ### 如何查看与定位CPU100%的问题
 
@@ -632,3 +666,20 @@ public static void main(String[] args) throws InterruptedException {
   ```
   
   - 通过命令启动./jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostname=xxx.xxx.xxx.xxx -p xxxx -J-Djava.rmi.server.logCalls=true
+
+## 亲自遇到的问题
+
+问题表现：升级了mysql8.0之后，程序cpu微微升高，内存占用率比较高
+
+![druid版本问题1](D:\workspace\blog\docs\images\druid版本问题1.jpg)
+
+![](D:\workspace\blog\docs\images\druid版本问题2.jpg)
+
+表现是：
+
+- 内存里面有过多的ZipEntry的实例，却都无引用的
+- Druid的loadClass()方法吃了非常多的CPU资源
+
+用了jmap dump出内存对象，用jstack查看线程的占用时间，发现就是druid的内部问题
+
+详见：https://blog.csdn.net/qq_40378034/article/details/117851207

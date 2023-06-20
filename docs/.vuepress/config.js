@@ -42,7 +42,6 @@ module.exports = {
             { title: "业务", path: "business" },
             { title: "工具", path: "tools" },
             { title: "其他", path: "other" },
-            { title: "大数据", path: "bigdata" },
             { title: "Python", path: "python" },
             { title: "Go", path: "go" },
           ],

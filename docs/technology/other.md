@@ -47,6 +47,8 @@
 
 - 经验不足的时候，不知道spring是区分父子容器的，在spring mvc容器中扫描了所有类，不报错；但在spring中扫描所有类，就会报找不到controller异常。正常的做法是spring mvc容器扫描controller注解，而spring扫描其他的类；
 
+- 做Flink的时候，Flink无限重启导致连接Redis的连接池占满；
+
 - 做渠道的重构，遇到一个疑似内存泄露的现象：
 
   ![druid版本的坑1](../images/druid版本的坑1.png)
@@ -56,7 +58,7 @@
   ![druid版本的坑3](../images/druid版本的坑3.png)
 
   - 内存里面有过多的ZipEntry的实例，却都无引用的；
-  - 2.Druid的loadClass()方法吃了非常多的CPU资源。
+  - Druid的loadClass()方法吃了非常多的CPU资源。
   - 原因是druid的版本+Mysql8.0驱动导致的问题，详情可见解决方案：https://blog.csdn.net/qq_40378034/article/details/117851207
 
 
@@ -116,3 +118,8 @@
 5. 预估时间：根据每个技术实现预估对应的实现时间
 6. 设置里程碑和检查点：设置未来的checkpoint以及deadline
 7. 分配任务：根据重要程度以及每个技术人员的意愿把具体任务分配给不同的开发人员
+
+## 一些面试的相关的内容
+
+- https://osjobs.net/topk/all/
+- https://heapdump.cn/article/3606364

@@ -140,7 +140,67 @@ public class ZerocopyTest {
   - 读：磁盘--(映射)-->内核缓冲区
   - 写：内核缓冲区--(映射)-->磁盘
 
-## CPU
+### Netty的代码样例
+
+```java
+public class NettyServer {
+    public static void main(String[] args) throws InterruptedException {
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup, workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel socketChannel) throws Exception {
+                            ChannelPipeline pipeline = socketChannel.pipeline();
+                            pipeline.addLast(new StringDecoder());
+                            pipeline.addLast("encoder", new ObjectEncoder());
+                            pipeline.addLast(" decoder", new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
+                            pipeline.addLast(new NettyServerHandler());
+                        }
+                    })
+                    .option(ChannelOption.SO_BACKLOG, 128)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+            ChannelFuture f = b.bind(8000).sync();
+            System.out.println("服务端启动成功，端口号为:" + 8000);
+            f.channel().closeFuture().sync();
+        } finally {
+            workerGroup.shutdownGracefully();
+            bossGroup.shutdownGracefully();
+        }
+    }
+}
+
+public class NettyServerHandler extends ChannelInboundHandlerAdapter {
+    RequestHandler requestHandler = new RequestHandler();
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        Channel channel = ctx.channel();
+        System.out.println(String.format("客户端信息： %s", channel.remoteAddress()));
+    }
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        Channel channel = ctx.channel();
+        String request = (String) msg;
+        System.out.println(String.format("客户端发送的消息 %s : %s", channel.remoteAddress(), request));
+        String response = requestHandler.handle(request);
+        ctx.write(response);
+        ctx.flush();
+    }
+}
+```
+
+### Netty解决TCP粘包的问题
+
+粘包：是由于程序
+
+## CPU（重点关注）
+
+![](D:\workspace\blog\docs\images\cpu各项指标.jpg)
 
 |               | CPU使用率                                                                                                                                                                                                                                                             | CPU Load                                                                           |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |

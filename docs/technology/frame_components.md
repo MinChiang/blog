@@ -501,6 +501,12 @@ keys和scan的区别：
 - 自动提交：**enable.auto.commit=true**，不是拉取的时候马上提交；在每次poll数据之前，检查是否到达**auto.commit.interval.ms**的时间，如果到达，则提交拉取消息的最大偏移量
 - 手动提交：**enable.auto.commit=false**，需要通过commitAsync()或者commitSync()进行提交处理
 
+**ack的参数配置**：
+
+- 0：leader收到producer的消息没有写盘就返回ack，leader故障时会丢失数据
+- 1：leader收到数据落盘返回ack，大概率会发生数据丢失
+- -1（ALL）：ISR中所有的follower都同步成功后才返回ack，但是如果在返回ack的时候突然挂掉，生产者还会重新发送一条数据，因此会造成数据的重复
+
 ### 详细用例
 
 在目录中创建3个文件夹，对应为9092-9094，分别对应kafka的占用端口，并将server.properties复制到对应的文件夹中，并且修改为以下内容
@@ -575,6 +581,11 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
   - 指定分区
   - 不指定分区，由指定key，根据key的hash规则确定发送到哪个分区
   - 不指定分区，不指定key，轮询发送
+
+### 一些有用的资料：
+
+- https://juejin.cn/post/7176576097205616700
+- https://zhuanlan.zhihu.com/p/377209008
 
 ## Zookeeper
 
@@ -656,11 +667,89 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 - Sink：输出
 - DataStream：输入到系统后成为的流，也是应用各种function的对象
 - Function：各种对流的操作，例如
-  - Map：
-  - FlatMap：
-  - Filter：
-  - Reduce：
+  - FlatMap：数据拆分映射，不过给了一个collector，可以进行数据的丢弃
+  - Map：数据映射，数据是不能丢弃的（如果返回null下游是可以收到null数据的）
+  - Filter：数据过滤器
+  - Reduce：把两个元素聚合为一个
   - Window：数据归窗
+
+
+```java
+@Public
+public interface SourceFunction<T> extends Function, Serializable {
+    
+    void run(SourceContext<T> ctx) throws Exception;
+
+    void cancel();
+
+    interface SourceContext<T> {
+
+        void collect(T element);
+
+        void collectWithTimestamp(T element, long timestamp);
+
+        void emitWatermark(Watermark mark);
+
+        void markAsTemporarilyIdle();
+
+        Object getCheckpointLock();
+
+        void close();
+    }
+}
+
+public interface SinkFunction<IN> extends Function, Serializable {
+
+    default void invoke(IN value) throws Exception {}
+
+    default void invoke(IN value, Context context) throws Exception {
+        invoke(value);
+    }
+
+    interface Context {
+
+        long currentProcessingTime();
+
+        long currentWatermark();
+
+        Long timestamp();
+    }
+}
+
+public interface MapFunction<T, O> extends Function, Serializable {
+
+    O map(T value) throws Exception;
+}
+
+public interface FlatMapFunction<T, O> extends Function, Serializable {
+
+    void flatMap(T value, Collector<O> out) throws Exception;
+}
+
+public interface FilterFunction<T> extends Function, Serializable {
+
+    boolean filter(T value) throws Exception;
+}
+
+public interface WindowFunction<IN, OUT, KEY, W extends Window> extends Function, Serializable {
+
+    void apply(KEY key, W window, Iterable<IN> input, Collector<OUT> out) throws Exception;
+}
+```
+
+其他高级额外功能：
+
+- windows：
+  - **Tumbling Windows**：滚动窗口，窗口的**大小是固定的**，且**各自范围不重叠**；
+  - **Sliding Windows**：滑动窗口，**window size窗口大小**，***window slide滑动距离***，如果 slide 小于窗口大小，滑动窗口可以允许窗口重叠。这种情况下，一个元素可能会被分发到多个窗口；
+  - Session Windows：会话窗口，不会相互重叠，且没有固定的开始或结束时间。 会话窗口在一段时间没有收到数据之后会关闭；
+  - Global Windows：全局窗口，所有的key分配到一个窗口，自定义trigger很有用
+- Window Functions：
+  - aggregate：窗口元素聚合
+  - reduce：合并到一个输出数据，是aggregate的特例
+  - processWindow：能获取包含窗口内所有元素的 Iterable， 以及用来获取时间和状态信息的 Context 对象，比其他窗口函数更加灵活
+- Triggers ：决定窗口什么时候被处理
+- Evictors ：移除窗口内的元素
 
 ![原理图](../images/flink核心数据功能.jpg)
 
@@ -669,11 +758,11 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 - 需要以**数据流**为切入点，如果需要做**复杂业务**处理flink是非常不合适的
 - 由于是**CPU密集型**，因此线程控制权交给flink管理
 - 算子处理任务出错时不能向框架抛出错误（例如json反序列化错误），因为算子异常会导致对应进程**重启尝试**
-- 含大量的泛型类以及函数，而且Java有类型擦除的问题，因此会出现算子处理函数后补充.returns函数以标志返回对应泛型的类型
+- 流中使用到的数据传输类，都**必须实现Serializable**，因为本质上就是要经过Java原生的序列化
 - 算子的声明周期是由manager进行管理的，当我们new算子的时候并不是真正的创建算子。因此不能在构造函数中执行初始化操作，而是在**open方法**中
 - 做对应的flink功能，功能内自行启动线程、使用线程池等去维护意义不大（flink已经管理好对应的slot和资源，这些资源都是已经**相互隔离**的）
+- 含大量的泛型类以及函数，很多情况下，算子处理函数后需要补充.returns函数以标志返回对应泛型的类型
 - **无法解决业务数据依赖的问题**：对于广播状态的功能，某个算子X中含有A广播流和B普通流，算子X对B的处理依赖A广播流的传入，此时必须要求在处理B流数据前A流先一步到达，这个功能不太好实现
-- 流中使用到的数据传输类，都**必须实现Serializable**，因为本质上就是要经过Java原生的序列化
 - 本质上不适合做很重业务逻辑性的操作，因为是CPU密集型的，会造成堵塞
 - 某个subtask提前finish导致savepoint失败
 

@@ -5,6 +5,29 @@
 - 隔离性（Isolation）：事务的隔离性是多个用户并发访问数据库时，数据库为每一个用户开启的事务，不能被其他事务的操作数据所干扰，多个并发事务之间要相互隔离；
 - 持久性（Durability）：持久性是指一个事务一旦被提交，它对数据库中数据的改变就是永久性的，接下来即使数据库发生故障也不应该对其有任何影响。
 
+## 聚簇索引和非聚簇索引
+
+- 非聚簇索引：表数据和索引是分成两部分存储的，主键索引和二级索引存储上没有任何区别；使用的是B+树，叶子节点存储的是**索引值+行号**
+- 聚簇索引：表数据和主键一起存，主键和其他二级索引分开存；二级索引存储的是**索引值+主键id**
+
+聚簇索引优点：
+
+- 取出范围数据时候，性能更好，因为是连续的
+- 聚簇索引将数据+主键索引放一起，如果从主索引查找数据会更快一些，因为直接读取即可
+
+聚簇索引缺点：
+
+- 严重依赖插入的顺序，如果不按顺序插入会导致页分裂
+- 二级索引需要两次索引查找，第一次找到主键，第二次找主键所在行数据
+
+![聚簇索引1](..\images\聚簇索引1.jpg)
+
+![聚簇索引2](..\images\聚簇索引2.jpg)
+
+![非聚簇索引1](..\images\非聚簇索引1.jpg)
+
+![非聚簇索引2](..\images\非聚簇索引2.jpg)
+
 ## 事务隔离性
 
 | 问题    | 描述                                  |
@@ -14,12 +37,12 @@
 | 幻读    | 在同一个事务中，同样select语句执行两次，返回的记录行数条数不一样 |
 | 丢失更新  | 两个事务同事修改同一条记录，一个事务的修改被另外一个事务覆盖了     |
 
-| 名称                                   | 解决问题                    |
-| ------------------------------------ | ----------------------- |
-| RU（Read Uncommited）读未提交              | 最低的隔离级别，上述问题都没有解决       |
-| RC（Read Commited）读提交                 | 解决脏读                    |
-| RR（Repeatable Read）可重复读（mysql默认隔离级别） | 解决脏读、不可重复读、幻读（解决部分幻读问题） |
-| Serialization串行化                     | 解决所有问题                  |
+| 名称                                               | 解决问题                           |
+| -------------------------------------------------- | ---------------------------------- |
+| RU（Read Uncommited）读未提交                      | 最低的隔离级别，上述问题都没有解决 |
+| RC（Read Commited）读提交                          | 解决脏读                           |
+| RR（Repeatable Read）可重复读（mysql默认隔离级别） | 解决脏读、不可重复读               |
+| Serialization串行化                                | 解决所有问题                       |
 
 ## 如何解决更新丢失的问题
 
@@ -47,19 +70,13 @@
 ## 数据库的调优处理
 
 - 原则合适的字段类型，没有负数的情况下尽量使用unsigned，尽量将列设置为not null；
+- 利用join代替子查询，尽量使用inner join；
 - 当只需要一条数据的时候，使用limit 1直接返回；
 - 不能使用select *，把检索的目标字段显式地展现出来，而且避免在where中进行null值判断，否则会放弃索引导致全表扫描；尽量不要在where子句中对列进行函数处理，会导致索引失效；where子句中参数必须和列的类型保持一直，防止隐式转换；
 - 建立合适的索引，在搜索中使用最左原则，而且把**区分度高**的字段排在前面，以提高对应的检索性能；
 - 开启慢日志查询，对应的参数为slow_query_log=ON，设定对应的慢查询的阈值（秒）参数long_query_time，记录对应没有使用索引的语句参数log_queries_not_using_indexes=ON；
 - 使用join的时候，注意防止**字符编码不同**导致隐式转换导致性能下降；
 - 尽量使用覆盖索引，避免select出过多的字段数据；尽量使用扩展索引，如a已经有了索引，当前需要增加(a,b)索引，那么只需要修改原来的索引即可。
-
-## 聚集索引和非聚集索引
-
-- 聚集索引是以主键创建的索引，非聚集索引由非主键创建；
-- 聚集索引在叶子结点存放表中的数据，非聚集索引存放**主键的值**；
-- 使用非聚集索引查询时，先拿到非聚集索引叶子节点的主键值，再通过聚集索引对主键值进行查找，该过程称为**回表**；
-- 使用聚集索引时，优点：查询数据少时，无需返回行（覆盖索引）；缺点：不规则插入数据，会导致频繁的页分裂。
 
 ## MVCC
 
@@ -120,3 +137,56 @@ select * from performance_schema.data_locks;
 - 对索引列进行函数运算；
 - 联合索引的顺序问题；
 - 数据量太少，mysql认为全表扫描比使用索引更快。
+
+## 慢SQL定位设置
+
+```sql
+-- 查看当前设置
+SHOW variables LIKE '%quer%';
+
+-- 开启或关闭慢日志
+slow_query_log = ON
+-- 慢查询的阈值，单位为秒
+long_query_time = 5
+-- 慢查询的记录文件路径
+slow_query_log_file = D:\tools\MySQL\mysql-8.0.30-winx64\data\MinChiangHomePC-slow.log
+-- 记录没有索引的SQL
+log_queries_not_using_indexes = ON
+```
+
+慢SQL实验如下：
+
+```sql
+-- 执行一个长达10秒的SQL
+SELECT
+    SYSDATE(),
+    SLEEP(10),
+    SYSDATE();
+    
+-- 不用索引执行一个查询
+SELECT * FROM api_statistics as2;
+```
+
+查看D:\tools\MySQL\mysql-8.0.30-winx64\data\MinChiangHomePC-slow.log文件
+
+```
+TCP Port: 3306, Named Pipe: MySQL
+Time                 Id Command    Argument
+# Time: 2023-06-19T14:40:07.646760Z
+# User@Host: root[root] @ localhost [127.0.0.1]  Id:    10
+# Query_time: 10.013659  Lock_time: 0.000000 Rows_sent: 1  Rows_examined: 1
+use flink;
+SET timestamp=1687185597;
+/* ApplicationName=DBeaver Ultimate 21.3.0 - SQLEditor <Script-10.sql> */ SELECT
+    SYSDATE(),
+    SLEEP(10),
+    SYSDATE()
+LIMIT 0, 200;
+# Time: 2023-06-19T14:42:31.751546Z
+# User@Host: root[root] @ localhost [127.0.0.1]  Id:    10
+# Query_time: 0.005397  Lock_time: 0.000015 Rows_sent: 1  Rows_examined: 1
+SET timestamp=1687185751;
+/* ApplicationName=DBeaver Ultimate 21.3.0 - SQLEditor <Script-10.sql> */ SELECT * FROM api_statistics as2 
+LIMIT 0, 200;
+```
+
