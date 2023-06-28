@@ -297,15 +297,25 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 
 ### 数据类型&数据结构
 
-数据类型：仅支持**byte数组**类型。
-
 数据结构：
+
+- Sds：简单动态字符串
+- ZipList：压缩列表
+- Dict：字典
+- Intset：整数集
+- ZSkipList：跳表
+- QuickList：快表
+
+数据类型：
 
 - String：一个key对应一个value的简单映射；
 - List：一个key对应多个value，value值可以重复；
 - Hash：一个key对应多个key-value键值对；
 - Set：一个key对应多个value，value不可以重复，value之间没有顺序关系；
-- Sorted Set：一个key对应多个value，value不可以重复，有顺序关系，先按照score排序，再按照value排序。
+- Sorted Set：一个key对应多个value，value不可以重复，有顺序关系，先按照score排序，再按照value排序；
+- HyperLogLog：根据输入的元素做基数统计，而不会存储元素本身；
+- Geo：存储地理位置信息
+- BloomFilter：布隆过滤器
 
 ### 持久化
 

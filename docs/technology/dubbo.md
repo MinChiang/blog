@@ -1,5 +1,19 @@
 ## Dubbo
 
+### 负载均衡算法
+
+| 算法                          | 特性                    | 备注                                                 |
+| :---------------------------- | :---------------------- | :--------------------------------------------------- |
+| Weighted Random LoadBalance   | 加权随机                | 默认算法，默认权重相同                               |
+| RoundRobin LoadBalance        | 加权轮询                | 借鉴于 Nginx 的平滑加权轮询算法，默认权重相同，      |
+| LeastActive LoadBalance       | 最少活跃优先 + 加权随机 | 背后是能者多劳的思想                                 |
+| Shortest-Response LoadBalance | 最短响应优先 + 加权随机 | 更加关注响应速度                                     |
+| ConsistentHash LoadBalance    | 一致性哈希              | 确定的入参，确定的提供者，适用于有状态请求           |
+| P2C LoadBalance               | Power of Two Choice     | 随机选择两个节点后，继续选择“连接数”较小的那个节点。 |
+| Adaptive LoadBalance          | 自适应负载均衡          | 在 P2C 算法基础上，选择二者中 load 最小的那个节点    |
+
+
+
 ### 加载流程
 
 ExtensionLoader

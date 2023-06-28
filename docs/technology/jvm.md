@@ -671,9 +671,9 @@ public static void main(String[] args) throws InterruptedException {
 
 问题表现：升级了mysql8.0之后，程序cpu微微升高，内存占用率比较高
 
-![druid版本问题1](D:\workspace\blog\docs\images\druid版本问题1.jpg)
+![druid版本问题1](..\images\druid版本问题1.jpg)
 
-![](D:\workspace\blog\docs\images\druid版本问题2.jpg)
+![](..\images\druid版本问题2.jpg)
 
 表现是：
 
