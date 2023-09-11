@@ -247,6 +247,8 @@ public class QuickSort<T extends Comparable<T>> extends AbstractSortable<T> {
 }
 ```
 
+
+
 ## DFS
 
 特点：
@@ -313,6 +315,8 @@ public class Permutations {
 
 }
 ```
+
+
 
 ## 限流
 
@@ -498,6 +502,8 @@ public class LeakyBucket {
 
 ```
 
+
+
 ## 随机算法
 
 ### 蓄水池采样算法
@@ -546,7 +552,9 @@ public class LeakyBucket {
     }
 ```
 
-### Leetcode
+
+
+## Leetcode
 
 #### 必会
 
@@ -583,8 +591,6 @@ public class LeakyBucket {
 - 146：[力扣](https://leetcode.cn/problems/lru-cache)
 
 思路：map+双向链表，由于get和put都是必须为O(1)复杂度，因此只能用map
-
-
 
 - 215：[力扣](https://leetcode.cn/problems/kth-largest-element-in-an-array)
 - 15：[力扣](https://leetcode.cn/problems/3sum)

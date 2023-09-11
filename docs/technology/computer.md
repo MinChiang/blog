@@ -42,11 +42,15 @@ public class ZerocopyTest {
 | CPU密集型 | 也叫计算密集型，系统大部分时间状况是CPU占用率很高（有很多的计算任务需要完成），I/O在很短时间就可以完成。需要提高代码的运行效率，对于密集型的任务，最好使用C语言编写，而不要使用python |
 | IO密集型  | 大部分状况是CPU等待I/O的读写操作，常见的大部分任务都是I/O密集型任务，比如web应用。使用运行速度块的语言无法很好地提升运行效率，因此比较适合开发效率高（代码量少，库类多）的语言进行编写 |
 
+
+
 ## 术语
 
 - RTT：网络数据往返延时，为数据完全发送完（完成最后一个比特推送到数据链路上）到收到确认信号的时间
 - 并发：多个任务交替地执行，但多个任务之间有可能还是串行的
 - 并行：并行是多个任务同时执行
+
+
 
 ## IO模型
 
@@ -198,6 +202,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
 粘包：是由于程序
 
+
+
 ## CPU（重点关注）
 
 ![](..\images\cpu各项指标.jpg)
@@ -214,6 +220,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
 - load低，利用率高：如果CPU执行的任务数量少，则load会低，但是任务都是CPU密集型的，利用率就会高
 - load高，利用率低：如果CPU执行的任务数量多，则load会高，但是任务执行过程中CPU经常空闲（比如等待IO），利用率就会低
+
+
 
 ## TCP/IP协议相关
 

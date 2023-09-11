@@ -53,6 +53,8 @@ acme.sh --install-cert -d *.minchiang.info \
   crontab -l
   ```
 
+
+
 ## Git
 
 - 版本库初始化：git init
@@ -98,15 +100,27 @@ acme.sh --install-cert -d *.minchiang.info \
   - 指定标签信息：-m
   - 删除标签：-d
 
-## Git和SVN的区别
+- Git和SVN的区别
+  - Git是分布式的：每个开发人员都是中心版本库的一个克隆
+  - Git按内容元数据方式存储，而SVN是按文件存储：.svn和.git比较差异非常大，.git目录下有中心版本库的所有东西，例如标签、分支和版本记录等；
+  - Git的分支和SVN的分支不同：Git分支是同一个文件夹的不同表现方式，而SVN是在不同的文件夹下；
+  - Git没有一个全局的版本号，而SVN有；
+  - Git的内容完整性要优于SVN：Git的内容存储使用SHA-1哈希算法，确保内容的完整性。
 
-- Git是分布式的：每个开发人员都是中心版本库的一个克隆
-- Git按内容元数据方式存储，而SVN是按文件存储：.svn和.git比较差异非常大，.git目录下有中心版本库的所有东西，例如标签、分支和版本记录等；
-- Git的分支和SVN的分支不同：Git分支是同一个文件夹的不同表现方式，而SVN是在不同的文件夹下；
-- Git没有一个全局的版本号，而SVN有；
-- Git的内容完整性要优于SVN：Git的内容存储使用SHA-1哈希算法，确保内容的完整性。
+
 
 ## IDEA快速工具
+
+### 快捷键
+
+- 查看调用关系：Ctrl + Alt + h
+- 格式化代码：Ctrl + Alt + l
+- 优化导入的包：Ctrl + Alt + o
+- 快速重命名：Shift + F6
+- 删除当前行：Ctrl + y
+- 跳入父类：Ctrl + u
+- 查看实现类：Ctrl + Alt + b
+- 前进后退：Ctrl + Alt + 左右
 
 ### 破解工具
 
@@ -241,3 +255,4 @@ public class ${NAME} {
 - String Manipulation（各种命名风格的格式切换）
 - Translation（翻译）
 - Protocol Buffer Editor（PB文件支持）
+- SequenceDiagram（快速生成时序图）
