@@ -1,5 +1,3 @@
-## Java虚拟机
-
 ## volatile与JMM内存模型
 
 ```java
@@ -196,6 +194,8 @@ JMM是什么：
 
 ![用户线程模型](../images/混合线程模型.jpg)
 
+
+
 ## 类相关
 
 ### 类的加载过程
@@ -264,6 +264,8 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
     throw new ClassNotFoundException(name);
 }
 ```
+
+
 
 ## 对象相关
 
@@ -459,6 +461,8 @@ public class WeakReferenceTest {
 - 任何一个对象的finalize方法都只会被系统自动调用一次，如果对象面临下一次回收，finalize方法不会被再次执行；
 - 运行代价高昂，不确定性太大，无法保证各个对象的调用顺序，不推荐使用。
 
+
+
 ## 垃圾回收相关
 
 ### 垃圾收集算法
@@ -520,6 +524,8 @@ public class WeakReferenceTest {
   - jmap -dump:format=b,file=xxx PID，把整个堆dump出来
 - jstack：当前线程执行的快照，jstack -l PID
 - VisualVM：上面工具的集合，一般用此工具，省力省心。
+
+
 
 ## JVM操作样例
 
@@ -666,6 +672,8 @@ public static void main(String[] args) throws InterruptedException {
   ```
   
   - 通过命令启动./jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostname=xxx.xxx.xxx.xxx -p xxxx -J-Djava.rmi.server.logCalls=true
+
+
 
 ## 亲自遇到的问题
 

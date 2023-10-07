@@ -5,6 +5,8 @@
 - 隔离性（Isolation）：事务的隔离性是多个用户并发访问数据库时，数据库为每一个用户开启的事务，不能被其他事务的操作数据所干扰，多个并发事务之间要相互隔离；
 - 持久性（Durability）：持久性是指一个事务一旦被提交，它对数据库中数据的改变就是永久性的，接下来即使数据库发生故障也不应该对其有任何影响。
 
+
+
 ## 聚簇索引和非聚簇索引
 
 - 非聚簇索引：表数据和索引是分成两部分存储的，主键索引和二级索引存储上没有任何区别；使用的是B+树，叶子节点存储的是**索引值+行号**
@@ -28,6 +30,8 @@
 
 ![非聚簇索引2](..\images\非聚簇索引2.jpg)
 
+
+
 ## 事务隔离性
 
 | 问题    | 描述                                  |
@@ -44,6 +48,8 @@
 | RR（Repeatable Read）可重复读（mysql默认隔离级别） | 解决脏读、不可重复读               |
 | Serialization串行化                                | 解决所有问题                       |
 
+
+
 ## 如何解决更新丢失的问题
 
 - 利用单条语句的原子性：
@@ -58,6 +64,8 @@
   
   认为冲突概率很低，等到回写时候判断是否被其他事务修改，一般使用version版本号+CAS的机制保证
 
+
+
 ## 各种DB的使用场景
 
 | 引擎类型    | 特点                                                                                 |
@@ -66,6 +74,8 @@
 | MyISAM  | 面向OLAP，非聚集方式存储（MYD：数据文件，MYI：索引文件），不持支事务，锁颗粒度为表级，支持全文索引                             |
 | Memory  | 将表数据存放在内存中，默认使用**哈希索引**；速度快、锁颗粒度为**表级**、不支持TEXT和BLOB类型、存储varchar按照char的方式进行，浪费内存空间 |
 | Archive | 只支持insert和select操作；对行数据进行压缩处理（1：10），适合存储归档数据                                       |
+
+
 
 ## 数据库的调优处理
 
@@ -77,6 +87,8 @@
 - 开启慢日志查询，对应的参数为slow_query_log=ON，设定对应的慢查询的阈值（秒）参数long_query_time，记录对应没有使用索引的语句参数log_queries_not_using_indexes=ON；
 - 使用join的时候，注意防止**字符编码不同**导致隐式转换导致性能下降；
 - 尽量使用覆盖索引，避免select出过多的字段数据；尽量使用扩展索引，如a已经有了索引，当前需要增加(a,b)索引，那么只需要修改原来的索引即可。
+
+
 
 ## MVCC
 
@@ -90,6 +102,8 @@
 对于Read Committed，每次读取时，总是取最新的，被提交的那个版本的数据记录。
 
 对于Repeatable Read，每次读取时，总是取`created_by_txn_id`小于等于当前事务ID的那些数据记录。在这个范围内，如果某一数据多个版本都存在，则取最新的。
+
+
 
 ## 锁相关的查询与命令
 
@@ -112,6 +126,8 @@ select * from information_schema.innodb_locks;
 select * from performance_schema.data_locks;
 ```
 
+
+
 ## 查询优化Explain
 
 | 标志          | 简要描述                   | 详细描述                                                     |
@@ -129,6 +145,8 @@ select * from performance_schema.data_locks;
 | filtered      | 按表条件过滤的行百分比     | 满足查询记录数量的比例                                       |
 | Extra         | 执行情况的描述和说明       | Using Index：索引覆盖，不会回表<br />Using filesort：需要额外的排序操作，不能通过索引顺序达到排序效果，建议优化<br />Using where：查询时未找到可用索引，而通过where条件过滤获取所需数据<br />Using temporary：查询后结果需要使用临时表存储，一般在排序或者分组查询用到，建议优化<br />Using join buffer：联表查询时候没有用到索引，需要一个连接缓冲区存储中间结果 |
 
+
+
 ## 索引不生效的场景
 
 - 列类型与查询条件的类型不一致；
@@ -137,6 +155,8 @@ select * from performance_schema.data_locks;
 - 对索引列进行函数运算；
 - 联合索引的顺序问题；
 - 数据量太少，mysql认为全表扫描比使用索引更快。
+
+
 
 ## 慢SQL定位设置
 
@@ -189,6 +209,4 @@ SET timestamp=1687185751;
 /* ApplicationName=DBeaver Ultimate 21.3.0 - SQLEditor <Script-10.sql> */ SELECT * FROM api_statistics as2 
 LIMIT 0, 200;
 ```
-
-## 数据库分库分表
 

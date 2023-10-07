@@ -510,6 +510,8 @@ public void listenClick(List<ConsumerRecord<String, String>> records) {
 }
 ```
 
+
+
 ## 线程
 
 ### CountDownLatch和CycleBarrier
@@ -611,6 +613,8 @@ CycleBarrier
 - 子线程调用await减少计数值，当计数值到达0，则触发对应的Runnable的动作
 - 可以重复使用
 - 本质上是在使计数变为0的线程中执行Runnable动作
+
+
 
 ## 线程的中断
 
@@ -862,6 +866,8 @@ public static void main(String[] args) throws InterruptedException {
 ---------- 被阻塞进程结束 ----------
 ```
 
+
+
 ## 序列化与反序列化
 
 - 原生的JVM进行序列化和反序列化对象时需要实现Serializale接口，若被序列化的对象没有实现该接口，或者成员变量中含有引用类型但没实现该接口，则抛出NotSerializableException异常；
@@ -983,6 +989,8 @@ public class TestNIO {
 }
 ```
 
+
+
 ## 基础
 
 ### equals()、==、hashCode()和System.identityHashCode区别
@@ -1048,6 +1056,8 @@ s3.intern():356573597
 - String类使用final修饰，子类无法对该类进行方法的重写；
 - 内部的字符数组使用final修饰，本质上无法变更其指向；
 - 内部所有的方法均返回一个新的String对象实例。
+
+
 
 ## 锁
 
@@ -1690,6 +1700,8 @@ public class ThreadLocal<T> {
 }
 ```
 
+
+
 ## 拷贝/克隆
 
 1. 克隆类需要**重写Object的clone()方法**（显式提升clone的可见性）；
@@ -1792,6 +1804,8 @@ Person{age=26, name='jm', address=Address{name='广州', type='home'}}
 Person{age=26, name='jm', address=Address{name='广州', type='home'}}
 Person{age=26, name='jm', address=Address{name='广州', type='office'}}
 ```
+
+
 
 ## 代理
 
@@ -1928,6 +1942,8 @@ public class PersonProxy implements IPerson {
 - 本质上使用ASM工具，在ASM加载类之前，动态改变类的行为；
 - 比原生的JDK代理更加灵活，被代理类**无需实现接口**。
 
+
+
 ## 细节
 
 ### Map之间多个实现类以及衍生类的异同
@@ -1971,6 +1987,8 @@ ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 - 使用removeIf方法
 - 使用stream的filter进行元素过滤
 
+
+
 ## fail-fast机制和fail-safe机制
 
 - fail-fast（快速失败）：利用迭代器遍历集合时候，如果遍历过程中对内容进行修改，则会抛出ConcurrentModificationException。在遍历集合中的元素时，记录modCount变量，**如果集合发生变化，就会修改modCount的值**。遍历过程中（过程后）判断当前的modCount和遍历前modCount是否相等，如果是就返回遍历结果，否则抛出异常终止遍历；在java.util包下所有集合都是快速失败的，不能再多线程下并发修改。
@@ -1983,6 +2001,8 @@ ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 | 是否会导致内存溢出                         | 否                                | 是                                      |
 | 遍历时修改元素是否能被感知                     | 是（抛出异常）                          | 否                                      |
 | 用例                                | HashMap，Vector，ArrayList，HashSet | CopyOnWriteArrayList，ConcurrentHashMap |
+
+
 
 ## 几个队列常用的API
 
@@ -2028,6 +2048,8 @@ ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 | E peekFirst();           | 否   | 获取队列中的头元素，如果队列为空则返回null                   |
 | E elementLast();         | 是   | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
 | E peekLast();            | 否   | 获取队列中的头元素，如果队列为空则返回null                   |
+
+
 
 ## SPI
 
@@ -2076,6 +2098,8 @@ public class Test {
 com.api.Cat
 com.api.Dog
 ```
+
+
 
 ## 分布式事务
 
@@ -2136,6 +2160,8 @@ Try、Confirm和Cancel单词的缩写，也是简化版的3段提交协议（把
 
 **当步骤2或3失败时，RocketMQ会回调给发送方，询问消息是要发送还是要取消。**
 
+
+
 ## 统一登录流程
 
 ### CAS登录流程
@@ -2171,6 +2197,8 @@ Try、Confirm和Cancel单词的缩写，也是简化版的3段提交协议（把
 | 密码模式  | 高度信任的机构或内部系统使用，前提是保存不保存用户信息               | 不安全，需要高度信任第三方机构组织，所以一般很少使用                                                                                  |
 | 客户端模式 | 不是以用户个人名义获取资源，而是以客户端自己的名义获取资源，开放权限的颗粒度比较高 | 需要授予第三方账号比较高的权限                                                                                             |
 
+
+
 ## 隔离熔断限流降级
 
 - 隔离：
@@ -2184,11 +2212,15 @@ Try、Confirm和Cancel单词的缩写，也是简化版的3段提交协议（把
 - 熔断：根据请求的失败率和请求时间判断服务是否可用；
 - 降级：保证系统核心功能仍然可用，而一些非核心非重要的功能可以以有损的方式提供服务。
 
+
+
 ## 如何做高可用
 
 - 分布式架构，拆成多个模块或微服务，相互之间不影响，提高容错能力
 - 集群多节点：将流量均匀分发到服务器上，避免单点故障
 - 配置故障切换机制，及时拆掉故障节点，
+
+
 
 ## 缓存穿透、缓存击穿、缓存雪崩
 

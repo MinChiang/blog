@@ -66,6 +66,8 @@ B树删除示例图：
 
 ![B星树示例图](../images/B星树示例图.jpg)
 
+
+
 ## 二叉搜索树
 
 ```java
@@ -281,6 +283,8 @@ public class BinaryTree {
 
 }
 ```
+
+
 
 ## 二叉堆
 

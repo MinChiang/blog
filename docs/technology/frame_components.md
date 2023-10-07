@@ -269,12 +269,16 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 - 出现异常但是被方法内部捕获了，又没有向框架抛出异常
 - @Transactional抛出非RuntimeException或者Error异常，需要使用rollbackFor支持其他异常的回滚
 
+
+
 ## MyBatis
 
 ![mybatis缓存机制](../images/mybatis缓存机制.png)
 
 - 一级缓存：在开启一个数据库会话时，会新建一个SqlSession对象（含Executor），Executor在执行对应的SQL语句时，会去PerpetualCache对象中寻找对应的缓存，该缓存对象随着SqlSession对象死亡而释放；如果SqlSession调用了clearCache()、update()、delete()、insert()任意一个方法，都会**清空PerpetualCache的数据**；一级缓存默认为**开启**状态；
 - 二级缓存：默认是不开启二级缓存，默认原生二级缓存需要返回的POJO必须是可序列化的，一般通过LRU的算法来回收。
+
+
 
 ## Dubbo
 
@@ -292,6 +296,8 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 ![dubbo架构4](../images/dubbo架构4.jpg)
 
 ![dubbo架构5](../images/dubbo架构5.jpg)
+
+
 
 ## Redis
 
@@ -490,6 +496,8 @@ keys和scan的区别：
 - keys处理拥有大量数据的场景时，由于redis是单线程的，可能阻塞服务器长达数秒；
 - scan是基于增量式迭代的，默认返回有限条数据，在scan返回数据的过程中，键值可能会被修改；
 
+
+
 ## Kafka
 
 ### 架构模型
@@ -597,6 +605,8 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 - https://juejin.cn/post/7176576097205616700
 - https://zhuanlan.zhihu.com/p/377209008
 
+
+
 ## Zookeeper
 
 #### 角色分类
@@ -642,6 +652,8 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
   3. leader采用二段提交方式，发送propose广播给follower；
   4. follower接收到propose消息，写入日志成功后，返回ack消息给leader；
   5. leader接收到半数以上ack消息，返回成功给客户端，并且广播commit请求给follower。
+
+
 
 ## Flink
 
@@ -776,6 +788,8 @@ public interface WindowFunction<IN, OUT, KEY, W extends Window> extends Function
 - 本质上不适合做很重业务逻辑性的操作，因为是CPU密集型的，会造成堵塞
 - 某个subtask提前finish导致savepoint失败
 
+
+
 ## Nginx
 
 目前Nginx集群没有好的解决方案，下面对应的技术方案可以简单实现：
@@ -783,6 +797,8 @@ public interface WindowFunction<IN, OUT, KEY, W extends Window> extends Function
 1. 构建DNS+CDN服务器
 2. 在多个公网IP中搭建多台Nginx服务器
 3. 通过DNS进行域名的动态切换，通过CDN进行动态流量输入
+
+
 
 ## Activiti
 
@@ -793,6 +809,8 @@ public interface WindowFunction<IN, OUT, KEY, W extends Window> extends Function
   - RuntimeService：实例流程相关
   - TaskService：与正在执行的任务管理相关
   - HistroyService：查询历史服务接口
+
+
 
 ## ElasticSearch
 

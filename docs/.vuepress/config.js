@@ -44,6 +44,7 @@ module.exports = {
             { title: "其他", path: "other" },
             { title: "Python", path: "python" },
             { title: "Go", path: "go" },
+            { title: "输入法", path: "input" },
           ],
         },
       ],
