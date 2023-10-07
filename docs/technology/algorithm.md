@@ -579,12 +579,8 @@ public class LeakyBucket {
 
 #### 中等67
 
-- 3：[力扣](https://leetcode.cn/problems/longest-substring-without-repeating-characters)
+- 3：[力扣](https://leetcode.cn/problems/longest-substring-without-repeating-characters)：pass
 - 146：[力扣](https://leetcode.cn/problems/lru-cache)
-
-思路：map+双向链表，由于get和put都是必须为O(1)复杂度，因此只能用map
-
-
 
 - 215：[力扣](https://leetcode.cn/problems/kth-largest-element-in-an-array)
 - 15：[力扣](https://leetcode.cn/problems/3sum)

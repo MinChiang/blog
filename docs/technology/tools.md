@@ -15,7 +15,15 @@
 
 ```bash
 export Namesilo_Key="上面步骤申请的key"
-curl https://get.acme.sh | sh -s email=448725235@qq.com
+curl https://get.acme.sh | sh -s email=你的邮箱地址
+acme.sh --install-cronjob
+```
+
+其中1，2行可以替换为修改/root/.acme.sh/account.conf
+
+```bash
+Namesilo_Key='上面步骤申请的key'
+ACCOUNT_EMAIL='你的邮箱地址'
 ```
 
 ### 申请证书

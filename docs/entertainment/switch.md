@@ -6,16 +6,16 @@
 2. 用DiskGenius把TF格式化为FAT32，簇大小默认就好
 3. 需要一点翻墙的手段，毕竟要下载一些东西
 
-### 通过DeepSea直接下载整合包
+### 通过DeepSea直接下载整合包（不推荐）
 
 1. 下载对应的整合包：[Team-Neptune/DeepSea](https://github.com/Team-Neptune/DeepSea)，直接选择Release中的advanced版本即可
 2. 解压后直接放入TF卡根目录，并将hekate_ctcaer_x.x.x.bin改名为payload.bin
 3. 把TF卡插入电脑中，直接运行即可
 
-### 通过SdSetup自定义整合包
+### 通过SdSetup自定义整合包（推荐）
 
 2. 通过[SdSetup](https://www.sdsetup.com/console?switch)制定对应的整合包，一般来说需要进行整合定制，推荐使用**Recommended Defaults**即可
-3. 将 sd 卡里面的内容全部复制到 TF 卡根目录
+3. 将 sd 卡里面的内容全部复制到 TF 卡根目录，里面有`sd`和`payloads`两个目录
 	- 如果是硬破机器：将 payloads 中 `hekate_ctcaer_x.x.x.bin` 更名成 `payload.bin` 放入 TF 卡根目录，因为硬破机器会优先读取TF卡里面的`payload.bin`文件
 	- 如果是软破机器：需要用TegraRcmGUI进行启动注入
 
@@ -32,7 +32,7 @@
 4. 进入hekate选择Payloads，使用`Lockpick_RCM.bin`，选择`Dump from SysNAND`
 5. 拔出TF卡，插入电脑，然后在switch文件夹下复制prod.keys到本地电脑，复制backup/xxxxxxx/中所有内容
 
-## 制作虚拟系统
+## 制作虚拟系统（如果已经做过可忽略）
 
 1. 进入真实系统`Launch -> Stock (SYSNAND)`
 2. 删除对应的wifi，保证机器不联网
@@ -47,6 +47,8 @@
 
 1. 下载[固件](https://darthsternie.net/switch-firmwares/)，下载对应的固件并且放入TF卡
 2. 打开相册，打开Daybreak，选择对应的固件文件夹，确定即可
+   - 选择保留设置
+   - 选择格式化为fat32
 
 ## 精简系统（虚拟系统）
 
@@ -66,10 +68,11 @@
 
 - 删除/隐藏虚拟系统的序列号：复制atmosphere/config_templates/exosphere.ini到根目录下，并且修改exosphere.ini文件内容，把`blank_prodinfo_emummc`改为1
 - block任天堂的请求地址
-	- 打开`/atmosphere/hosts`文件夹，如果不存在直接创建即可
-	- 下载[emummc.txt](https://nh-server.github.io/switch-guide/files/emummc.txt)文件并放在`/atmosphere/hosts`里面
-	- 启动机器，查看`/atmosphere/logs/dns_mitm_startup.log`，如果有对应**Redirections xxx.nintendo.xxx -> xxx**，说明成功
-	- 详情可以见：[NH Switch Guide](https://nh-server.github.io/switch-guide/extras/blocking_nintendo/)
+  - 把`/atmosphere/config_templates/system_settings.ini`拷贝到`/atmosphere/config`中，取消 `enable_dns_mitm = u8!0x1` 前的注释
+  - 打开`/atmosphere/hosts`文件夹，如果不存在直接创建即可
+  - 下载[emummc.txt](https://nh-server.github.io/switch-guide/files/emummc.txt)文件并放在`/atmosphere/hosts`里面
+  - 启动机器，查看`/atmosphere/logs/dns_mitm_startup.log`，如果有对应**Redirections xxx.nintendo.xxx -> xxx**，说明成功
+  - 详情可以见：[NH Switch Guide](https://nh-server.github.io/switch-guide/extras/blocking_nintendo/)
 - 游戏渠道：建议不要去破解游戏论坛里面下载，里面的好多需要回帖付费，直接去淘宝花10块钱买个百度网盘内容分享地址，全游戏下载美滋滋
 
 ## 一些其他的软件
@@ -81,3 +84,10 @@
 - [Switch_90DNS_tester](https://github.com/meganukebmp/Switch_90DNS_tester)，判断当前系统是否有block任天堂的地址
 - [Tinfoil](https://tinfoil.io/Download)，从多个渠道安装游戏
 - [N中文数据整理](https://shimo.im/sheets/m5kv9zpQ6Dha82qX/MODOC)，直接使用文档下载游戏（需要配合百度网盘）
+- 一些教程：https://www.marsshen.com/posts/20e16ead/
+
+## 其他
+
+- 关于Tesla特斯拉插件的使用：同时按L + 左摇杆下 + 右摇杆中间即可唤出
+- sys-clk的使用：可以进行超频使用，推荐修改在底座模式下的参数
+

@@ -22,7 +22,6 @@
   - CPU使用率
   - 内存使用量
   - 网络IO
-  - 错误率
 - 对于负载侧记录的指标：
   - 响应时间（RT：Response Time）
   - 每一个请求的平均响应时间（ART：Average Transaction Reponse Time）
