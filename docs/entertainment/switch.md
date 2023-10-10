@@ -73,6 +73,14 @@
   - 下载[emummc.txt](https://nh-server.github.io/switch-guide/files/emummc.txt)文件并放在`/atmosphere/hosts`里面
   - 启动机器，查看`/atmosphere/logs/dns_mitm_startup.log`，如果有对应**Redirections xxx.nintendo.xxx -> xxx**，说明成功
   - 详情可以见：[NH Switch Guide](https://nh-server.github.io/switch-guide/extras/blocking_nintendo/)
+- 特斯拉插件相关：
+  - 关于Tesla特斯拉插件的使用：同时按L + 左摇杆下 + 右摇杆中间即可唤出
+  - sys-clk的使用：可以进行超频使用，推荐修改在底座模式下的参数
+  - fps的查看：[HowToReadFPS](https://gist.github.com/masagrator/65fcbd5ad09243399268d145aaab899b)，由于我们已经包含特斯拉相关的插件，那么直接按照下面的步骤走就行
+    - 下载`SaltyNX`： [HERE](https://github.com/masagrator/SaltyNX/releases)
+    - 下载`Status Monitor Overlay`： [HERE](https://github.com/masagrator/Status-Monitor-Overlay/releases)
+    - 下载`FPSLocker`： [HERE](https://github.com/masagrator/FPSLocker/releases)
+
 - 游戏渠道：建议不要去破解游戏论坛里面下载，里面的好多需要回帖付费，直接去淘宝花10块钱买个百度网盘内容分享地址，全游戏下载美滋滋
 
 ## 一些其他的软件
@@ -85,9 +93,3 @@
 - [Tinfoil](https://tinfoil.io/Download)，从多个渠道安装游戏
 - [N中文数据整理](https://shimo.im/sheets/m5kv9zpQ6Dha82qX/MODOC)，直接使用文档下载游戏（需要配合百度网盘）
 - 一些教程：https://www.marsshen.com/posts/20e16ead/
-
-## 其他
-
-- 关于Tesla特斯拉插件的使用：同时按L + 左摇杆下 + 右摇杆中间即可唤出
-- sys-clk的使用：可以进行超频使用，推荐修改在底座模式下的参数
-
