@@ -65,6 +65,19 @@ acme.sh --install-cert -d *.minchiang.info \
 
 ## Git
 
+### 搭建简易的git服务器
+
+- 安装git：`sudo apt-get install git`
+- 创建git用户：`sudo adduser git`
+- 修改git用户只能用于git：修改`/etc/passwd`，把`git:x:1000:1000::/home/git:/bin/bash`改为`git:x:1000:1000::/home/git:/usr/bin/git-shell`
+- 初始化仓库：`sudo git init --bare test.git`
+- 修改仓库权限：`sudo chown -R git:git test.git`
+- 添加公钥：打开本地生成的ssh的公钥key，地址一般为`C:\Users\{你的用户}\.ssh\{你的公钥名字}.pub`，登录到服务中，在`/home/git/.ssh/authorized_keys`中添加里面的内容即可
+
+
+
+### Git命令行指南
+
 - 版本库初始化：git init
 - 加入到暂存区： git add
   - 交互模式：-i
