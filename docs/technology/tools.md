@@ -64,7 +64,18 @@ acme.sh --install-cert -d *.minchiang.info \
 
 
 ## Git
+### 搭建简易的git服务器
 
+- 安装git：`sudo apt-get install git`
+- 创建git用户：`sudo adduser git`
+- 修改git用户只能用于git：修改`/etc/passwd`，把`git:x:1000:1000::/home/git:/bin/bash`改为`git:x:1000:1000::/home/git:/usr/bin/git-shell`
+- 初始化仓库：`sudo git init --bare test.git`
+- 修改仓库权限：`sudo chown -R git:git test.git`
+- 添加公钥：打开本地生成的ssh的公钥key，地址一般为`C:\Users\{你的用户}\.ssh\{你的公钥名字}.pub`，登录到服务中，在`/home/git/.ssh/authorized_keys`中添加里面的内容即可
+
+
+
+### Git命令行指南
 - Git快速配置
 
   ```
@@ -171,108 +182,105 @@ settings -> Editor -> Color Schema -> File and Code Templates
   
   ```java
   #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
+  
+  import java.util.Arrays;  
+  import java.util.Collections;  
+  import java.util.Map;  
+  import java.util.function.Function;  
+  import java.util.stream.Collectors;  
+  
+  #parse("File Header.java")  
+  public enum ${NAME} {
+      /**  
+      * 未知  
+      */  
+      UNKNOWN(0),
+  
+      ;
+  
+      private static final Map<Integer, ${NAME}> ALL = Collections.unmodifiableMap(Arrays.stream(${NAME}.class.getEnumConstants()).collect(Collectors.toMap(value -> value.id, Function.identity())));
+  
+      /**  
+      * 转换  
+      *  
+      * @param id id  
+      * @return 对应类别  
+      */  
+      public static ${NAME} from(int id) {
+          return ALL.get(id);
+      }  
+  
+      /**  
+      * 唯一标志  
+      */  
+      public final int id;  
+  
+      ${NAME}(int id) {
+          this.id = id;  
+      }
+  }
   ```
 
-import java.util.Arrays;  
-import java.util.Collections;  
-import java.util.Map;  
-import java.util.function.Function;  
-import java.util.stream.Collectors;  
-
-#parse("File Header.java")  
-public enum ${NAME} {
-
-    /**  
-    * 未知  
-    */  
-    UNKNOWN(0),
-    
-    ;
-    
-    private static final Map<Integer, ${NAME}> ALL = Collections.unmodifiableMap(Arrays.stream(${NAME}.class.getEnumConstants()).collect(Collectors.toMap(value -> value.id, Function.identity())));
-    
-    /**  
-    * 转换  
-    *  
-    * @param id id  
-    * @return 对应类别  
-    */  
-    public static ${NAME} from(int id) {
-        return ALL.get(id);
-    }  
-    
-    /**  
-    * 唯一标志  
-    */  
-    public final int id;  
-    
-    ${NAME}(int id) {
-        this.id = id;  
-    }
-
-}
-
-```
 - Factory模板
-```java
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
 
-#parse("File Header.java")  
-public class ${NAME}Factory {  
-
-    public ${NAME}Factory() {
-    }
-
-    /**  
-    * 创建牌组合  
-    *  
-    * @return 工厂创建对象  
-    */  
-    public ${NAME} create() {
-        return null;
-    }
-
-}
-```
+  ```
+  #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
+  
+  #parse("File Header.java")  
+  public class ${NAME}Factory {  
+  
+      public ${NAME}Factory() {
+      }
+  
+      /**  
+      * 创建牌组合  
+      *  
+      * @return 工厂创建对象  
+      */  
+      public ${NAME} create() {
+          return null;
+      }
+  
+  }
+  ```
 
 - Singleton模板
-  
+
   ```java
   #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
+  #parse("File Header.java")  
+  public class ${NAME} {  
+      private ${NAME}() {
+      }
+  
+      /**  
+      * 获取单例对象  
+      *  
+      * @return 实例对象  
+      */  
+      public static ${NAME} getInstance() {
+      return ${NAME}Holder.INSTANCE;
+      }  
+  
+      private static final class ${NAME}Holder {
+  
+      private static final ${NAME} INSTANCE = new ${NAME}();
+  
+      }
+  }
   ```
 
-#parse("File Header.java")  
-public class ${NAME} {  
-
-    private ${NAME}() {
-    }
-    
-    /**  
-    * 获取单例对象  
-    *  
-    * @return 实例对象  
-    */  
-    public static ${NAME} getInstance() {
-    return ${NAME}Holder.INSTANCE;
-    }  
-    
-    private static final class ${NAME}Holder {
-    
-    private static final ${NAME} INSTANCE = new ${NAME}();
-    
-    }
-
-}
-
-```
 - 标准头
-```java
-/**   
-* @author MinChiang  
- * @version 1.0.0  
- * @date ${YEAR}-${MONTH}-${DAY} ${TIME}   
-*/
-```
+
+  ```java
+  /**   
+  * @author MinChiang  
+   * @version 1.0.0  
+   * @date ${YEAR}-${MONTH}-${DAY} ${TIME}   
+  */
+  ```
+
+  
 
 ### 插件
 
