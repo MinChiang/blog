@@ -65,18 +65,36 @@ acme.sh --install-cert -d *.minchiang.info \
 
 ## Git
 
+- Git快速配置
+
+  ```
+  Host github.com
+      HostName ssh.github.com
+      Port 443
+      User git
+      PreferredAuthentications publickey
+      IdentityFile {你的密钥，例如：~/.ssh/Hp}
+      ProxyCommand connect -H {你的代理地址，例如：127.0.0.1:10809} %h %p
+  ```
+
 - 版本库初始化：git init
+
 - 加入到暂存区： git add
   - 交互模式：-i
   - 筛选文件夹或者文件：后面加入目录或者正则表达式
+  
 - 提交修改：git commit -m "注释内容"
+
 - 查看某个提交记录：git show
+
 - 查看提交记录历史：git log
   - 单行查看：--pretty=oneline
   - 以图标方式查看：--graph
   - 仅查看某个文件的提交记录：后面添加指定的文件
+  
 - 对比差异：git diff
   - 默认情况比较的是**工作区**和**暂存区**之间的差异
+  
 - 回滚到某个版本：git reset
   - 回滚到上个版本：HEAD^
   - 回滚到上上个版本：HEAD^^
@@ -84,25 +102,33 @@ acme.sh --install-cert -d *.minchiang.info \
   - 回滚版本库，暂存区和工作区：--hard，会造成内容的丢失
   - 回滚版本库和暂存区（默认）**：--mixed，把修改返回到工作区且不暂存
   - 回滚版本库：--soft，把修改返回到工作区，并暂存
+  
 - 回滚某个提交：git revert
+
 - 撤销修改：git restore
   - 默认情况仅撤销工作区中的修改
   - 撤销暂存区中的修改，并放回到工作区中：--staged
+  
 - 查看分支：git branch
   - 新建分支：后面带上新建的分支名称
   - 删除分支（已经完成代码合并操作）：-d
   - 删除分支（未进行代码合并操作）： -D
+  
 - 检出分支：git checkout
   - 新建并且检出分支：-b
   - 有回滚项目文件的功能，把文件快速回滚到之前的状态：-- fileName
+  
 - 合并分支：git merge
   - 先在checkout被merge的分支，再执行merge命令，把需要的分支合并到当前分支
+  
 - 摘取单个提交：git check-pick
+
 - 贮存现场：git stash
   - 列出贮存列表：list
   - 恢复贮存现场（不删除贮存内容）：apply
   - 恢复贮存现场（删除贮存内容）：pop
   - 删除贮存现场：drop
+  
 - 打标签：git tag
   - 默认为查看所有标签
   - 指定标签信息：-m
