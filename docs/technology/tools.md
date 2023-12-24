@@ -63,6 +63,21 @@ acme.sh --install-cert -d *.minchiang.info \
 
 
 
+## Cloudflare
+
+### 使用cloudflare的dns
+
+- 登录[官网](https://dash.cloudflare.com/)
+- 点击进入dns
+- 记录cloudflare名称服务器
+  - greg.ns.cloudflare.com
+  - molly.ns.cloudflare.com
+- 点击进入你的[域名服务器](https://www.namesilo.com/)
+- 点击设置新的名称服务器
+- 把其改为上述cloudflare的名称服务器
+
+
+
 ## Git
 ### 搭建简易的git服务器
 
