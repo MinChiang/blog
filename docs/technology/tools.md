@@ -8,8 +8,10 @@
 
 ### 托管平台（Namesilo为例）申请API密钥
 
-- [NameSilo API托管地址](https://www.namesilo.com/account_api.php)
+- [NameSilo API托管地址](https://www.namesilo.com/account/api-manager)
 - 记录下申请的key
+
+![namesilo api token生成](../images/namesilo api token生成.png)
 
 ### 安装
 
@@ -28,16 +30,24 @@ ACCOUNT_EMAIL='你的邮箱地址'
 
 ### 申请证书
 
+注意，[ZeroSSL.com CA](https://github.com/acmesh-official/acme.sh/wiki/ZeroSSL.com-CA)现在貌似生成不了泛域名的证书，这里用letsencrypt作为默认的CA生成
+
 ```bash
-acme.sh --issue --dns dns_namesilo --dnssleep 1800 -d *.minchiang.info
+acme.sh --set-default-ca --server letsencrypt
+acme.sh --issue --dnssleep 1800 -d minchiang.top -d '*.minchiang.top' --dns dns_namesilo --log --debug 2 --force
 ```
 
 ### 安装证书
 
 ```bash
-acme.sh --install-cert -d *.minchiang.info \
---key-file       /etc/nginx/ssl/*.minchiang.info/key.pem  \
---fullchain-file /etc/nginx/ssl/*.minchiang.info/cert.pem \
+acme.sh --install-cert -d minchiang.top \
+--key-file       /etc/nginx/ssl/minchiang.top/key.pem  \
+--fullchain-file /etc/nginx/ssl/minchiang.top/cert.pem \
+--reloadcmd     "/etc/init.d/nginx force-reload"
+
+acme.sh --install-cert -d '*.minchiang.top' \
+--key-file       /etc/nginx/ssl/*.minchiang.top/key.pem  \
+--fullchain-file /etc/nginx/ssl/*.minchiang.top/cert.pem \
 --reloadcmd     "/etc/init.d/nginx force-reload"
 ```
 
