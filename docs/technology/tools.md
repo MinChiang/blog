@@ -11,7 +11,7 @@
 - [NameSilo API托管地址](https://www.namesilo.com/account/api-manager)
 - 记录下申请的key
 
-![namesilo api token生成](../images/namesilo api token生成.png)
+![namesilo api token生成](../images/namesilo_api_token生成.png)
 
 ### 安装
 
