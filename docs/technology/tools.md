@@ -100,6 +100,12 @@ acme.sh --install-cert -d '*.minchiang.top' \
 
 
 
+### 使用git的ssh协议，改变端口后如何进行连接
+
+- 由原来的：git@域名/项目地址，改为**ssh://**git@域名:**新的端口**/项目地址
+
+
+
 ### Git命令行指南
 - Git快速配置
 
