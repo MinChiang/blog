@@ -125,6 +125,10 @@ acme.sh --install-cert -d '*.minchiang.top' \
   - 改变ssh通道的代理设置，修改配置文件：`C:\Users\你的用户\.ssh\config`
 
     ```
+    Host *
+        HostKeyAlgorithms +ssh-rsa
+        PubkeyAcceptedKeyTypes +ssh-rsa
+    
     Host github.com
         User git										# ssh用户名	
         Hostname ssh.github.com							# 这里是把github.com域名映射为ssh.github.com
