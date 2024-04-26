@@ -509,7 +509,7 @@ public class WeakReferenceTest {
 ### 命令工具
 
 - jps：查看运行中的java程序，jps -l -v
-- jstat：统计Jvm信息，jstat -gc PID [采样间隔毫秒] [采样个数]
+- jstat：统计Jvm信息，jstat -gc PID [采样间隔毫秒] [采样个数]，下面的单位为KB
   - S0C、S1C、S0U、S1U：Surivior 0/1区容量（capacity）和使用量（Used）
   - EC、EU：Eden区容量和使用量
   - OC、OU：老年代容量和使用量

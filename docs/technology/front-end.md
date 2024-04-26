@@ -59,16 +59,8 @@
   home = "https://npmmirror.com"
   prefix = "E:\\Tools\\Nodejs\\node_global"
   registry = "https://registry.npmmirror.com/"
-  
-  ; node bin location = E:\Tools\Nodejs\node-v20.12.2-win-x64\node.exe
-  ; node version = v20.12.2
-  ; npm local prefix = E:\workspace\blog
-  ; npm version = 10.5.0
-  ; cwd = E:\workspace\blog
-  ; HOME = C:\Users\MinChiang
-  ; Run `npm config ls -l` to show all defaults.
   ```
-
+  
   
 
 ### Yarn配置
