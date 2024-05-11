@@ -10,7 +10,7 @@ module.exports = {
     },
   },
   themeConfig: {
-    logo: "/images/logo.png",
+    logo: "/images/doge.png",
     sidebarDepth: 2,
     displayAllHeaders: false,
     smoothScroll: true,

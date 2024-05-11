@@ -1,6 +1,6 @@
-# Terraform Provider Ctyun
+## Terraform
 
-## terraform的功能概要
+### terraform的功能概要
 
 - 目标：定义“资源”，抽象资源，并且能够在terraform中无痛维护资源的状态
 
@@ -30,8 +30,8 @@
   ```
   terraform {
     required_providers {
-      ctyun = {
-        source = "www.ctyun.cn/ctyun/ctyun"
+      xxxxx = {
+        source = "www.xxxxx.cn/xxxxx/xxxxx"
       }
     }
   }
@@ -107,11 +107,11 @@
      {"@level":"debug","@message":"plugin address","@timestamp":"2024-01-30T17:45:23.088557+08:00","address":"127.0.0.1:10372","network":"tcp"}
      Provider started. To attach Terraform CLI, set the TF_REATTACH_PROVIDERS environment variable with the following:
      
-             Command Prompt: set "TF_REATTACH_PROVIDERS={"www.ctyun.cn/ctyun/ctyun":{"Protocol":"grpc","ProtocolVersion":6,"Pid":25500,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:10372"}}}"
-             PowerShell:     $env:TF_REATTACH_PROVIDERS='{"www.ctyun.cn/ctyun/ctyun":{"Protocol":"grpc","ProtocolVersion":6,"Pid":25500,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:10372"}}}'
+             Command Prompt: set "TF_REATTACH_PROVIDERS={"www.xxxxx.cn/xxxxx/xxxxx":{"Protocol":"grpc","ProtocolVersion":6,"Pid":25500,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:10372"}}}"
+             PowerShell:     $env:TF_REATTACH_PROVIDERS='{"www.xxxxx.cn/xxxxx/xxxxx":{"Protocol":"grpc","ProtocolVersion":6,"Pid":25500,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:10372"}}}'
      ```
      
-  3. 把下面文本中的`$env:TF_REATTACH_PROVIDERS='{"www.ctyun.cn/ctyun/ctyun":{"Protocol":"grpc","ProtocolVersion":6,"Pid":25500,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:10372"}}}'`拷贝，在终端中执行
+  3. 把下面文本中的`$env:TF_REATTACH_PROVIDERS='{"www.xxxxx.cn/xxxxx/xxxxx":{"Protocol":"grpc","ProtocolVersion":6,"Pid":25500,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:10372"}}}'`拷贝，在终端中执行
   
      ![terraform教程2](../images/terraform教程2.png)
 
@@ -152,7 +152,7 @@
   provider_installation {
   
     dev_overrides {
-        "www.ctyun.cn/ctyun/ctyun"="D:/Go/gobin/"    # 本地调试的目录地址，这里设置为GOBIN目录
+        "www.xxxxx.cn/xxxxx/xxxxx"="D:/Go/gobin/"    # 本地调试的目录地址，这里设置为GOBIN目录
     }
   
     # For all other providers, install them directly from their origin provider
@@ -201,7 +201,7 @@
 
 
 
-## 开发建议
+### 开发建议
 
 - 如果一个选项不是Computed: true，那么最好也考虑写上Optional:true，这样方便写返回
 
@@ -224,8 +224,8 @@
 
   ```go
   // getSecurityGroupRule 查询安全组规则
-  func (c *CtyunSecurityGroupRule) getSecurityGroupRule(ctx context.Context, securityGroupId string, securityGroupRuleId string) (*CtyunSecurityGroupRuleConfig, error) {
-  	var config CtyunSecurityGroupRuleConfig
+  func (c *xxxxxSecurityGroupRule) getSecurityGroupRule(ctx context.Context, securityGroupId string, securityGroupRuleId string) (*xxxxxSecurityGroupRuleConfig, error) {
+  	var config xxxxxSecurityGroupRuleConfig
   	request := &security_group_rule.SecurityGroupRuleDescribeRequest{
   		RegionId:            c.meta.RegionId,
   		SecurityGroupId:     securityGroupId,
@@ -283,7 +283,7 @@
 
 
 
-## 参考文档
+### 参考文档
 
 - terraform中文文档推荐：https://lonegunmanb.github.io/introduction-terraform/
 - terraform开发官方样例：https://developer.hashicorp.com/terraform/tutorials/providers-plugin-framework/providers-plugin-framework-provider

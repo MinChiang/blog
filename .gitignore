@@ -42,3 +42,4 @@ test/unit/coverage/
 .obsidian/
 *.assets/
 docs/.vupress/blog/
+blog/
