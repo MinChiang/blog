@@ -4,17 +4,17 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs"
+    "docs:dev": "set NODE_OPTIONS=--openssl-legacy-provider && vuepress dev docs",
+    "docs:build": "set NODE_OPTIONS=--openssl-legacy-provider && vuepress build docs && tar -zcvf blog.tar.gz blog"
   },
   "devDependencies": {
-    "vuepress": "^1.5.1"
+    "vuepress": "^1.9.10"
   },
   "dependencies": {
-    "@vuepress/plugin-active-header-links": "^1.5.2",
-    "@vuepress/plugin-back-to-top": "^1.5.2",
-    "@vuepress/plugin-medium-zoom": "^1.5.2",
+    "@vuepress/plugin-active-header-links": "^1.9.10",
+    "@vuepress/plugin-back-to-top": "^1.9.10",
+    "@vuepress/plugin-medium-zoom": "^1.9.10",
     "markdown-it-disable-url-encode": "^1.0.1",
-    "markdown-it-image-lazy-loading": "^1.0.2"
+    "markdown-it-image-lazy-loading": "^1.2.0"
   }
 }

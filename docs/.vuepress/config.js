@@ -2,6 +2,7 @@ module.exports = {
   title: "MinChiang的博客",
   description: "专业讨论技术网站",
   head: [["link", { rel: "icon", href: "/icon/favicon16.ico" }]],
+  dest: "./blog",
   markdown: {
     lineNumbers: true,
     extendMarkdown: (md) => {
@@ -44,7 +45,12 @@ module.exports = {
             { title: "其他", path: "other" },
             { title: "Python", path: "python" },
             { title: "Go", path: "go" },
+            { title: "Csharp", path: "csharp" },
             { title: "输入法", path: "input" },
+            { title: "环境搭建", path: "enviroment" },
+            { title: "前端", path: "front_end" },
+            { title: "面试", path: "interview" },
+            { title: "Terraform", path: "terraform" },
           ],
         },
       ],
