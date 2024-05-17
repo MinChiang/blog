@@ -1,4 +1,4 @@
-## Terraform
+## Terraform开发
 
 ### terraform的功能概要
 
@@ -280,6 +280,151 @@
       ...
   }
   ```
+
+
+
+### 关于官方镜像源的部署
+
+可以参考官方文档[Publishing Providers](https://developer.hashicorp.com/terraform/registry/providers/publishing)
+
+- 密钥对准备部分，到[GnuPG](https://gnupg.org/download/)中下载[Gpg4win](https://gpg4win.org/download.html)，并安装
+
+  - 打开命令行，执行`gpg --full-generate-key`，生成对应的密钥对，中途会弹窗让你输入密钥对的密码
+
+  ```
+  PS C:\Users\44872> gpg --full-generate-key
+  gpg (GnuPG) 2.4.5; Copyright (C) 2024 g10 Code GmbH
+  This is free software: you are free to change and redistribute it.
+  There is NO WARRANTY, to the extent permitted by law.
+  
+  Please select what kind of key you want:
+     (1) RSA and RSA
+     (2) DSA and Elgamal
+     (3) DSA (sign only)
+     (4) RSA (sign only)
+     (9) ECC (sign and encrypt) *default*
+    (10) ECC (sign only)
+    (14) Existing key from card
+  Your selection?
+  Please select which elliptic curve you want:
+     (1) Curve 25519 *default*
+     (4) NIST P-384
+     (6) Brainpool P-256
+  Your selection?
+  Please specify how long the key should be valid.
+           0 = key does not expire
+        <n>  = key expires in n days
+        <n>w = key expires in n weeks
+        <n>m = key expires in n months
+        <n>y = key expires in n years
+  Key is valid for? (0) 0
+  Key does not expire at all
+  Is this correct? (y/N) y
+  
+  GnuPG needs to construct a user ID to identify your key.
+  
+  Real name: MinChiang
+  Email address: 448725235@qq.com
+  Comment: Personal
+  You selected this USER-ID:
+      "MinChiang (Personal) <448725235@qq.com>"
+  
+  Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
+  We need to generate a lot of random bytes. It is a good idea to perform
+  some other action (type on the keyboard, move the mouse, utilize the
+  disks) during the prime generation; this gives the random number
+  generator a better chance to gain enough entropy.
+  We need to generate a lot of random bytes. It is a good idea to perform
+  some other action (type on the keyboard, move the mouse, utilize the
+  disks) during the prime generation; this gives the random number
+  generator a better chance to gain enough entropy.
+  gpg: revocation certificate stored as 'C:\\Users\\44872\\AppData\\Roaming\\gnupg\\openpgp-revocs.d\\A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C.rev'
+  public and secret key created and signed.
+  
+  pub   ed25519 2024-05-17 [SC]
+        A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C
+  uid                      MinChiang (Personal) <448725235@qq.com>
+  sub   cv25519 2024-05-17 [E]
+  ```
+
+  - 查看生成的密钥，可以看见密钥对的ID为`A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C`
+
+  ```
+  PS C:\Users\44872> gpg --list-key
+  [keyboxd]
+  ---------
+  pub   ed25519 2024-05-17 [SC]
+        A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C
+  uid           [ultimate] MinChiang (Personal) <448725235@qq.com>
+  sub   cv25519 2024-05-17 [E]
+  ```
+
+  - 查看公钥，`gpg --export --armor A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C`
+
+  ```
+  PS C:\Users\44872> gpg --export --armor A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C
+  -----BEGIN PGP PUBLIC KEY BLOCK-----
+  
+  mDMEZkavIxYJKwYBBAHaRw8BAQdAHEVsMOIO/yUi9AKMPA36cTZ/qSVv5dWwKTiH
+  TWC6/eq0J01pbkNoaWFuZyAoUGVyc29uYWwpIDw0NDg3MjUyMzVAcXEuY29tPoiT
+  BBMWCgA7FiEEoRt7GhFTygG+z4LkbZOu+QALz3wFAmZGryMCGwMFCwkIBwICIgIG
+  FQoJCAsCBBYCAwECHgcCF4AACgkQbZOu+QALz3wYEQEA46OGBB3r3LHEFd7gulU5
+  VLzfiD1xIoYV+XFDjeEkXB0BAJMZSQEHcYV2Vt19AGpwmZmkTmQ82PO1Fc2QXDlb
+  TlAPuDgEZkavIxIKKwYBBAGXVQEFAQEHQKBtkwomAF0lqhIjIIThIFCVXVLVOdLy
+  F11qpEHs7RgBAwEIB4h4BBgWCgAgFiEEoRt7GhFTygG+z4LkbZOu+QALz3wFAmZG
+  ryMCGwwACgkQbZOu+QALz3zMVgEAkc8KNzbnHydYFJ1WZuxLGvkWEpA4qLtw4krO
+  MVc/KsYBAOS1puiTmTLTB0/F3bG9pu3kBUN0QFiFoBo14CBtNkQK
+  =4OP0
+  -----END PGP PUBLIC KEY BLOCK-----
+  ```
+
+  - 查看私钥，`gpg --export-secret-keys --armor A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C`
+
+  ```
+  PS C:\Users\44872> gpg --export-secret-keys --armor A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C
+  -----BEGIN PGP PRIVATE KEY BLOCK-----
+  
+  {敏感的密钥内容}
+  -----END PGP PRIVATE KEY BLOCK-----
+  ```
+
+  - 创建对应的Github仓库，在待发布仓库的Settings -> Security -> Secrets and variables -> Actions -> Repository secrets中，新增两个secret，GPG_PRIVATE_KEY：刚刚导出的私钥，PASSPHRASE：密钥对的密码![terraform发布1](../images/terraform发布1.png)
+  - 到[Terraform中央仓库](https://registry.terraform.io/)中，点击Publish -> Provider
+
+- 开始发布
+
+  - 编写好对应的provider
+
+  - 填写`terraform-registry-manifest.json`文件
+
+    ```json
+    {
+        "version": 1,
+        "metadata": {
+            "protocol_versions": ["6.0"]
+        }
+    }
+    ```
+
+  - 从[hashicorp/terraform-provider-scaffolding-framework](https://github.com/hashicorp/terraform-provider-scaffolding-framework)仓库中拷贝[.goreleaser.yml file](https://github.com/hashicorp/terraform-provider-scaffolding-framework/blob/main/.goreleaser.yml)文件到你的工程目录中
+
+  - 拷贝[GitHub Actions workflow from the terraform-provider-scaffolding-framework repository](https://github.com/hashicorp/terraform-provider-scaffolding-framework/blob/main/.github/workflows/release.yml) to `.github/workflows/release.yml` 到你的工程目录中
+
+  - 上传代码到Github中
+
+  - 推送您的tag到Github中，会自动打包产出物
+
+  - 在Actions中查看构建，在Code -> Releases中查看发布情况
+
+    ![terraform发布2](../images/terraform发布2.png)![terraform发布3](../images/terraform发布3.png)
+
+  - 进入[Terraform官方公钥管理](https://registry.terraform.io/settings/gpg-keys)中，配置刚才生成的公钥
+
+    ![terraform发布4](../images/terraform发布4.png)
+
+  - 点击Publish -> Provider，会自动探测仓库中的terraform工程
+
+
 
 
 

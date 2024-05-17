@@ -393,3 +393,179 @@ name0=Solarized Dark
 count=1
 ```
 
+
+
+## Maven发布流程
+
+详见可见文档：[Publishing By Using the Maven Plugin](https://central.sonatype.org/publish/publish-portal-maven/)
+
+- 需要一个已经认证通过的Namespace，如果您是通过github的方式登录的，会自动有一个通过认证的namespace，名字为**io.github.您的名称**；如果未通过认证，请查阅[Register a Namespace](https://central.sonatype.org/register/namespace/)文档进行Namespece认证
+
+- 在[Account page](https://central.sonatype.com/account)中点击Generate User Token，获得下面内容
+
+  ```xml
+  <settings>
+    <servers>
+      <server>
+        <id>${server}</id>
+        <username><!-- your token username --></username>
+        <password><!-- your token password --></password>
+      </server>
+    </servers>
+  </settings>
+  ```
+
+  ![maven包发布1](../images/maven包发布1.png)
+
+- 在maven的setting.xml中的配置文件中添加上面生成的内容，上面的server可以随意命名，这里定义为：**central.sonatype.com**
+
+  ![maven包发布2](../images/maven包发布2.png)
+
+  对应的`pom.xml`文件如下，请注意正确填写**publishingServerId**：
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <project xmlns="http://maven.apache.org/POM/4.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+      <modelVersion>4.0.0</modelVersion>
+  
+      <groupId>xxxx</groupId>
+      <artifactId>xxxx</artifactId>
+      <version>1.0.1</version>
+      <packaging>jar</packaging>
+      <name>xxxx</name>
+      <url>xxxx</url>
+  
+      <description>
+          ctapi-sdk-acct
+      </description>
+  
+      <scm>
+          <connection>scm:git:你的git仓库</connection>
+          <developerConnection>scm:git:你的git仓库</developerConnection>
+          <url>项目链接</url>
+      </scm>
+  
+      <developers>
+          <developer>
+              <id>开发者id，随便填</id>
+              <name>开发者名称，随便填</name>
+              <roles>
+                  <role>Project Manager</role>
+              </roles>
+              <email>开发者的email</email>
+              <url>开发者的url</url>
+          </developer>
+      </developers>
+  
+      <licenses>
+          <license>
+              <name>The Apache Software License, Version 2.0</name>
+              <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          </license>
+      </licenses>
+  
+      <distributionManagement>
+          <snapshotRepository>
+              <id>sonatype-snapshots</id>
+              <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          </snapshotRepository>
+          <repository>
+              <id>sonatype-staging</id>
+              <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+          </repository>
+      </distributionManagement>
+  
+      <properties>
+          <maven.compiler.source>8</maven.compiler.source>
+          <maven.compiler.target>8</maven.compiler.target>
+          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      </properties>
+  
+      <dependencies>
+  		省略对应的依赖项
+      </dependencies>
+  
+      <build>
+          <plugins>
+              <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-compiler-plugin</artifactId>
+                  <version>3.13.0</version>
+                  <configuration>
+                      <source>${maven.compiler.source}</source>
+                      <target>${maven.compiler.target}</target>
+                      <encoding>${project.build.sourceEncoding}</encoding>
+                  </configuration>
+              </plugin>
+  
+              <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-source-plugin</artifactId>
+                  <version>3.3.1</version>
+                  <executions>
+                      <execution>
+                          <id>attach-sources</id>
+                          <goals>
+                              <goal>jar-no-fork</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+              </plugin>
+  
+              <plugin>
+                  <groupId>org.sonatype.central</groupId>
+                  <artifactId>central-publishing-maven-plugin</artifactId>
+                  <version>0.4.0</version>
+                  <extensions>true</extensions>
+                  <configuration>
+                      <publishingServerId>对应的server，按照上面的例子这里应该写central.sonatype.com</publishingServerId>
+                      <tokenAuth>true</tokenAuth>
+                  </configuration>
+              </plugin>
+  
+              <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-javadoc-plugin</artifactId>
+                  <version>3.6.3</version>
+                  <executions>
+                      <execution>
+                          <id>attach-javadocs</id>
+                          <goals>
+                              <goal>jar</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+                  <!-- 如果不想检查则把这里的configuration加上 -->
+                  <configuration>
+                      <doclint>none</doclint>
+                  </configuration>
+              </plugin>
+  
+              <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-gpg-plugin</artifactId>
+                  <version>3.2.4</version>
+                  <executions>
+                      <execution>
+                          <id>sign-artifacts</id>
+                          <phase>verify</phase>
+                          <goals>
+                              <goal>sign</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+              </plugin>
+          </plugins>
+      </build>
+  </project>
+  ```
+
+- 密钥对准备部分，到[GnuPG](https://gnupg.org/download/)中下载[Gpg4win](https://gpg4win.org/download.html)，并安装，按照流程生成密钥对，注意安装完后重启机器；在终端中执行`gpg --version`观察是否有内容输出，可以详见文档[GPG Signed Components](https://central.sonatype.org/publish/publish-maven/)部分
+
+- 在maven中分别执行clean、package、deploy
+
+- 到[Publishing Settings](https://central.sonatype.com/publishing)页面中点击发布按钮，等待完成发布动作
+
+  ![maven包发布3](../images/maven包发布3.png)
