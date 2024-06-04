@@ -43,12 +43,12 @@ acme.sh --issue --dnssleep 1800 -d minchiang.top -d '*.minchiang.top' --dns dns_
 acme.sh --install-cert -d minchiang.top \
 --key-file       /etc/nginx/ssl/minchiang.top/key.pem  \
 --fullchain-file /etc/nginx/ssl/minchiang.top/cert.pem \
---reloadcmd     "/etc/init.d/nginx force-reload"
+--reloadcmd     "/etc/init.d/nginx force-reload; x-ui restart"
 
 acme.sh --install-cert -d '*.minchiang.top' \
 --key-file       /etc/nginx/ssl/*.minchiang.top/key.pem  \
 --fullchain-file /etc/nginx/ssl/*.minchiang.top/cert.pem \
---reloadcmd     "/etc/init.d/nginx force-reload"
+--reloadcmd     "/etc/init.d/nginx force-reload; x-ui restart"
 ```
 
 ### 后续维护
