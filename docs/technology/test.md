@@ -14,9 +14,12 @@
     - jpgc - Standard Set
   - 安装完成后记得重启Jmeter
 - 可以参考更加完善的文章：[Jmeter 学习路线 - 小菠萝测试笔记 - 博客园](https://www.cnblogs.com/poloyy/p/15257716.html)
-- 下载**linux的各个指标监控工具nmon**
+- 下载[linux的各个指标监控工具nmon](https://nmon.sourceforge.io/pmwiki.php)
+- 下载[nmon Analyser分析工具](https://nmon.sourceforge.io/pmwiki.php?n=Site.Nmon-Analyser)
 
-### 测试指标和记录
+
+
+#### 测试指标和记录
 
 - 对于被压测对象的环境，需要用nmon记录：
   - CPU使用率
@@ -31,7 +34,9 @@
   - 并发用户数
   - 错误率
 
-### 场景设计
+
+
+#### 场景设计
 
 - 基准测试：测试机器的基准性能，为后续修改配置做性能的参考
 - 正式测试：
@@ -39,6 +44,8 @@
   - 混合场景：指混合场景的请求
   - 阶梯增加vuser
 - 稳定性测试：7*24小时平稳运行
+
+
 
 #### 简要说明
 
@@ -51,7 +58,9 @@
 - 如果jmeter不存在包，则需要额外导入包（添加目录或jar包到ClassPath或直接把jar包放在lib下）
 - 如果把测试脚本放到远程中，则需要把jar包也一并放入
 
-#### LoadRunner测试流程（收费不推荐）
+
+
+### LoadRunner测试流程（收费不推荐）
 
 1. 在Windows Server中安装并且配置LoadRunner；
 2. 调整Windows Server系统和Linux系统参数；

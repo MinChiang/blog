@@ -144,3 +144,11 @@
   ```
 
   
+
+### Pnpm配置
+
+- global-bin-dir=D:\Nodejs\pnpm_bin
+- cache-dir=D:\Nodejs\pnpm_cache
+- state-dir=D:\Nodejs\pnpm_state
+- global-dir=D:\Nodejs\pnpm_global
+

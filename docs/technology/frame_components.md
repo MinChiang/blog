@@ -814,12 +814,12 @@ public interface WindowFunction<IN, OUT, KEY, W extends Window> extends Function
 
 ## ElasticSearch
 
-| ElasticSearch | 关系数据库        |
-| ------------- | ------------ |
-| Indices索引     | Databases数据库 |
-| Types类型       | Tables表      |
-| Documents文档   | Rows行        |
-| Fields域       | Columns列     |
+| ElasticSearch         | 关系数据库      |
+| --------------------- | --------------- |
+| Indices索引           | Databases数据库 |
+| Types类型（已经弃用） | 无              |
+| Documents文档         | Rows行          |
+| Fields域              | Columns列       |
 
 | 内容         | 语法                                                                                                                                  |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------- |
