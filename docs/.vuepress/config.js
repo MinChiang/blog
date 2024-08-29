@@ -51,6 +51,7 @@ module.exports = {
             { title: "前端", path: "front_end" },
             { title: "面试", path: "interview" },
             { title: "Terraform", path: "terraform" },
+            { title: "大数据", path: "bigdata" },
           ],
         },
       ],
