@@ -97,13 +97,58 @@ acme.sh --install-cert -d '*.minchiang.top' \
 - 初始化仓库：`sudo git init --bare test.git`
 - 修改仓库权限：`sudo chown -R git:git test.git`
 - 生成公钥：`ssh-keygen -t rsa -C 'xxx@xx.xxx'`
-- 添加公钥：打开本地生成的ssh的公钥key，地址一般为`C:\Users\{你的用户}\.ssh\{你的公钥名字}.pub`，登录到服务中，在`/home/git/.ssh/authorized_keys`中添加里面的内容即可
+- 添加公钥：打开本地生成的ssh的公钥key，地址一般为`C:\Users\{你的用户}\.ssh\{你的公钥名字}.pub`，登录到服务中，在`/home/git/.ssh/authorized_keys`中添加里面的内容
+- 此后可以使用`git clone ssh://git@你的域名:端口号/项目地址路径`来下载项目，例如：`git clone ssh://git@git.minchiang.top:52400/opt/gitrepo/company`
 
 
 
-### 使用git的ssh协议，改变端口后如何进行连接
+## 扩展：使用Https协议支持Git
 
-- 由原来的：git@域名/项目地址，改为**ssh://**git@域名:**新的端口**/项目地址
+目标：按照上述git搭建好后，支持ssh协议维护git项目，但是想同时使用https维护git项目，例如`git clone https://git.minchiang.top/company`
+
+首先需要下载好nginx，在/etc/nginx/conf.d/git.conf中添加下面内容
+
+```
+server {
+    listen                      443 ssl;
+    server_name                 git.minchiang.top;
+
+    ssl_certificate             /etc/nginx/ssl/cert.pem;
+    ssl_certificate_key         /etc/nginx/ssl/key.pem;
+
+    ssl_session_cache           shared:SSL:1m;
+    ssl_session_timeout         5m;
+    ssl_ciphers                 ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+    ssl_protocols               TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers   on;
+
+    location ~ (/.*) {
+        # 使用 Basic 认证
+        auth_basic "请输入git认证";
+        # 认证的用户文件
+        auth_basic_user_file /etc/nginx/.htpasswd;
+        # FastCGI 参数
+        fastcgi_pass  unix:/var/run/fcgiwrap.socket;
+        fastcgi_param SCRIPT_FILENAME /usr/lib/git-core/git-http-backend;
+        fastcgi_param GIT_HTTP_EXPORT_ALL "";
+        # git 库在服务器上的跟目录
+        fastcgi_param GIT_PROJECT_ROOT    /opt/gitrepo;
+        fastcgi_param PATH_INFO           $1;
+        # 将认证用户信息传递给 fastcgi 程序
+        fastcgi_param REMOTE_USER $remote_user;
+        # 包涵默认的 fastcgi 参数；
+        include       fastcgi_params;
+        # 将允许客户端 post 的最大值调整为 100 兆
+        # max_client_body_size 100M;
+    }
+}
+
+server {
+    listen                      80;
+    server_name                 git.minchiang.top;
+    return 301                  https://$host$request_uri;
+}
+```
 
 
 

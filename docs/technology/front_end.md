@@ -147,8 +147,21 @@
 
 ### Pnpm配置
 
-- global-bin-dir=D:\Nodejs\pnpm_bin
-- cache-dir=D:\Nodejs\pnpm_cache
-- state-dir=D:\Nodejs\pnpm_state
-- global-dir=D:\Nodejs\pnpm_global
+- 创建以下目录
+
+  - E:\Tools\Nodejs\pnpm_bin
+  - E:\Tools\Nodejs\pnpm_cache
+  - E:\Tools\Nodejs\pnpm_state
+  - E:\Tools\Nodejs\pnpm_global
+
+- 执行下面的命令
+
+  ```bash
+  pnpm config set global-bin-dir "E:\Tools\Nodejs\pnpm_bin"
+  pnpm config set cache-dir "E:\Tools\Nodejs\pnpm_cache"
+  pnpm config set state-dir "E:\Tools\Nodejs\pnpm_state"
+  pnpm config set global-dir "E:\Tools\Nodejs\pnpm_global"
+  ```
+
+- 在系统变量中的PATH追加`E:\Tools\Nodejs\pnpm_bin`
 
