@@ -94,11 +94,12 @@ acme.sh --install-cert -d '*.minchiang.top' \
 - 安装git：`sudo apt-get install git`
 - 创建git用户：`sudo adduser git`
 - 修改git用户只能用于git：修改`/etc/passwd`，把`git:x:1000:1000::/home/git:/bin/bash`改为`git:x:1000:1000::/home/git:/usr/bin/git-shell`
+- 创建仓库的存储目录：`mkdir -p /opt/gitrepo`
 - 初始化仓库：`sudo git init --bare test.git`
 - 修改仓库权限：`sudo chown -R git:git test.git`
 - 生成公钥：`ssh-keygen -t rsa -C 'xxx@xx.xxx'`
 - 添加公钥：打开本地生成的ssh的公钥key，地址一般为`C:\Users\{你的用户}\.ssh\{你的公钥名字}.pub`，登录到服务中，在`/home/git/.ssh/authorized_keys`中添加里面的内容
-- 此后可以使用`git clone ssh://git@你的域名:端口号/项目地址路径`来下载项目，例如：`git clone ssh://git@git.minchiang.top:52400/opt/gitrepo/company`
+- 此后可以使用`git clone ssh://git@你的域名:端口号/项目地址路径`来下载项目，例如：`git clone ssh://git@git.minchiang.top:52400/opt/gitrepo/test.git`
 
 
 
