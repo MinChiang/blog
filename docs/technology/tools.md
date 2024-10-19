@@ -166,6 +166,8 @@ acme.sh --install-cert -d '*.minchiang.top' \
 
 - 完成后可以通过`git clone https://git.minchiang.top/company.git`来拉取仓库，用户名和密码都是刚刚在/etc/nginx/.htpasswd添加的内容
 
+- 如果在拉取项目的时候出现`error: remote unpack failed: unable to create temporary object directory`，记得把对应工程在服务器的权限更改为777权限，因为认证用户的文件是在`auth_basic_user_file /etc/nginx/.htpasswd`，其中不一定有对应的用户存在系统中的
+
 
 
 ### Git命令行指南
