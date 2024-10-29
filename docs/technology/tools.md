@@ -6,26 +6,38 @@
 - [官网](https://github.com/acmesh-official/acme.sh)
 - [中文说明](https://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E)
 
-### 托管平台（Namesilo为例）申请API密钥
+### Namesilo为例申请API密钥
 
 - [NameSilo API托管地址](https://www.namesilo.com/account/api-manager)
 - 记录下申请的key
 
 ![namesilo api token生成](../images/namesilo_api_token生成.png)
 
+### Cloudflare为例申请Token
+
+记录下下面的摘要内容以备用
+
+```
+export CF_Token="<拷贝的 API Token>"
+export CF_Account_ID="<拷贝的 Account ID>"
+export CF_Zone_ID="<拷贝的 Zone ID>"
+```
+
+![cloudflare_token生成](../images/cloudflare_token生成.png)
+
+![cloudflare_token生成2](../images/cloudflare_token生成2.png)
+
+![cloudflare_token生成3](../images/cloudflare_token生成3.png)
+
+![cloudflare_token生成4](../images/cloudflare_token生成4.png)
+
 ### 安装
 
 ```bash
-export Namesilo_Key="上面步骤申请的key"
+export CF_Token="<拷贝的 API Token>"
+export CF_Account_ID="<拷贝的 Account ID>"
+export CF_Zone_ID="<拷贝的 Zone ID>"
 curl https://get.acme.sh | sh -s email=你的邮箱地址
-acme.sh --install-cronjob
-```
-
-其中1，2行可以替换为修改/root/.acme.sh/account.conf
-
-```bash
-Namesilo_Key='上面步骤申请的key'
-ACCOUNT_EMAIL='你的邮箱地址'
 ```
 
 ### 申请证书
@@ -34,7 +46,7 @@ ACCOUNT_EMAIL='你的邮箱地址'
 
 ```bash
 acme.sh --set-default-ca --server letsencrypt
-acme.sh --issue --dnssleep 1800 -d minchiang.top -d '*.minchiang.top' --dns dns_namesilo --log --debug 2 --force
+acme.sh --issue -d minchiang.top -d '*.minchiang.top' --dns dns_cf --log --debug
 ```
 
 ### 安装证书
@@ -53,10 +65,16 @@ acme.sh --install-cert -d '*.minchiang.top' \
 
 ### 后续维护
 
+- 安装自动续约脚本任务
+  
+  ```
+  acme.sh --install-cronjob
+  ```
+
 - 强制续约：
   
   ```bash
-  acme.sh --renew -d *.minchiang.info --force
+  acme.sh --renew -d *.minchiang.top --force
   ```
 
 - 查看证书列表：
