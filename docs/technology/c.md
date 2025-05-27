@@ -54,6 +54,8 @@ int main() {
     printf("【错误】指向person age的指针: %p\n", agePointerError1);
     printf("【错误】person age的值: %d\n", *agePointerError1);
 
+    free(person);
+    free(person2);
     return 0;
 }
 ```
