@@ -61,6 +61,7 @@ module.exports = {
           collapsable: false,
           children: [
             { title: "汕头南澳", path: "shantou" },
+            { title: "普宁", path: "puning" },
           ],
         },
       ],
