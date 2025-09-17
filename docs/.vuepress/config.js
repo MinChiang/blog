@@ -52,6 +52,7 @@ module.exports = {
             { title: "面试", path: "interview" },
             { title: "Terraform", path: "terraform" },
             { title: "大数据", path: "bigdata" },
+            { title: "网络", path: "network" },
           ],
         },
       ],

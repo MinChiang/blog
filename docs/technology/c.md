@@ -87,7 +87,7 @@ Person2的内存布局是由：长度10个字节，类型为char[10]的name，�
 
 而转为(char*)后，由于char的字节数刚好是1，因此(char *) person + offsetof(Person, age)是以单位1个字节进行移动。
 
-![结构体内存布局](assets/c/结构体内存布局.jpg)
+![结构体内存布局](..\images\结构体内存布局.jpg)
 
 以下是不同类型的对齐规则（64位系统）：
 
