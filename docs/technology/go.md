@@ -5,6 +5,17 @@
 
 
 
+### Go安装
+
+- 配置GOROOT：为Go语言的所在路径，`D:\Go\go1.18.10`
+- 配置GOPATH：为Go第三方包所安装的路径：`D:\Go\GoPath`
+- 配置MINGW_HOME：在cgo中需要用到gcc，`D:\MinGW\mingw64`
+- 配置Path：将`%GOROOT%\bin`和`%GOPATH%\bin`和`MINGW_HOME\bin`配置到`Path`中
+- 配置代理：`go env -w GOPROXY=https://goproxy.cn,direct`
+- 配置go modules功能开关：`go env -w GO111MODULE=on`
+
+
+
 ## 如果在一个仓库中有多个Go Module想要发布怎么办
 
 例如有以下的工程目录：

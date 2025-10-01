@@ -194,8 +194,8 @@ acme.sh --install-cert -d '*.minchiang.top' \
   - 配置用户名和明码
 
     ```
-    git config –global user.name 'xxxxx'
-    git config –global user.email 'xxx@xx.xxx'
+    git config –-global user.name 'xxxxx'
+    git config –-global user.email 'xxx@xx.xxx'
     ```
 
   - 生成密钥，并上传到你的github的[ssh key中](https://github.com/settings/keys)
