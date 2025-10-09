@@ -229,6 +229,19 @@ acme.sh --install-cert -d '*.minchiang.top' \
     # 使用http代理
     git config --global http.https://github.com.proxy http://127.0.0.1:10809
     ```
+    
+  - 设置使用Bcompare作为diff和merge的工具
+
+    ```
+    git config --global diff.tool bc
+    git config --global mergetool.bc.path '"D:/BCompare/BCompare.exe" "$LOCAL" "$REMOTE"'
+    git config --global difftool.prompt false
+    
+    git config --global merge.tool bc
+    git config --global mergetool.bc.path '"D:/BCompare/BCompare.exe" "$LOCAL" "$REMOTE" "$BASE" "$MERGED"'
+    git config --global mergetool.prompt false
+    git config --global mergetool.bc.trustexitcode true
+    ```
 
 - 版本库初始化：git init
 
