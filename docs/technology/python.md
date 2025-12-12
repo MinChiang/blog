@@ -2,61 +2,42 @@
 
 - 先下载对应的安装包：[下载地址](https://www.python.org/downloads/windows/)
 
-- 对应安装，然后在环境变量Path中添加安装路径
+- 对应安装，Windows installer(64-bit)，安装时请选取加入环境变量Path，安装后会自动在Path中添加`D:\Python\Python3.9.10\Scripts\`和`D:\Python\Python3.9.10\`
 
-- 修改pip默认包的下载路径
-  
-  - 使用以下命令获取默认安装路径：
-    
-    ```bash
-    python -m site
-    ```
-  
-  - 展示若如下：
-    
-    ![更换pip下载包路径](../images/更换pip下载包路径.jpg)
-  
-  - 则需要更换pip的安装包路径
-  
-  - 修改**D:\tools\python\python-3.7.0\lib\site.py**
-    
-    ```textile
-    # USER_SITE = None
-    # USER_BASE = None
-    USER_SITE = "D:\\tools\\python\\site-packages"
-    USER_BASE = "D:\\tools\\python\\Scripts"
-    ```
+- 新建目录`D:\Python\Package\site-packages`，用来存放pip安装的包
 
-- 更改pip镜像源
+- 在`C:\Users\用户名\AppData\Roaming\pip`中新建pip.ini
   
-  ```bash
-  pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
   ```
-
+  [global]
+  target = D:\Python\Package\site-packages
+  index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+  ```
+  
 - venv虚拟环境
   
   - 安装venv虚拟环境
-
+  
     ```bash
     python3 -m venv venv
     ```
-
+  
   - 激活虚拟环境
-
+  
     ```bash
     cd .\venv\Scripts
     activate
     ```
   
   - 退出虚拟环境
-
+  
     ```bash
     cd .\venv\Scripts
     deactivate
     ```
   
   - 删除venv虚拟环境：直接删除对应的venv文件夹即可
-
+  
 - pipreqs使用
   
   - 安装pipreqs库

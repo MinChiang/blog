@@ -53,6 +53,7 @@
   - 协议：**DHCP客户端**
   - **取消勾选默认网关**
   - **跃点数尽量调大**，例如为：100
+  - **防火墙设置**：创建/分配防火墙区域，一定要设置为WAN
 
 ![光猫设置1](../images/光猫设置1.png)
 
@@ -65,8 +66,6 @@
 ![OpenWRT设置4](../images/OpenWRT设置4.png)
 
 ![OpenWRT设置5](../images/OpenWRT设置5.png)
-
-![OpenWRT设置6](../images/OpenWRT设置6.png)
 
 
 
