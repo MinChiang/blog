@@ -63,6 +63,7 @@ module.exports = {
           children: [
             { title: "汕头南澳", path: "shantou" },
             { title: "普宁", path: "puning" },
+            { title: "潮州", path: "chaozhou" },
           ],
         },
       ],
@@ -80,9 +81,7 @@ module.exports = {
         {
           title: "娱乐",
           collapsable: false,
-          children: [
-            { title: "switch游戏", path: "switch" },
-          ],
+          children: [{ title: "switch游戏", path: "switch" }],
         },
       ],
       "/about/": [
@@ -99,14 +98,8 @@ module.exports = {
     },
   },
   plugins: [
-    [
-      "@vuepress/medium-zoom",
-    ],
-    [
-      "@vuepress/back-to-top"
-    ],
-    [
-      "@vuepress/active-header-links"
-    ]
+    ["@vuepress/medium-zoom"],
+    ["@vuepress/back-to-top"],
+    ["@vuepress/active-header-links"],
   ],
 };
