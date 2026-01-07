@@ -1,3 +1,5 @@
+# 工具
+
 ## ACME.sh
 
 ### 介绍
@@ -10,25 +12,21 @@
 
 - [NameSilo API托管地址](https://www.namesilo.com/account/api-manager)
 - 记录下申请的key
-
 ![namesilo api token生成](../images/namesilo_api_token生成.png)
 
 ### Cloudflare为例申请Token
 
 记录下下面的摘要内容以备用
 
-```
+```bash
 export CF_Token="<拷贝的 API Token>"
 export CF_Account_ID="<拷贝的 Account ID>"
 export CF_Zone_ID="<拷贝的 Zone ID>"
 ```
 
 ![cloudflare_token生成](../images/cloudflare_token生成.png)
-
 ![cloudflare_token生成2](../images/cloudflare_token生成2.png)
-
 ![cloudflare_token生成3](../images/cloudflare_token生成3.png)
-
 ![cloudflare_token生成4](../images/cloudflare_token生成4.png)
 
 ### 安装
@@ -67,7 +65,7 @@ acme.sh --install-cert -d '*.minchiang.top' \
 
 - 安装自动续约脚本任务
   
-  ```
+  ```bash
   acme.sh --install-cronjob
   ```
 
@@ -89,8 +87,6 @@ acme.sh --install-cert -d '*.minchiang.top' \
   crontab -l
   ```
 
-
-
 ## Cloudflare
 
 ### 使用cloudflare的dns
@@ -104,9 +100,8 @@ acme.sh --install-cert -d '*.minchiang.top' \
 - 点击设置新的名称服务器
 - 把其改为上述cloudflare的名称服务器
 
-
-
 ## Git
+
 ### 搭建简易的git服务器
 
 - 安装git：`sudo apt-get install git`
@@ -118,8 +113,6 @@ acme.sh --install-cert -d '*.minchiang.top' \
 - 生成公钥：`ssh-keygen -t rsa -C 'xxx@xx.xxx'`
 - 添加公钥：打开本地生成的ssh的公钥key，地址一般为`C:\Users\{你的用户}\.ssh\{你的公钥名字}.pub`，登录到服务中，在`/home/git/.ssh/authorized_keys`中添加里面的内容
 - 此后可以使用`git clone ssh://git@你的域名:端口号/项目地址路径`来下载项目，例如：`git clone ssh://git@git.minchiang.top:52400/opt/gitrepo/test.git`
-
-
 
 ## 扩展：使用Https协议支持Git
 
@@ -133,14 +126,14 @@ acme.sh --install-cert -d '*.minchiang.top' \
 
 - 创建htpasswd用户配置文件，并且添加用户
 
-  ```
+  ```shell
   touch /etc/nginx/.htpasswd
   htpasswd /etc/nginx/.htpasswd <你的用户名>
   ```
 
 - 在/etc/nginx/conf.d/git.conf中添加下面内容
 
-  ```
+  ```shell
   server {
       listen                      443 ssl;
       server_name                 git.minchiang.top;
@@ -186,53 +179,51 @@ acme.sh --install-cert -d '*.minchiang.top' \
 
 - 如果在拉取项目的时候出现`error: remote unpack failed: unable to create temporary object directory`，记得把对应工程在服务器的权限更改为777权限，因为认证用户的文件是在`auth_basic_user_file /etc/nginx/.htpasswd`，其中不一定有对应的用户存在系统中的
 
-
-
 ### Git命令行指南
-- Git快速配置
 
+- Git快速配置
   - 配置用户名和明码
 
-    ```
+    ```powershell
     git config –-global user.name 'xxxxx'
     git config –-global user.email 'xxx@xx.xxx'
     ```
 
   - 生成密钥，并上传到你的github的[ssh key中](https://github.com/settings/keys)
 
-    ```
+    ```powershell
     ssh-keygen -t rsa -C 'xxx@xx.xxx'
     ```
 
   - 改变ssh通道的代理设置，修改配置文件：`C:\Users\你的用户\.ssh\config`
 
-    ```
+    ```powershell
     Host *
         HostKeyAlgorithms +ssh-rsa
         PubkeyAcceptedKeyTypes +ssh-rsa
     
     Host github.com
-        User git										# ssh用户名	
-        Hostname ssh.github.com							# 这里是把github.com域名映射为ssh.github.com
-        PreferredAuthentications publickey				# 使用公钥私钥认证
-        IdentityFile ~/.ssh/id_rsa						# 私钥位置
-        Port 443										# 把原生的22端口映射为443端口
-        ProxyCommand connect -S 127.0.0.1:10808 %h %p	# 本地代理，-S表示走socks5协议，如果使用http协议则使用-H,
+        User git          # ssh用户名 
+        Hostname ssh.github.com       # 这里是把github.com域名映射为ssh.github.com
+        PreferredAuthentications publickey    # 使用公钥私钥认证
+        IdentityFile ~/.ssh/id_rsa      # 私钥位置
+        Port 443          # 把原生的22端口映射为443端口
+        ProxyCommand connect -S 127.0.0.1:10808 %h %p # 本地代理，-S表示走socks5协议，如果使用http协议则使用-H,
         # ProxyCommand connect -H 127.0.0.1:10809 %h %p # 这里使用的是http协议代理，与上面2选1
     ```
 
   - 设置http协议的代理，在命令行中输入
 
-    ```
+    ```powershell
     # 使用socks5代理
     git config --global http.https://github.com.proxy socks5://127.0.0.1:10808
     # 使用http代理
     git config --global http.https://github.com.proxy http://127.0.0.1:10809
     ```
-    
+
   - 设置使用Bcompare作为diff和merge的工具
 
-    ```
+    ```powershell
     git config --global diff.tool bc
     git config --global mergetool.bc.path '"D:/BCompare/BCompare.exe" "$LOCAL" "$REMOTE"'
     git config --global difftool.prompt false
@@ -244,23 +235,17 @@ acme.sh --install-cert -d '*.minchiang.top' \
     ```
 
 - 版本库初始化：git init
-
 - 加入到暂存区： git add
   - 交互模式：-i
   - 筛选文件夹或者文件：后面加入目录或者正则表达式
-
 - 提交修改：git commit -m "注释内容"
-
 - 查看某个提交记录：git show
-
 - 查看提交记录历史：git log
   - 单行查看：--pretty=oneline
   - 以图标方式查看：--graph
   - 仅查看某个文件的提交记录：后面添加指定的文件
-
 - 对比差异：git diff
   - 默认情况比较的是**工作区**和**暂存区**之间的差异
-
 - 回滚到某个版本：git reset
   - 回滚到上个版本：HEAD^
   - 回滚到上上个版本：HEAD^^
@@ -268,46 +253,35 @@ acme.sh --install-cert -d '*.minchiang.top' \
   - 回滚版本库，暂存区和工作区：--hard，会造成内容的丢失
   - 回滚版本库和暂存区（默认）**：--mixed，把修改返回到工作区且不暂存
   - 回滚版本库：--soft，把修改返回到工作区，并暂存
-
 - 回滚某个提交：git revert
-
 - 撤销修改：git restore
   - 默认情况仅撤销工作区中的修改
   - 撤销暂存区中的修改，并放回到工作区中：--staged
-
 - 查看分支：git branch
   - 新建分支：后面带上新建的分支名称
   - 删除分支（已经完成代码合并操作）：-d
   - 删除分支（未进行代码合并操作）： -D
-
 - 检出分支：git checkout
   - 新建并且检出分支：-b
   - 有回滚项目文件的功能，把文件快速回滚到之前的状态：-- fileName
-
 - 合并分支：git merge
   - 先在checkout被merge的分支，再执行merge命令，把需要的分支合并到当前分支
-
 - 摘取单个提交：git check-pick
-
 - 贮存现场：git stash
   - 列出贮存列表：list
   - 恢复贮存现场（不删除贮存内容）：apply
   - 恢复贮存现场（删除贮存内容）：pop
   - 删除贮存现场：drop
-
 - 打标签：git tag
   - 默认为查看所有标签
   - 指定标签信息：-m
   - 删除标签：-d
-
 - Git和SVN的区别
   - Git是分布式的：每个开发人员都是中心版本库的一个克隆
   - Git按内容元数据方式存储，而SVN是按文件存储：.svn和.git比较差异非常大，.git目录下有中心版本库的所有东西，例如标签、分支和版本记录等；
   - Git的分支和SVN的分支不同：Git分支是同一个文件夹的不同表现方式，而SVN是在不同的文件夹下；
   - Git没有一个全局的版本号，而SVN有；
   - Git的内容完整性要优于SVN：Git的内容存储使用SHA-1哈希算法，确保内容的完整性。
-
-
 
 ## IDEA快速工具
 
@@ -378,7 +352,7 @@ settings -> Editor -> Color Schema -> File and Code Templates
 
 - Factory模板
 
-  ```
+  ```txt
   #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
   
   #parse("File Header.java")  
@@ -435,8 +409,6 @@ settings -> Editor -> Color Schema -> File and Code Templates
   */
   ```
 
-  
-
 ### 插件
 
 - Alibaba Java Coding Guidelines（阿里规范）
@@ -454,15 +426,13 @@ settings -> Editor -> Color Schema -> File and Code Templates
 - Protocol Buffer Editor（PB文件支持）
 - SequenceDiagram（快速生成时序图）
 
-
-
 ## Xshell
 
 配色方案，保存下面文本为Solarized Dark.xcs
 
 打开xshell -> 工具 -> 配色方案 -> 导入
 
-```
+```txt
 [Solarized Dark]
 text=00ff40
 cyan(bold)=93a1a1
@@ -488,8 +458,6 @@ name0=Solarized Dark
 count=1
 ```
 
-
-
 ## Maven发布流程
 
 详见可见文档：[Publishing By Using the Maven Plugin](https://central.sonatype.org/publish/publish-portal-maven/)
@@ -513,9 +481,7 @@ count=1
   ![maven包发布1](../images/maven包发布1.png)
 
 - 在maven的setting.xml中的配置文件中添加上面生成的内容，上面的server可以随意命名，这里定义为：**central.sonatype.com**
-
   ![maven包发布2](../images/maven包发布2.png)
-
   对应的`pom.xml`文件如下，请注意正确填写**publishingServerId**：
 
   ```xml
@@ -579,7 +545,7 @@ count=1
       </properties>
   
       <dependencies>
-  		省略对应的依赖项
+    省略对应的依赖项
       </dependencies>
   
       <build>
@@ -658,9 +624,6 @@ count=1
   ```
 
 - 密钥对准备部分，到[GnuPG](https://gnupg.org/download/)中下载[Gpg4win](https://gpg4win.org/download.html)，并安装，按照流程生成密钥对，注意安装完后重启机器；在终端中执行`gpg --version`观察是否有内容输出，可以详见文档[GPG Signed Components](https://central.sonatype.org/publish/publish-maven/)部分
-
 - 在maven中分别执行clean、package、deploy
-
 - 到[Publishing Settings](https://central.sonatype.com/publishing)页面中点击发布按钮，等待完成发布动作
-
   ![maven包发布3](../images/maven包发布3.png)

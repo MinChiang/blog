@@ -1,3 +1,5 @@
+# DDD
+
 ## 总览分析
 
 ![ddd层次调用](../images/ddd层次调用.png)
@@ -24,34 +26,23 @@
   - eventImpl：应用层的event实现
   - persistence：持久化实现，为对应领域层中repository的实现
 
-
-
 ### DDD共识
 
 - DDD是天生指读写分离的，原则上它只**限制了写操作的准则，而不对读操作有太多的指导和干预**；所以我们在讨论DDD的时候一般讲的都是关注如何进行写操作落地与建模的，而读操作则是可以进行传统的MVC结构，从存储结构层面数据直出
-
 - 要求在代码编写时：**进行外部逻辑的入侵屏蔽，对内部逻辑暴露的细节抹除**；假设外部引用是污浊的，内部域内代码是干净的，我们仅能通过一些防腐层做好隔离处理，所以我们可以看到很多参考文章中写xxxFacade，xxxGateway，都是为了防止外部逻辑对内部域模型的侵入，以及内部域对外部世界的暴露
-
 - DDD是需要堆叠很多代码量的，不能由于一时的简单快捷而破环DDD的指导准则
-
 - 架构扁平，分离接口与具体实现，面向接口编程
-
 - 分离技术与业务
-
 - DDD有很多落地的思想与架构，例如有：
-
   - 洋葱模型
   - 整洁架构
   - 六边形架构
   - 菱形对称模型
   - COLA模型
 
-  
-
 ### DDD讲解
 
 - adapter
-
   - 表示对外部调用接口调用的**适配，而不是实现**
   - 这里的接口尽量小，尽量细，不能大而全
   - 这里只有对应的interface，并没有对应的实现
@@ -119,15 +110,11 @@
   - 能够独立进行测试运行
   - 除了内部依赖内部工具库以外，**不依赖其他库或者框架**
   - 里面按照领域进行分包，一个领域独占一个包
-
 - biz
-
   - 是领域的业务逻辑
   - 不是DDD所规范必须的
   - 可以用设计模式手段来**实现业务价值**
-
 - entity
-
   - 类是**有血有肉**富含行为的，不再是单纯的POJO
   - 有对应的id，一个Entity对应有一个唯一的id
   - 判断两个Entity是否相等应该直接判断id
@@ -251,13 +238,10 @@
   ```
 
 - repository
-
   - 保存聚合根的状态
   - 本质上只有save和find两种的方法
   - 这里只有对应的interface，并没有对应的实现
-
 - service
-
   - 领域服务，请与ApplicationService区分开
   - domain service是一个不必要的妥协，应该越少越好
   - 有些行为不能单纯地放在一个实体中
@@ -266,220 +250,214 @@
     - 一些同时改变多个聚合的方法
     - 不仅有接口还有实现，一些文章说直接写对应实现即可，但是本人还是推荐保留接口
 
-```java
-/**
- * 计算工单优先级
- * 由于工单优先级可能有多个影响的因素，如：创建的时间、紧急度、工单创建人的职位、是否VIP等
- * 这些不定的因素都会
- */
-public interface OrderPriorityCalculateService {
-    /**
-     * 计算优先级
-     *
-     * @param order 工单
-     * @return 优先级
-     */
-    Priority calculate(Order order);
-}
+  ```java
+  /**
+  * 计算工单优先级
+  * 由于工单优先级可能有多个影响的因素，如：创建的时间、紧急度、工单创建人的职位、是否VIP等
+  * 这些不定的因素都会
+  */
+  public interface OrderPriorityCalculateService {
+      /**
+      * 计算优先级
+      *
+      * @param order 工单
+      * @return 优先级
+      */
+      Priority calculate(Order order);
+  }
 
-/**
- * 工单发送通知给用户
- */
-public interface ReplyService {
-    /**
-     * 异步回复
-     *
-     * @param order 工单信息
-     * @param ways  回复方式
-     */
-    void replyAsync(Order order, ReplyWayEnum... ways);
-}
+  /**
+  * 工单发送通知给用户
+  */
+  public interface ReplyService {
+      /**
+      * 异步回复
+      *
+      * @param order 工单信息
+      * @param ways  回复方式
+      */
+      void replyAsync(Order order, ReplyWayEnum... ways);
+  }
 
-public class OrderPriorityCalculateServiceImpl implements OrderPriorityCalculateService {
+  public class OrderPriorityCalculateServiceImpl implements OrderPriorityCalculateService {
 
-    /**
-     * 紧急度计算比重
-     */
-    private int urgencyWeight = 2;
+      /**
+      * 紧急度计算比重
+      */
+      private int urgencyWeight = 2;
 
-    /**
-     * vip计算比重
-     */
-    private int vipWeight = 1;
+      /**
+      * vip计算比重
+      */
+      private int vipWeight = 1;
 
-    public OrderPriorityCalculateServiceImpl() {
-    }
+      public OrderPriorityCalculateServiceImpl() {
+      }
 
-    @Override
-    public Priority calculate(Order order) {
-        Priority result = Priority.LOWEST;
-        Urgency urgency = order.getUrgency();
-        result = result.addPriority(Priority.of(urgency.getTimes() * urgencyWeight));
-        if (order.isVip()) {
-            result = result.addPriority(Priority.of(vipWeight));
-        }
-        return result;
-    }
+      @Override
+      public Priority calculate(Order order) {
+          Priority result = Priority.LOWEST;
+          Urgency urgency = order.getUrgency();
+          result = result.addPriority(Priority.of(urgency.getTimes() * urgencyWeight));
+          if (order.isVip()) {
+              result = result.addPriority(Priority.of(vipWeight));
+          }
+          return result;
+      }
 
-}
+  }
 
-public class ReplyServiceImpl implements ReplyService {
+  public class ReplyServiceImpl implements ReplyService {
 
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(4);
+      private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(4);
 
-    private final ReplyInnerAdapter replyInnerAdapter;
-    private final ReplyAppAdapter replyAppAdapter;
-    private final ReplyPushAdapter replyPushAdapter;
+      private final ReplyInnerAdapter replyInnerAdapter;
+      private final ReplyAppAdapter replyAppAdapter;
+      private final ReplyPushAdapter replyPushAdapter;
 
-    public ReplyServiceImpl(ReplyInnerAdapter replyInnerAdapter,
-                            ReplyAppAdapter replyAppAdapter,
-                            ReplyPushAdapter replyPushAdapter) {
-        this.replyInnerAdapter = replyInnerAdapter;
-        this.replyAppAdapter = replyAppAdapter;
-        this.replyPushAdapter = replyPushAdapter;
-    }
+      public ReplyServiceImpl(ReplyInnerAdapter replyInnerAdapter,
+                              ReplyAppAdapter replyAppAdapter,
+                              ReplyPushAdapter replyPushAdapter) {
+          this.replyInnerAdapter = replyInnerAdapter;
+          this.replyAppAdapter = replyAppAdapter;
+          this.replyPushAdapter = replyPushAdapter;
+      }
 
-    @Override
-    public void replyAsync(Order order, ReplyWayEnum... ways) {
-        ReplyConfig replyConfig = order.getReplyConfig();
-        ContactAccount contactAccount = order.getContactAccount();
-        if (!replyConfig.isReplyable() || ContactAccount.NO_CONTACT_ACCOUNT.equals(contactAccount) || ways == null || ways.length == 0) {
-            log.info("can not reply, maybe reply is not configured or contact account is empty!");
-            return;
-        }
-        OrderId id = order.getId();
-        UserId clientId = contactAccount.getClientId();
-        String replyMessage = replyConfig.getReplyMessage();
-        Integer appId = contactAccount.getAppId();
+      @Override
+      public void replyAsync(Order order, ReplyWayEnum... ways) {
+          ReplyConfig replyConfig = order.getReplyConfig();
+          ContactAccount contactAccount = order.getContactAccount();
+          if (!replyConfig.isReplyable() || ContactAccount.NO_CONTACT_ACCOUNT.equals(contactAccount) || ways == null || ways.length == 0) {
+              log.info("can not reply, maybe reply is not configured or contact account is empty!");
+              return;
+          }
+          OrderId id = order.getId();
+          UserId clientId = contactAccount.getClientId();
+          String replyMessage = replyConfig.getReplyMessage();
+          Integer appId = contactAccount.getAppId();
 
-        for (ReplyWayEnum way : ways) {
-            switch (way) {
-                case PUSH:
-                    EXECUTOR_SERVICE.execute(() -> {
-                        try {
-                            PushReplyInfo pushReplyInfo = new PushReplyInfo(id, clientId, replyMessage, appId);
-                            replyPushAdapter.sendPushMessage(pushReplyInfo);
-                        } catch (Exception e) {
-                            log.error("reply push message error, order: {}", order, e);
-                        }
-                    });
-                    break;
-                case APP:
-                    EXECUTOR_SERVICE.execute(() -> {
-                        try {
-                            AppReplyInfo appReplyInfo = new AppReplyInfo(id, clientId, replyMessage, appId);
-                            replyAppAdapter.sendAppMessage(appReplyInfo);
-                        } catch (Exception e) {
-                            log.error("reply app message error, order: {}", order, e);
-                        }
-                    });
-                    break;
-                case INNER:
-                    EXECUTOR_SERVICE.execute(() -> {
-                        try {
-                            // 发送内部的服务信息
-                            InnerReplyInfo innerReplyInfo = new InnerReplyInfo(id, clientId, replyMessage);
-                            replyInnerAdapter.sendInnerMessage(innerReplyInfo);
-                        } catch (Exception e) {
-                            log.error("reply inner message error, order: {}", order, e);
-                        }
-                    });
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-    }
+          for (ReplyWayEnum way : ways) {
+              switch (way) {
+                  case PUSH:
+                      EXECUTOR_SERVICE.execute(() -> {
+                          try {
+                              PushReplyInfo pushReplyInfo = new PushReplyInfo(id, clientId, replyMessage, appId);
+                              replyPushAdapter.sendPushMessage(pushReplyInfo);
+                          } catch (Exception e) {
+                              log.error("reply push message error, order: {}", order, e);
+                          }
+                      });
+                      break;
+                  case APP:
+                      EXECUTOR_SERVICE.execute(() -> {
+                          try {
+                              AppReplyInfo appReplyInfo = new AppReplyInfo(id, clientId, replyMessage, appId);
+                              replyAppAdapter.sendAppMessage(appReplyInfo);
+                          } catch (Exception e) {
+                              log.error("reply app message error, order: {}", order, e);
+                          }
+                      });
+                      break;
+                  case INNER:
+                      EXECUTOR_SERVICE.execute(() -> {
+                          try {
+                              // 发送内部的服务信息
+                              InnerReplyInfo innerReplyInfo = new InnerReplyInfo(id, clientId, replyMessage);
+                              replyInnerAdapter.sendInnerMessage(innerReplyInfo);
+                          } catch (Exception e) {
+                              log.error("reply inner message error, order: {}", order, e);
+                          }
+                      });
+                      break;
+                  default:
+                      throw new IllegalArgumentException();
+              }
+          }
+      }
 
-}
-```
-
-
+  }
+  ```
 
 ### 目录结构（举例说明）
 
-```
+```txt
 customer-order
-│  pom.xml													项目管理文件
-│  readme.md												本文文档
-├─doc														文档核心文件
-├─src														Java标准层次目录结构
+│  pom.xml             项目管理文件
+│  readme.md            本文文档
+├─doc              文档核心文件
+├─src              Java标准层次目录结构
 │  ├─main
 │  │  ├─java
 │  │  │  └─com
 │  │  │      └─business
 │  │  │          └─customer
 │  │  │              └─order
-│  │  │                  ├─adapter							各种外围的adapter，例如AppAdapter
-│  │  │                  ├─application						应用层入口，进行读写分离
-│  │  │                  │  └─dto							存放与外界交互的参数以及结果（这里存放的都是对内不进行复用的）
-│  │  │                  │      ├─command   				写命令
-│  │  │                  │      ├─query						读请求
-│  │  │                  │      └─result 					返回结果
-│  │  │                  ├─config							一些业务的配置项，存放业务相关的spring配置文件
-│  │  │                  ├─constant							一些核心的配置参数（不外露的），例如：工单自动解锁的时长等
-│  │  │                  ├─domain							整个项目最核心的部分，存放内部业务模型，只有接口，没有实现
-│  │  │                  │  ├─clientsupplementation			用户补充内容领域
-│  │  │                  │  │  ├─entity						用户补充内容实体
-│  │  │                  │  │  ├─repository					用户补充内容仓储
-│  │  │                  │  │  └─valueobject				用户补充内容值对象
-│  │  │                  │  ├─order							工单领域
-│  │  │                  │  │  ├─biz						工单领域的业务逻辑
-│  │  │                  │  │  │  ├─processor				工单领域工单动作驱动器
-│  │  │                  │  │  │  ├─saver					工单领域工单详情保存器
-│  │  │                  │  │  │  └─status 					工单领域工单状态驱动器
-│  │  │                  │  │  ├─entity						工单领域实体
-│  │  │                  │  │  ├─repository					工单领域仓储
-│  │  │                  │  │  ├─service					工单领域领域服务
-│  │  │                  │  │  │  └─impl					工单领域领域服务实现
-│  │  │                  │  │  └─valueobject				工单领域值对象
-│  │  │                  │  └─shared						一些共享的东西，例如像PhoneNumber、IdentityCardNumber的值对象
-│  │  │                  ├─infrastructure					基础设施层，是各个层的实现部分
-│  │  │                  │  ├─adapter						adapter的实现
-│  │  │                  │  ├─application					application的实现
-│  │  │                  │  └─persistence					序列化存储相关
-│  │  │                  │      ├─datamapper				聚合根到po或者po到聚合根的映射
-│  │  │                  │      ├─mybatis					mybatis框架的实现
-│  │  │                  │      │  ├─impl					mybatis-plus的ServiceImpl
-│  │  │                  │      │  └─mapper					mybatis的mapper
-│  │  │                  │      ├─po						序列化对象
-│  │  │                  │      └─repository				仓储层的实现
-│  │  │                  └─interfaces						外围的数据入口
-│  │  │                      ├─assembler					各种转换器
-│  │  │                      ├─event						领域事件的处理入口
-│  │  │                      ├─facade						程序内部调用以及RPC调用的入口
-│  │  │                      ├─http							对外部网关调用的http入口
-│  │  │                      │  └─vo						http的请求参数
-│  │  │                      └─schedule						定时任务的入口
-│  │  └─resources											资源配置文件
-│  │      └─mapper											mybatis的配置文件
-│  └─test													测试包
-└─target													编译包
+│  │  │                  ├─adapter       各种外围的adapter，例如AppAdapter
+│  │  │                  ├─application      应用层入口，进行读写分离
+│  │  │                  │  └─dto       存放与外界交互的参数以及结果（这里存放的都是对内不进行复用的）
+│  │  │                  │      ├─command       写命令
+│  │  │                  │      ├─query      读请求
+│  │  │                  │      └─result      返回结果
+│  │  │                  ├─config       一些业务的配置项，存放业务相关的spring配置文件
+│  │  │                  ├─constant       一些核心的配置参数（不外露的），例如：工单自动解锁的时长等
+│  │  │                  ├─domain       整个项目最核心的部分，存放内部业务模型，只有接口，没有实现
+│  │  │                  │  ├─clientsupplementation   用户补充内容领域
+│  │  │                  │  │  ├─entity      用户补充内容实体
+│  │  │                  │  │  ├─repository     用户补充内容仓储
+│  │  │                  │  │  └─valueobject    用户补充内容值对象
+│  │  │                  │  ├─order       工单领域
+│  │  │                  │  │  ├─biz      工单领域的业务逻辑
+│  │  │                  │  │  │  ├─processor    工单领域工单动作驱动器
+│  │  │                  │  │  │  ├─saver     工单领域工单详情保存器
+│  │  │                  │  │  │  └─status      工单领域工单状态驱动器
+│  │  │                  │  │  ├─entity      工单领域实体
+│  │  │                  │  │  ├─repository     工单领域仓储
+│  │  │                  │  │  ├─service     工单领域领域服务
+│  │  │                  │  │  │  └─impl     工单领域领域服务实现
+│  │  │                  │  │  └─valueobject    工单领域值对象
+│  │  │                  │  └─shared      一些共享的东西，例如像PhoneNumber、IdentityCardNumber的值对象
+│  │  │                  ├─infrastructure     基础设施层，是各个层的实现部分
+│  │  │                  │  ├─adapter      adapter的实现
+│  │  │                  │  ├─application     application的实现
+│  │  │                  │  └─persistence     序列化存储相关
+│  │  │                  │      ├─datamapper    聚合根到po或者po到聚合根的映射
+│  │  │                  │      ├─mybatis     mybatis框架的实现
+│  │  │                  │      │  ├─impl     mybatis-plus的ServiceImpl
+│  │  │                  │      │  └─mapper     mybatis的mapper
+│  │  │                  │      ├─po      序列化对象
+│  │  │                  │      └─repository    仓储层的实现
+│  │  │                  └─interfaces      外围的数据入口
+│  │  │                      ├─assembler     各种转换器
+│  │  │                      ├─event      领域事件的处理入口
+│  │  │                      ├─facade      程序内部调用以及RPC调用的入口
+│  │  │                      ├─http       对外部网关调用的http入口
+│  │  │                      │  └─vo      http的请求参数
+│  │  │                      └─schedule      定时任务的入口
+│  │  └─resources           资源配置文件
+│  │      └─mapper           mybatis的配置文件
+│  └─test             测试包
+└─target             编译包
 
 customer-order-api
-│  pom.xml													项目管理文件
-├─src														Java标准层次目录结构
+│  pom.xml             项目管理文件
+├─src              Java标准层次目录结构
 │  └─main
 │      └─java
 │          └─com
 │              └─b
 │                  └─customer
 │                      └─order
-│                          └─api		`					api结构
-│                              ├─constant					一些对外的校验常量
-│                              ├─dto						存放与外界交互的参数以及结果（对内进行复用的）
-│                              │  ├─command					写命令
-│                              │  ├─event					领域事件		
-│                              │  ├─query					读请求
-│                              │  └─result					返回结果
-│                              ├─exception					异常
-│                              └─facade						对外暴露的接口
-└─target													编译包
+│                          └─api  `     api结构
+│                              ├─constant     一些对外的校验常量
+│                              ├─dto      存放与外界交互的参数以及结果（对内进行复用的）
+│                              │  ├─command     写命令
+│                              │  ├─event     领域事件  
+│                              │  ├─query     读请求
+│                              │  └─result     返回结果
+│                              ├─exception     异常
+│                              └─facade      对外暴露的接口
+└─target             编译包
 ```
-
-
-
-
 
 ## 资料参考
 
@@ -504,8 +482,6 @@ customer-order-api
 - [工厂的入参是原始对象还是value object](https://stackoverflow.com/questions/11395031/ddd-factory-entity-value-object?rq=1)
 - [DDD, Hexagonal, Onion, Clean, CQRS, … How I put it all together](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/)
 
-
-
 ## 要点
 
 - application层只是做服务的编排，不做任何的计算逻辑
@@ -513,11 +489,9 @@ customer-order-api
 - domain service入参和出参都返回领域内的对象
 - CQE对象入参全为细颗粒度
 
-
-
 ## 概述
 
-#### Interface层：
+### Interface层
 
 - 承接消息的入口，转化入口参数
 - interface层的表达不止为http协议，也有dubbo、soap、websocket、kafka等
@@ -526,7 +500,7 @@ customer-order-api
 - 不应意识到domain层的内部对象
 - 用Bean Validation做对CQE对象的校验
 
-#### Application层：
+### Application层
 
 - application层做的是**服务的编排**，**不做任何的计算逻辑**；一般包含下面的操作
   - 数据校验
@@ -540,7 +514,7 @@ customer-order-api
 - 有异常信息可以直接抛出，因为在上层的interface层已经捕获所有异常
 - 接收domain或者domain service里面抛出的领域事件，发布对应的领域事件
 
-#### Domain层：
+### Domain层
 
 - Entity：
   - 有对应的id，一个Entity对应有一个唯一的id
@@ -566,11 +540,9 @@ customer-order-api
   - 入参是领域对象，非基本类型
   - 复杂构造的时候可能会依赖Repository
 
-#### Infrastructure层：
+### Infrastructure层
 
-- 用ACL防腐层将外部依赖转化为内部代码，隔离外部的影响
-
-
+用ACL防腐层将外部依赖转化为内部代码，隔离外部的影响
 
 ## 使用ACL的好处
 
@@ -579,8 +551,6 @@ customer-order-api
 - 兜底：防止其他服务不可用导致核心功能的不可用
 - 易于测试：可以方便地通过mock和stub进行单元测试
 - 功能开关：控制功能的实现
-
-
 
 ## CQE的概念与使用
 
@@ -592,4 +562,3 @@ customer-order-api
 
 - CQE在interfaces层做校验，推荐使用Bean Validation实现
 - 不要复用CQE对象，因为不同行为后续的差异会越来越大
-

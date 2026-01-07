@@ -1,9 +1,9 @@
+# GO
+
 ## Go包发布流程
 
 - 把代码上传到Github中
 - 给对应的分支打上tag，即可完成发布
-
-
 
 ### Go安装
 
@@ -14,15 +14,12 @@
 - 配置代理：`go env -w GOPROXY=https://goproxy.cn,direct`
 - 配置go modules功能开关：`go env -w GO111MODULE=on`
 
-
-
 ## 如果在一个仓库中有多个Go Module想要发布怎么办
 
 例如有以下的工程目录：
-
 ![Go包发布1](../images/Go包发布1.png)
 
-```
+```txt
 ctyun-sdk-go
 ├─ctyun-sdk-core
 │      go.mod
@@ -40,7 +37,6 @@ ctyun-sdk-go
 ```
 
 需要发布ctyun-sdk-core、ctebs、ctecs、ctiam、ctimage、ctvpc
-
 以ctyun-sdk-core举例，其go.mod文件内容如下：
 
 ```go

@@ -1,3 +1,5 @@
+# 算法
+
 ## 排序
 
 ![排序算法属性](../images/排序算法属性.png)
@@ -257,7 +259,7 @@ public class QuickSort<T extends Comparable<T>> extends AbstractSortable<T> {
 
 伪代码如下：
 
-```
+```txt
 result = []
 def backtrack(已经选择的路径, 剩余选择列表):
     if 满足结束条件:
@@ -546,11 +548,9 @@ public class LeakyBucket {
     }
 ```
 
-
-
 ## Leetcode
 
-#### 必会
+### 必会
 
 1. 快速排序、归并排序、堆排序
 2. 二叉树前中后、层序、Z字遍历，迭代+递归
@@ -561,7 +561,7 @@ public class LeakyBucket {
 7. 字符串
 8. LRU+LFU
 
-#### Hard15题目
+### Hard15题目
 
 - 25：[力扣](https://leetcode.cn/problems/reverse-nodes-in-k-group/)
 - 23：[力扣](https://leetcode.cn/problems/merge-k-sorted-lists/)
@@ -579,7 +579,7 @@ public class LeakyBucket {
 - 224：[力扣](https://leetcode.cn/problems/basic-calculator)
 - 135：[力扣](https://leetcode.cn/problems/candy)
 
-#### 中等67
+### 中等67
 
 - 3：[力扣](https://leetcode.cn/problems/longest-substring-without-repeating-characters)
 - 146：[力扣](https://leetcode.cn/problems/lru-cache)

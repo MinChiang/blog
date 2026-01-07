@@ -1,18 +1,15 @@
+# VIM
+
 ## 基本使用与安装
 
 - 下载：[NeoVim下载地址](https://github.com/neovim/neovim/releases)
 - 配置：把[Nvim配置](https://github.com/MinChiang/nvim)，通过git克隆到C:\Users\YY\AppData\Local下
 - 打开NeoVim-qt.ext即可
 
-
-
 ## 一些建议和使用方法
 
 [快捷键用法](https://vim.rtorr.com/lang/zh_cn)
-
-![](../images/vi-vim-cheat-sheet.gif)
-
-
+![vi-vim-cheat-sheet](../images/vi-vim-cheat-sheet.gif)
 
 ## 使用技巧
 
@@ -32,11 +29,9 @@ Java打印的日志格式如上，如何提取为excel的格式呢？
 处理后效果如下，直接黏贴到Excel处理，加上header标题即可
 
 ```txt
-27419	f26a899f90b2dbeba68efc6c5737332a	1049474983753142272	8648579	1670255927000	1670255928000	1670255934429	1670256010000	1670256010000	1670256010362	1670256010413	1670256010461	0
-25889	91a6c8e629e85e06324014458bf9cd5d	1049474129096581120	8648580	1670255723000	1670255724000	1670255730663	1670256013000	1670256013000	1670256013775	1670256013801	1670256013838	0
+27419 f26a899f90b2dbeba68efc6c5737332a 1049474983753142272 8648579 1670255927000 1670255928000 1670255934429 1670256010000 1670256010000 1670256010362 1670256010413 1670256010461 0
+25889 91a6c8e629e85e06324014458bf9cd5d 1049474129096581120 8648580 1670255723000 1670255724000 1670255730663 1670256013000 1670256013000 1670256013775 1670256013801 1670256013838 0
 ```
-
-
 
 ### 快速给某些地方添加内容
 
@@ -59,7 +54,7 @@ public enum CardFigureEnum {
     ACE(1, "ACE", 1),
     ;
     
-	// 省略其他无用代码
+ // 省略其他无用代码
 }
 ```
 
@@ -96,11 +91,9 @@ public enum CardFigureEnum {
     ACE(12, 1, "ACE", 1),
     ;
     
-	// 省略其他无用代码
+ // 省略其他无用代码
 }
 ```
-
-
 
 ### 去除空号，每行的末尾添加逗号，多行合并为一行
 
@@ -187,4 +180,3 @@ http://tracker.files.fm:6969/announce,
 ```txt
 http://1337.abcvg.info:80/announce,http://bt.endpot.com:80/announce,http://bt.okmp3.ru:2710/announce,http://dn42.smrsh.net:6969/announce,http://nyaa.tracker.wf:7777/announce,http://open.acgnxtracker.com:80/announce,http://p2p.0g.cx:6969/announce,http://parag.rs:6969/announce,http://share.camoe.cn:8080/announce,http://t.acg.rip:6699/announce,http://t.nyaatracker.com:80/announce,http://torrentsmd.com:8080/announce,http://tr.cili001.com:8070/announce,http://tracker.bt4g.com:2095/announce,http://tracker.files.fm:6969/announce,
 ```
-

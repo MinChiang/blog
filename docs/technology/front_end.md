@@ -3,12 +3,10 @@
 ### Npm配置
 
 - 下载最新版的Nodejs
-
 - 在Nodejs文件夹中新建`node_global`和`node_cache`两个文件夹
-
 - 在环境变量中配置下面的内容
 
-  ```
+  ```powershell
   NODE_HOME -> E:\Tools\Nodejs\node-v20.12.2-win-x64
   NODE_GLOBAL -> E:\Tools\Nodejs\node_global
   NODE_PATH -> %NODE_GLOBAL%\node_modules
@@ -16,7 +14,7 @@
 
 - 在环境变量的Path中设置
 
-  ```
+  ```powershell
   %NODE_HOME%
   %NODE_GLOBAL%
   %NODE_PATH%
@@ -30,7 +28,6 @@
   ```
 
 - **重启命令行，因为配置以后命令行需要重新启动才能获取到新的环境变量**
-
 - 测试安装，在命令行中执行
 
   ```powershell
@@ -40,18 +37,16 @@
 - 选择并使用淘宝的官方镜像，在命令行中执行
 
   ```powershell
-  nrm use taobao	# 使用淘宝镜像
-  nrm ls	# 列出所有镜像
+  nrm use taobao # 使用淘宝镜像
+  nrm ls # 列出所有镜像
   ```
 
 - 清除和移动已有依赖的包，可选
-
   - 删除：C:\Users\{用户}\AppData\Local\npm-cache
   - 在Nodejs的安装目录E:\Tools\Nodejs\node-v20.12.2-win-x64\node_modules下 ，除了corepack和npm文件夹，其他文件夹移动到E:\Tools\Nodejs\node_global中
-
 - 校验配置，下面列出基本配置内容
 
-  ```
+  ```powershell
   PS E:\workspace\blog> npm config list
   ; "user" config from C:\Users\MinChiang\.npmrc
   
@@ -61,8 +56,6 @@
   registry = "https://registry.npmmirror.com/"
   ```
   
-  
-
 ### Yarn配置
 
 - 安装yarn
@@ -72,7 +65,6 @@
   ```
 
 - 在Nodejs文件夹中新建`yarn_global`和`yarn_cache`两个文件夹
-
 - 在环境变量中配置下面的内容
 
   ```
@@ -96,7 +88,6 @@
   ```
 
 - **重启命令行，因为配置以后命令行需要重新启动才能获取到新的环境变量**
-
 - 测试安装typescript，在命令行中执行
 
   ```powershell
@@ -143,20 +134,16 @@
   Done in 0.06s.
   ```
 
-  
-
 ### Pnpm配置
 
 - 创建以下目录
-
   - E:\Tools\Nodejs\pnpm_bin
   - E:\Tools\Nodejs\pnpm_cache
   - E:\Tools\Nodejs\pnpm_state
   - E:\Tools\Nodejs\pnpm_global
-
 - 执行下面的命令
 
-  ```bash
+  ```powershell
   pnpm config set global-bin-dir "E:\Tools\Nodejs\pnpm_bin"
   pnpm config set cache-dir "E:\Tools\Nodejs\pnpm_cache"
   pnpm config set state-dir "E:\Tools\Nodejs\pnpm_state"
@@ -164,4 +151,3 @@
   ```
 
 - 在系统变量中的PATH追加`E:\Tools\Nodejs\pnpm_bin`
-

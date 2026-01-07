@@ -1,3 +1,5 @@
+# 基础组件
+
 ## Spring
 
 ### Spring主要包
@@ -269,16 +271,12 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 - 出现异常但是被方法内部捕获了，又没有向框架抛出异常
 - @Transactional抛出非RuntimeException或者Error异常，需要使用rollbackFor支持其他异常的回滚
 
-
-
 ## MyBatis
 
 ![mybatis缓存机制](../images/mybatis缓存机制.png)
 
 - 一级缓存：在开启一个数据库会话时，会新建一个SqlSession对象（含Executor），Executor在执行对应的SQL语句时，会去PerpetualCache对象中寻找对应的缓存，该缓存对象随着SqlSession对象死亡而释放；如果SqlSession调用了clearCache()、update()、delete()、insert()任意一个方法，都会**清空PerpetualCache的数据**；一级缓存默认为**开启**状态；
 - 二级缓存：默认是不开启二级缓存，默认原生二级缓存需要返回的POJO必须是可序列化的，一般通过LRU的算法来回收。
-
-
 
 ## Dubbo
 
@@ -296,8 +294,6 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 ![dubbo架构4](../images/dubbo架构4.jpg)
 
 ![dubbo架构5](../images/dubbo架构5.jpg)
-
-
 
 ## Redis
 
@@ -400,7 +396,7 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 
 在目录中创建6个文件夹，对应为7000-7005，分别对应redis的占用端口，并将redis.conf复制到对应的文件夹中，并且修改为以下内容
 
-```
+```bash
 bind 0.0.0.0
 port [7000-7005]
 pidfile /var/run/redis_[7000-7005].pid
@@ -411,20 +407,20 @@ appendonly yes
 
 分别进入对应的目录，运行redis
 
-```
+```bash
 cd [7000-7005]
 ../redis-server ./redis.conf
 ```
 
 使用redis-cli创建对应的集群，`--cluster-replicas 1`意味为每个创建的主机都提供一个从机
 
-```
+```bash
 redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 --cluster-replicas 1
 ```
 
 使用命令查看集群信息
 
-```
+```bash
 ./redis-cli --cluster check 127.0.0.1:7000
 M: b16acaeab7e93f8a3f78fb78554d45036dca9ead 127.0.0.1:7001
    slots:[5461-10922] (5462 slots) master
@@ -448,32 +444,32 @@ M: b843d2a4d24f0c0d758863433f9c918c7527dc0f 127.0.0.1:7005
 
 先要创建配置运行的文件
 
-```
+```bash
 cd [7006-7007]
 ../redis-server ./redis.conf
 ```
 
 使用`add-node`命令为集群添加节点（主节点），注意添加完成后，主节点并不会自动地进行rehash处理，需要手动进行rehash
 
-```
+```bash
 redis-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000
 ```
 
 添加从节点`--cluster-slave`，注意从节点在加入时，会自动寻找集群中备份最少的节点并作为其从节点
 
-```
+```bash
 redis-cli --cluster add-node 127.0.0.1:7007 127.0.0.1:7000 --cluster-slave
 ```
 
 要删除一个从节点，只需使用`del-node`redis-cli命令
 
-```
+```bash
 redis-cli --cluster del-node 127.0.0.1:7000 `<node-id>`
 ```
 
 重新分簇（Rehash）
 
-```
+```bash
 redis-cli --cluster reshard 127.0.0.1:7000
 ```
 
@@ -495,8 +491,6 @@ keys和scan的区别：
 
 - keys处理拥有大量数据的场景时，由于redis是单线程的，可能阻塞服务器长达数秒；
 - scan是基于增量式迭代的，默认返回有限条数据，在scan返回数据的过程中，键值可能会被修改；
-
-
 
 ## Kafka
 
@@ -529,7 +523,7 @@ keys和scan的区别：
 
 在目录中创建3个文件夹，对应为9092-9094，分别对应kafka的占用端口，并将server.properties复制到对应的文件夹中，并且修改为以下内容
 
-```
+```bash
 broker.id=[0-2]
 listeners=PLAINTEXT://:[9092-9094]
 log.dirs=/tmp/kafka-logs-[9092-9094]
@@ -537,25 +531,25 @@ log.dirs=/tmp/kafka-logs-[9092-9094]
 
 启动zookeeper，`-daemon`命令表示使用后台运行
 
-```
+```bash
 bin/zookeeper-server-start.sh -daemon ./config/zookeeper.properties
 ```
 
 进入对应的[9092-9094]文件夹中，执行以下命令，`-daemon`命令表示使用后台运行
 
-```
+```bash
 ../kafka_2.12-2.4.1/bin/kafka-server-start.sh -daemon server.properties
 ```
 
 创建主题， `--partitions`表示创建的分区数量，`--replication-factor`表示副本因子（对应一个节点上单个分区的数量）
 
-```
+```bash
 bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic test --partitions 3 --replication-factor 3
 ```
 
 查看对应的主题列表
 
-```
+```bash
 bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
 __consumer_offsets
 test
@@ -563,7 +557,7 @@ test
 
 查看主题详细信息
 
-```
+```bash
 bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic test
 Topic: test    PartitionCount: 3    ReplicationFactor: 3    Configs: segment.bytes=1073741824
     Topic: test    Partition: 0    Leader: 2    Replicas: 2,0,1    Isr: 2,0,1
@@ -573,13 +567,13 @@ Topic: test    PartitionCount: 3    ReplicationFactor: 3    Configs: segment.byt
 
 创建2个消费者，`--group`指定对应的消费者群组，注意需要指定消费群组，若不指定，则终端会默认自己创建一个默认的消费者群组，这样结果会导致生产者发送消息后，所有的消费者都会**消费到同一条信息**
 
-```
+```bash
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --group test
 ```
 
 创建1个消费者
 
-```
+```bash
 bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 >0
 >1
@@ -600,12 +594,10 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
   - 不指定分区，由指定key，根据key的hash规则确定发送到哪个分区
   - 不指定分区，不指定key，轮询发送
 
-### 一些有用的资料：
+### 一些有用的资料
 
-- https://juejin.cn/post/7176576097205616700
-- https://zhuanlan.zhihu.com/p/377209008
-
-
+- <https://juejin.cn/post/7176576097205616700>
+- <https://zhuanlan.zhihu.com/p/377209008>
 
 ## Zookeeper
 
@@ -653,8 +645,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
   4. follower接收到propose消息，写入日志成功后，返回ack消息给leader；
   5. leader接收到半数以上ack消息，返回成功给客户端，并且广播commit请求给follower。
 
-
-
 ## Flink
 
 ### flink原理介绍
@@ -694,7 +684,6 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
   - Filter：数据过滤器
   - Reduce：把两个元素聚合为一个
   - Window：数据归窗
-
 
 ```java
 @Public
@@ -788,8 +777,6 @@ public interface WindowFunction<IN, OUT, KEY, W extends Window> extends Function
 - 本质上不适合做很重业务逻辑性的操作，因为是CPU密集型的，会造成堵塞
 - 某个subtask提前finish导致savepoint失败
 
-
-
 ## Nginx
 
 目前Nginx集群没有好的解决方案，下面对应的技术方案可以简单实现：
@@ -797,8 +784,6 @@ public interface WindowFunction<IN, OUT, KEY, W extends Window> extends Function
 1. 构建DNS+CDN服务器
 2. 在多个公网IP中搭建多台Nginx服务器
 3. 通过DNS进行域名的动态切换，通过CDN进行动态流量输入
-
-
 
 ## Activiti
 
@@ -809,8 +794,6 @@ public interface WindowFunction<IN, OUT, KEY, W extends Window> extends Function
   - RuntimeService：实例流程相关
   - TaskService：与正在执行的任务管理相关
   - HistroyService：查询历史服务接口
-
-
 
 ## ElasticSearch
 

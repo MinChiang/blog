@@ -1,10 +1,11 @@
+# 输入法
+
 ## 小鹤双拼
 
 ![小鹤双拼](../images/小鹤双拼.png)
-
 小鹤双拼的windows设置，将以下文件保存为**双击本文件设置win10微软拼音小鹤双拼.reg**
 
-```
+```powershell
 Windows Registry Editor Version 5.00
 
 [HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputMethod\Settings\CHS]
@@ -25,8 +26,6 @@ Windows Registry Editor Version 5.00
 "PinyinMixEnable"=dword:00000000
 "ToolBarEnabled"=dword:00000000
 ```
-
-
 
 ## 五笔输入法
 

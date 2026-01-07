@@ -1,3 +1,5 @@
+# JVM
+
 ## volatile与JMM内存模型
 
 ```java
@@ -25,14 +27,10 @@ public class VolatileTest {
 }
 ```
 
-上述代码的结果是：**开始执行线程1 -> 开始执行线程2 -> 线程2执行完成 -> **，进程一直不会停止而是卡着
-
+上述代码的结果是：**开始执行线程1 -> 开始执行线程2 -> 线程2执行完成 ->**，进程一直不会停止而是卡着
 原因是因为上述的flag并非是volatile导致的，正确应该在flag上加上volatile，volatile能够保证**可见性**和**有序性**
-
-- 可见性：加入volatile关键字的时候，汇编中会多出一个lock指令，实际是一个内存屏障
-
+可见性：加入volatile关键字的时候，汇编中会多出一个lock指令，实际是一个内存屏障
 ![flag值的变化情况](../images/flag值的变化情况.jpg)
-
 ![物理内存模型](../images/物理内存模型.jpg)
 
 JMM是什么：
@@ -40,8 +38,6 @@ JMM是什么：
 - Java为了屏蔽各个CPU以及不同架构带来的差异，同一成JMM内存模型
 - JMM是一种抽象的概念，实际上并不存在；JMM与物理硬件之间存在着交叉的关系
 - JMM规定线程操作变量时候，需要从主内存中拷贝一份到工作内存中，在工作内存中操作并写回主内存
-
-
 
 ### 1.8运行时内存区域
 
@@ -112,7 +108,7 @@ JMM是什么：
 
 ### 好用的调优网站
 
-https://render.alipay.com/p/s/jvm-generate/JvmGenerate
+<https://render.alipay.com/p/s/jvm-generate/JvmGenerate>
 
 ### Client模式和Server模式的区别
 
@@ -156,21 +152,21 @@ https://render.alipay.com/p/s/jvm-generate/JvmGenerate
 - 内核线程模型
   
   - 特点：
-    
+
     - JVM的线程UT本质上是LWP的一个实例对象，也就是jvm的线程是轻量级线程的一个具体映射，LWP映射为KLT，在内核中执行
-    
+
     - UT和LWP是**一对一**的
-    
+
     - 是目前主流语言的线程模型，目前高版本的JVM都是用这种模型
   
   - 优点：
-    
+
     - UT阻塞了不影响其他内核KLT的执行，因为有Thread Scheduler进行切换协调
   
   - 缺点：
-    
+
     - 操作线程需要在**用户态**和**内核态**中来回切换，因为本质上都要反映到KTL中，消耗一定的资源
-    
+
     - 受到Linux内核创建的资源限制
 
 ![内核调度线程模型](../images/内核调度线程模型.jpg)
@@ -197,8 +193,6 @@ https://render.alipay.com/p/s/jvm-generate/JvmGenerate
     - 实现很复杂
 
 ![用户线程模型](../images/混合线程模型.jpg)
-
-
 
 ## 类相关
 
@@ -268,8 +262,6 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
     throw new ClassNotFoundException(name);
 }
 ```
-
-
 
 ## 对象相关
 
@@ -345,8 +337,6 @@ public WeakReference(T referent, ReferenceQueue<? super T> q);
 
 public PhantomReference(T referent, ReferenceQueue<? super T> q);
 ```
-
-
 
 注意：在各个Reference中，构造签名里面的T referent均是指：**被引用的对象**，也叫**被回收的对象**；而持有xxxReference的对象指的是**引用对象**；当被引用对象回收后，引用对象仍然持有xxxReference对象，但是无法通过xxxReference.get()方法获取到被引用的对象，下面的样例中：Person是被引用的对象，Registration是引用对象，回收是回收Person实例，而不是Registration，回收后Registration依然能够被获取到
 
@@ -444,7 +434,7 @@ public class WeakReferenceTest {
 }
 ```
 
-```
+```txt
 房子所属人：WeakReferenceTest.Person(name=张三)
 房子登记信息：WeakReferenceTest.Registration(ownerName=张三)
 ****** 房子历史登记信息begin ******
@@ -465,8 +455,6 @@ public class WeakReferenceTest {
 - 任何一个对象的finalize方法都只会被系统自动调用一次，如果对象面临下一次回收，finalize方法不会被再次执行；
 - 运行代价高昂，不确定性太大，无法保证各个对象的调用顺序，不推荐使用。
 
-
-
 ## 垃圾回收相关
 
 ### 垃圾收集算法
@@ -477,7 +465,7 @@ public class WeakReferenceTest {
 
 - 复制：划分区域，每次使用其中1块区域，使用完之后把存活的数据复制到另外一块中，Hotspot新生代默认使用，划分为1个Eden和2个Survivor，大小比例为8：1，Survivor空间不足时**使用老年代分配担保**；
 
-![复制算法](../images/复制算法.jpg) 
+![复制算法](../images/复制算法.jpg)
 
 - 标记整理：先标记，然后把存活对象向空间一端移动，适合**老年代**使用的算法。
 
@@ -528,8 +516,6 @@ public class WeakReferenceTest {
   - jmap -dump:format=b,file=xxx PID，把整个堆dump出来
 - jstack：当前线程执行的快照，jstack -l PID
 - VisualVM：上面工具的集合，一般用此工具，省力省心。
-
-
 
 ## JVM操作样例
 
@@ -669,7 +655,7 @@ public static void main(String[] args) throws InterruptedException {
   
   - 在java_home的bin目录下创建jstatd.all.policy文件，其中/usr/local/java/lib/tools.jar可以按照需求替换为${JAVA_HOME}/lib/tools.jar，前提是已经设置过JAVA_HOME环境变量
   
-  ```
+  ```txt
   grant codebase "file:/usr/local/java/lib/tools.jar" {
      permission java.security.AllPermission;
   };
@@ -677,15 +663,13 @@ public static void main(String[] args) throws InterruptedException {
   
   - 通过命令启动./jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostname=xxx.xxx.xxx.xxx -p xxxx -J-Djava.rmi.server.logCalls=true
 
-
-
 ## 亲自遇到的问题
 
 问题表现：升级了mysql8.0之后，程序cpu微微升高，内存占用率比较高
 
 ![druid版本问题1](..\images\druid版本问题1.jpg)
 
-![](..\images\druid版本问题2.jpg)
+![druid版本问题2](..\images\druid版本问题2.jpg)
 
 表现是：
 
@@ -693,5 +677,4 @@ public static void main(String[] args) throws InterruptedException {
 - Druid的loadClass()方法吃了非常多的CPU资源
 
 用了jmap dump出内存对象，用jstack查看线程的占用时间，发现就是druid的内部问题
-
-详见：https://blog.csdn.net/qq_40378034/article/details/117851207
+详见：<https://blog.csdn.net/qq_40378034/article/details/117851207>

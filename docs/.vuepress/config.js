@@ -89,8 +89,8 @@ module.exports = {
           title: "关于",
           collapsable: false,
           children: [
-            { title: "现在", path: "now" },
-            { title: "将来", path: "future" },
+            { title: "自我介绍", path: "introduce" },
+            { title: "未来规划", path: "future" },
             { title: "联系方式", path: "contact" },
           ],
         },

@@ -1,3 +1,5 @@
+# 网络
+
 ## 家庭组网
 
 ### 家庭网络总览
@@ -22,8 +24,6 @@
 
 ![家庭组网方式](../images/家庭组网方式.jpg)
 
-
-
 ### 光猫设置
 
 - 运营商：中国电信
@@ -36,8 +36,6 @@
   - 让运营商提供IPv4公网地址，IP地址为动态
   - 知道宽带的PPPoE的拨号账户名+密码
   - 知道IPTV的IPoE的用户名+密码
-
-
 
 ### 光猫桥接+路由拨号=优化性能
 
@@ -56,18 +54,11 @@
   - **防火墙设置**：创建/分配防火墙区域，一定要设置为WAN
 
 ![光猫设置1](../images/光猫设置1.png)
-
 ![OpenWRT设置1](../images/OpenWRT设置1.png)
-
 ![OpenWRT设置2](../images/OpenWRT设置2.png)
-
 ![OpenWRT设置3](../images/OpenWRT设置3.png)
-
 ![OpenWRT设置4](../images/OpenWRT设置4.png)
-
 ![OpenWRT设置5](../images/OpenWRT设置5.png)
-
-
 
 ### 设置单线复用IPTV
 
@@ -84,13 +75,8 @@
   - 在**网络设置，IPoE中，密码为10000，调整IPoE网络拨号为IPv4/IPv6的方式**
 
 ![光猫设置2](../images/光猫设置2.png)
-
 ![光猫设置3](../images/光猫设置3.png)
-
 ![OpenWRT设置7](../images/OpenWRT设置7.png)
-
 ![IPTV设置1](../images/IPTV设置1.jpg)
-
 ![IPTV设置2](../images/IPTV设置2.jpg)
-
 ![IPTV设置3](../images/IPTV设置3.jpg)

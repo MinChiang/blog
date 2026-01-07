@@ -1,6 +1,6 @@
-## 虚拟机环境搭建
+# 虚拟机环境搭建
 
-### Ubuntu Server系统安装
+## Ubuntu Server系统安装
 
 - 安装完成VMware workstation后，在编辑->虚拟网络编辑器->更改设置->NAT设置，查看NAT模式的子网IP、网络掩码、网关IP等信息
   如下图所示
@@ -8,7 +8,6 @@
   子网掩码：255.255.255.0
   网关IP：192.168.160.2
   ![虚拟机搭建1](../images/虚拟机搭建1.png)
-
 - 创建虚拟机
   打开VMware，文件->新建虚拟机
   类型配置：自定义（高级）
@@ -25,7 +24,6 @@
   磁盘容量：最大磁盘大小：20G，拆分成多个文件，名字为Ubuntu_Dev.vmdk
   自定义硬件：去除USB控制器、声卡、打印机，在新CD/DVD中选择使用ISO，打开ubuntu-16.04.6-server-amd64.iso
   ![虚拟机搭建2](../images/虚拟机搭建2.png)
-
 - 打开虚拟机，进入安装流程
   **语言选项：English**
   选择：Install Ubuntu Server
@@ -42,12 +40,10 @@
   管理更新：No automatic updates
   安装包：选择Standard System utilities和OpenSSH server
   GRUB boot loader安装：Yes
-
 - 重启Ubunut后，可以进入登录界面，此时输入用户名和密码进行登录
-
 - 修改网卡配置
-  
-  ```
+
+  ```bash
   sudo vi /etc/network/interfaces
   把iface ens32 inet dhcp改为
   把iface ens32 static
@@ -59,23 +55,23 @@
   ```
 
 - 配置root的ssh登录
-  
-  ```
+
+  ```bash
   sudo vi /etc/ssh/sshd_config
   把PermitRootLogin prohibit-password改为
   PermitRootLogin yes
   ```
 
 - 配置root的密码
-  
-  ```
+
+  ```bash
   sudo su - root
   passwd
   ```
 
 - 修改apt源为阿里源
-  
-  ```
+
+  ```bash
   sudo cp /etc/apt/sources.list /etc/apt/sources_bak.list
   sudo vi /etc/apt/sources.list
   
@@ -97,25 +93,23 @@
   deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe
   ```
 
-  - 执行命令
+- 执行命令
 
-    ```
-    sudo apt-get update
-    sudo apt-get upgrade
-    ```
+  ```bash
+  sudo apt-get update
+  sudo apt-get upgrade
+  ```
 
-  - 最后重启电脑，即可用ssh进行登录
+- 最后重启电脑，即可用ssh进行登录
 
-### MySQL
+## MySQL
 
 - 选择下载[地址源](https://dev.mysql.com/downloads/)
-
   这里选择APT Repository安装方式
   ![MySQL安装截图1](../images/MySQL安装截图1.png)
-
 - 安装期间设置root密码为root
 
-  ```
+  ```bash
   sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb
   sudo apt-get update
   sudo apt-get install mysql-server
@@ -123,7 +117,7 @@
 
 - 配置监听地址字符集编码等（需要重启mysql）
 
-  ```
+  ```bash
   vim /etc/mysql/my.cnf
   
   最下面加入
@@ -140,7 +134,7 @@
 
 - 配置root远程登陆和密码
 
-  ```
+  ```bash
   mysql -u root -proot
   use mysql
   update user set host = '%' where user = 'root';
@@ -154,34 +148,35 @@
   - 启动 /etc/init.d/mysql start
   - 关闭 /etc/init.d/mysql stop
 
-### Redis
+## Redis
+
 - 安装redis
 
-  ```
+  ```bash
   sudo apt-get install redis-server
   ```
 
 - 修改监听地址
 
-  ```
+  ```bash
   把bind 127.0.0.1
   修改为bind 0.0.0.0
   ```
 
-### Elasetcsearch
+## Elasetcsearch
 
 安装Elaasticsearch
 
-```
+```bash
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 sudo apt-get install apt-transport-https
 echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
 sudo apt-get update && sudo apt-get install elasticsearch
 ```
 
-### 启动命令
+## 启动命令
 
-```
+```bash
 systemctl start postgresql
 systemctl start mysql
 systemctl start nginx
