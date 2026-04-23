@@ -1,5 +1,100 @@
 # c
 
+## C语言的编译过程
+
+| **步骤**   | **处理工具** | **输入文件** | **输出文件** | **主要作用**                   |
+| ---------- | ------------ | ------------ | ------------ | ------------------------------ |
+| **预处理** | `cpp`        | `.c`         | `.i`         | 宏展开、头文件包含、去注释     |
+| **编译**   | `gcc -S`     | `.i`         | `.s`         | 语法检查、生成汇编代码         |
+| **汇编**   | `as`         | `.s`         | `.o`         | 生成机器码（二进制目标文件）   |
+| **链接**   | `ld`         | `.o` + 库    | `exe`        | 符号解析、地址重定向、生成程序 |
+
+
+
+## 基础语法
+
+### 宏定义
+
+宏定义的本质只有四个字：**文本替换**。它发生在**预处理阶段**，也就是说，在编译器真正开始分析语法之前，宏就已经被替换完成了。
+
+- 基础宏定义
+
+  ```c
+  #define MAX_LED_COUNT 8
+  #define DEVICE_NAME "My_NAS_LED"
+  ```
+
+- 带参数的宏（伪装成函数）
+
+  ```c
+  #define SQUARE(x) ((x) * (x))
+  ```
+
+  **注意这里**如果写成`#define SQUARE(x) (x * x)`，如果调用`SQUARE(1 + 2)`，会导致变成`SQUARE(1 + 2 * 1 + 2) = 5`，而不是`SQUARE((1 + 2) * (1 + 2)) = 9`
+
+- 多行逻辑宏
+
+  ```c
+  #define INIT_LED(led_ptr, p) do { \
+      (led_ptr)->pin = (p); \
+      (led_ptr)->status = off; \
+      printf("LED on pin %d initialized.\n", (p)); \
+  } while(0)
+  ```
+
+  **注意do {} while(0)是多行逻辑宏的固定写法**，
+
+  - 假设没有使用`do while`，而是写成
+
+    ```c
+    #define INIT_LED(p) \
+        set_pin(p);     \
+        printf("LED %d init done\n", p)
+    ```
+
+    如果在这段逻辑里面
+
+    ```c
+    if (is_ready)
+        INIT_LED(12);
+    else
+        handle_error();
+    ```
+
+    预处理展开后，就变成了
+
+    ```c
+    if (is_ready)
+        set_pin(12);
+        printf("LED 12 init done\n"); // 👈 这一行不再属于 if！它变成了无条件执行。
+    ; // 👈 这是一个多余的空分号
+    else // 💥 编译器报错：'else' without a previous 'if'
+        handle_error();
+    ```
+
+  - 如果是用`{}`进行囊括
+
+    ```c
+    #define INIT_LED(p) { set_pin(p); printf("done\n"); }
+    
+    if (condition)
+        INIT_LED(12); // 这里展开后会变成 { ... };
+    else
+        handle_error();
+    ```
+
+    展开后变成了：
+
+    ```c
+    if (condition) {
+        set_pin(12);
+        printf("done\n");
+    }; // 👈 麻烦就在这个分号！
+    else // 💥 还是会报错，因为分号把 if 语句强行结束了。
+    ```
+
+
+
 ## 内存对齐以及指针计算问题
 
 ```c
