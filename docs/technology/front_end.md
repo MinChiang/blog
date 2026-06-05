@@ -4,20 +4,12 @@
 
 - 下载最新版的Nodejs
 - 在Nodejs文件夹中新建`node_global`和`node_cache`两个文件夹
-- 在环境变量中配置下面的内容
-
-  ```powershell
-  NODE_HOME -> E:\Tools\Nodejs\node-v20.12.2-win-x64
-  NODE_GLOBAL -> E:\Tools\Nodejs\node_global
-  NODE_PATH -> %NODE_GLOBAL%\node_modules
-  ```
-
 - 在环境变量的Path中设置
 
   ```powershell
-  %NODE_HOME%
-  %NODE_GLOBAL%
-  %NODE_PATH%
+  E:\Tools\Nodejs\node-v20.12.2-win-x64
+  E:\Tools\Nodejs\node_global
+  E:\Tools\NodeJs\node_cache
   ```
 
 - 命令行中执行下面的命令
