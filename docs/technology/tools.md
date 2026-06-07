@@ -627,3 +627,73 @@ count=1
 - 在maven中分别执行clean、package、deploy
 - 到[Publishing Settings](https://central.sonatype.com/publishing)页面中点击发布按钮，等待完成发布动作
   ![maven包发布3](../images/maven包发布3.png)
+
+## WSL
+
+- 安装wsl：`wsl --install`
+
+- 安装Ubuntu24.04：`wsl --install -d Ubuntu-24.04`
+
+- 迁移路径：
+
+  ```powershell
+  wsl --export Ubuntu-24.04 D:\ubuntu24.04_backup.tar
+  wsl --unregister Ubuntu-24.04
+  wsl --import Ubuntu-24.04 D:\WSL\Ubuntu24.04 D:\ubuntu24.04_backup.tar --version 2
+  ```
+
+## Docker
+
+国内超稳的一键脚本（自动切换国内源）：`bash <(curl -sSL https://linuxmirrors.cn/docker.sh)`
+
+## NeoVim
+
+```bash
+# 1. 安装管理 PPA 的核心工具
+sudo apt install -y software-properties-common
+
+# 2. 添加 Neovim 官方稳定版 PPA 源
+sudo add-apt-repository ppa:neovim-ppa/stable -y
+
+# 3. 更新源并直接安装
+sudo apt update
+sudo apt install -y neovim
+```
+
+## Oh My ZSH
+
+- 安装
+
+  ```bash
+  # 更新源并安装 zsh 和 curl/git
+  sudo apt update
+  sudo apt install -y zsh git curl
+  
+  # 将当前的默认 Shell 切换为 zsh
+  chsh -s $(which zsh)
+  
+  # 国内镜像加速命令（国内网络直连极速下载）
+  sh -c "$(curl -fsSL https://gitee.com/pocmon/ohmyzsh/raw/master/tools/install.sh)"
+  
+  # 🤖 自动建议插件（根据历史命令自动变灰提示，按方向键 → 直接补全）
+  git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+  
+  # 🎨 语法高亮插件（命令输入正确变绿，输入错误变红，高亮区分参数）
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+  ```
+
+- 修改配置文件 `.zshrc`：`nvim ~/.zshrc`
+
+  ```
+  ZSH_THEME="agnoster"
+  plugins=(
+      git
+      zsh-autosuggestions
+      zsh-syntax-highlighting
+  )
+  ```
+
+  
+
+  
+
