@@ -1,10 +1,16 @@
+---
+title: Switch
+date: 2022-10-18
+category: entertainment
+---
+
 # Switch
 
 ## 构建整合包
 
 ### 事前准备工作
 
-1. 一张大容量的TF卡，实时证明128G还是有点小，最好256G起步
+1. 一张大容量的TF卡，实际证明128G还是有点小，最好256G起步
 2. 用DiskGenius把TF格式化为FAT32，簇大小默认就好
 3. 需要一点翻墙的手段，毕竟要下载一些东西
 
@@ -51,12 +57,12 @@
 
 1. 下载[固件](https://darthsternie.net/switch-firmwares/)，下载对应的固件并且放入TF卡
 2. 打开相册，打开Daybreak，选择对应的固件文件夹，确定即可
-   - 选择保留设置
-   - 选择格式化为fat32
+  - 选择保留设置
+  - 选择格式化为fat32
 
 ## 精简系统（虚拟系统）
 
-1. 进入hekate选择Payloads，使用`Lockpick_RCM.bin`，选择`Dump from EmuNAND`，注意不要选错选项了，下面的keyset有误一般都是这里选错选项
+1. 进入hekate选择Payloads，使用`Lockpick_RCM.bin`，选择`Dump from EmuNAND`，注意不要选错选项了，下面的keyset有误一般都是这里选错选项。
 2. 拔出TF卡，插入电脑，然后在switch文件夹下复制prod.keys到本地电脑
 3. 下载[NxNandManager](https://github.com/eliboa/NxNandManager)
 4. 选择`File -> Open File`，选择TF卡里面的`/emuMMC/SD0/eMMC`下的00文件
@@ -80,10 +86,10 @@
 - 特斯拉插件相关：
   - 关于Tesla特斯拉插件的使用：同时按L + 左摇杆下 + 右摇杆中间即可唤出
   - sys-clk的使用：可以进行超频使用，推荐修改在底座模式下的参数
-  - fps的查看：[HowToReadFPS](https://gist.github.com/masagrator/65fcbd5ad09243399268d145aaab899b)，由于我们已经包含特斯拉相关的插件，那么直接按照下面的步骤走就行
-    - 下载`SaltyNX`： [SaltyNX](https://github.com/masagrator/SaltyNX/releases)
-    - 下载`Status Monitor Overlay`： [Status-Monitor-Overlay](https://github.com/masagrator/Status-Monitor-Overlay/releases)
-    - 下载`FPSLocker`： [FPSLocker](https://github.com/masagrator/FPSLocker/releases)
+  - FPS的查看：[HowToReadFPS](https://gist.github.com/masagrator/65fcbd5ad09243399268d145aaab899b)，由于我们已经包含特斯拉相关的插件，那么直接按照下面的步骤走就行
+  - 下载`SaltyNX`： [SaltyNX](https://github.com/masagrator/SaltyNX/releases)
+  - 下载`Status Monitor Overlay`： [Status-Monitor-Overlay](https://github.com/masagrator/Status-Monitor-Overlay/releases)
+  - 下载`FPSLocker`： [FPSLocker](https://github.com/masagrator/FPSLocker/releases)
 
 - 游戏渠道：建议不要去破解游戏论坛里面下载，里面的好多需要回帖付费，直接去淘宝花10块钱买个百度网盘内容分享地址，全游戏下载美滋滋
 
@@ -95,5 +101,5 @@
 - [NxNandManager](https://github.com/eliboa/NxNandManager)，可以修改对应的分区大小
 - [Switch_90DNS_tester](https://github.com/meganukebmp/Switch_90DNS_tester)，判断当前系统是否有block任天堂的地址
 - [Tinfoil](https://tinfoil.io/Download)，从多个渠道安装游戏
-- [N中文数据整理](https://shimo.im/sheets/m5kv9zpQ6Dha82qX/MODOC)，直接使用文档下载游戏（需要配合百度网盘）
+- [NSP中文数据整理](https://shimo.im/sheets/m5kv9zpQ6Dha82qX/MODOC)，直接使用文档下载游戏（需要配合百度网盘）
 - 一些教程：<https://www.marsshen.com/posts/20e16ead/>

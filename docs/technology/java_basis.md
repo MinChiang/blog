@@ -403,7 +403,7 @@ public class Thread implements Runnable {
 
 RUNNABLE是指**等待运行和运行中**的集合状态：在Thread.start()执行后，线程就可以被CPU接纳执行；
 
-WAITING指无时限的等待，TIMED_WAITING指无时限的等待；
+WAITING指无时限的等待，TIMED_WAITING指有时限的等待；
 
 yield()操作指CPU**放弃对当前线程**的执行权，重新让线程进行资源争夺；
 
@@ -617,9 +617,9 @@ CycleBarrier
 ## 线程的中断
 
 - interrupt()：通过运行的线程实例，**给线程发送中段信号，仅仅设置线程的中断标志位，并没有额外的其余操作**，至于**如何处理中段响应**需要看**被中断的线程**的实际处理逻辑
-  
+
   - 如果线程是正常运行中，且没有判断中段状态，那么线程就会一直执行
-  
+
   ```java
   /**
    * 线程执行3秒后并没有停止运行
@@ -630,14 +630,14 @@ CycleBarrier
               System.out.println("我还在运行中");
           }
       });
-  
+
       thread.start();
-  
+
       Thread.sleep(3000L);
       thread.interrupt();
   }
   ```
-  
+
   ```
   我还在运行中
   我还在运行中
@@ -648,9 +648,9 @@ CycleBarrier
   我还在运行中
   我还在运行中
   ```
-  
+
   - 如果线程被阻塞，那么线程会被抛出InterruptedException中段异常
-  
+
   ```java
   /**
    * 响应InterruptedException中段异常
@@ -667,22 +667,22 @@ CycleBarrier
               }
           }
       });
-  
+
       thread.start();
-  
+
       Thread.sleep(3000L);
       thread.interrupt();
   }
   ```
-  
+
   ```
   我还在运行中
   我还在运行中
   我被中断了
   ```
-  
+
   - 如果线程是正常运行中，可以通过isInterrupted()判断自身的中段标记位
-  
+
   ```java
   /**
    * 响应中段标记位，不清除中断标记位
@@ -699,14 +699,14 @@ CycleBarrier
           }
           System.out.println("当前线程中断标志位：" + Thread.currentThread().isInterrupted());
       });
-  
+
       thread.start();
-  
+
       Thread.sleep(3000L);
       thread.interrupt();
   }
   ```
-  
+
   ```
   我还在运行中：777445
   我还在运行中：777446
@@ -1337,21 +1337,21 @@ AbstractQueuedSynchronizer数据结构：
 - addWaiter先执行了快速入队处理，其实就是简单判断一下是否存在队尾节点，如果存在则进行快速入队
 
 - enq中，这个方法是做了完整的入队流程，其实按照本质上来说流程和上述的快速入队差不多
-  
+
   - 首先for循环保证了里面的入队逻辑是必须执行成功的
-  
+
   - 如果等待队列是空的，那么就要创建一个虚拟节点作为队头，注意不是把当前节点作为队头，而是新建的虚拟节点是队头；新建对头后，由于还在for循环中，那么会再次执行完整的逻辑入队处理
-  
+
   - 如果存在了等待队列，则执行以下三个动作，注意这三个动作**不是原子性**的
 
-    - 先把当前节点的前驱节点指向之前的队尾
-    - 进行CAS操作，把当前节点设置为队尾
-    - 把之前队尾的next节点指向当前节点
+  - 先把当前节点的前驱节点指向之前的队尾
+  - 进行CAS操作，把当前节点设置为队尾
+  - 把之前队尾的next节点指向当前节点
 
     由于这3条执行指令的顺序性，那么能够说明下面两个重要点：
 
-    - 在执行compareAndSetTail成功后，**一定能够保证当前节点的前驱指针已经指向原来的队尾节点**
-    - 在compareAndSetTail成功后，t.next = node执行前，可能存在一种中间状态：tail指针已经指向当前的节点，但是原来的队尾节点的next指针还未指向当前的节点
+  - 在执行compareAndSetTail成功后，**一定能够保证当前节点的前驱指针已经指向原来的队尾节点**
+  - 在compareAndSetTail成功后，t.next = node执行前，可能存在一种中间状态：tail指针已经指向当前的节点，但是原来的队尾节点的next指针还未指向当前的节点
 
     因此，如果需要**遍历**这个虚拟队列，最好从后往前遍历，因为队列中的prev指针是可靠的，而next指针是不可靠的
 
@@ -1467,12 +1467,12 @@ AbstractQueuedSynchronizer数据结构：
 
 - acquireQueued：进入同步等待队列，其中主要逻辑主体为一个大自旋操作，自选逻辑为：
   - 判断当前节点的前驱节点是否为头节点，如果是，则尝试获取执行权，如果成功，则把队列头节点改为本节点，否则执行shouldParkAfterFailedAcquire
-    - 为什么还需要执行tryAcquire方法获取执行权呢？
-    - 是因为第一个进入的线程，是不用进入等待队列的，此时有可能出现一种情况，即第一个线程已经释放了资源，但是判断队尾没有等待队列，因此不做唤醒处理；后面又进来一个需要执行的线程，如果此时没有再进行tryAcquire，那么这个新线程是没办法执行的
+  - 为什么还需要执行tryAcquire方法获取执行权呢？
+  - 是因为第一个进入的线程，是不用进入等待队列的，此时有可能出现一种情况，即第一个线程已经释放了资源，但是判断队尾没有等待队列，因此不做唤醒处理；后面又进来一个需要执行的线程，如果此时没有再进行tryAcquire，那么这个新线程是没办法执行的
   - shouldParkAfterFailedAcquire做了一些判断修改的动作，保证在挂起前前驱节点处于SIGNAL状态
   - parkAndCheckInterrupt，把当前的线程直接挂起，LockSupport.park(this)是线程运行状态->等待状态的转换点；当线程被unpark时，出口执行的第一个代码行为Thread.interrupted()
-    - 在执行park的时候，是不会抛出中断异常的，但是会响应中断标志位
-    - 在被unpark后，做的第一个事情是Thread.interrupted()，查询并清除对应的中断标记位
+  - 在执行park的时候，是不会抛出中断异常的，但是会响应中断标志位
+  - 在被unpark后，做的第一个事情是Thread.interrupted()，查询并清除对应的中断标记位
 
 ### 释放执行权代码块
 
@@ -1582,29 +1582,29 @@ CAS操作时，需要判断V位置的值与预期值A是否相等，如果不相
 ### 锁优化
 
 - 自旋锁与自适应自旋：
-  
+
   自旋锁：在JDK1.4时候引入，默认为关闭状态，JDK1.6时候默认开启。在获取锁的时候自旋，**避免了线程切换之间的开销**。缺点是如果锁被占用的时间很长，锁的自旋会白白**浪费处理器资源**。因此自旋锁有**自旋次数的限制**，默认为10次。
-  
+
   自适应自旋：自旋的**次数和时间不再固定**，由前一次在同一个锁上的自旋时间以及锁的拥有者状态决定。如果在同一个对象，自旋等待刚刚成功获得过锁，虚拟机认为本次自旋很有可能再次成功，允许自旋等待更长时间。如果自旋很少成功获得，以后则可能减少自旋时间或者略过自旋。
 
 - 锁消除：
-  
+
   对一些代码上要求同步，但被检测到**不可能存在共享数据竞争**的锁进行消除。
 
 - 锁粗化：
-  
+
   对同一个对象反复加锁，甚至加锁操作在循环体中出现，会**频繁互斥同步导致性能损耗**。因此可以使锁的范围粗化，减少反复加锁的次数。
 
 - 重量级锁和轻量级锁：
-  
+
   重量级锁：指的是传统意义上执行synchronized**同步代码块**时，加入字节码monitorenter和monitorexit指令来实现monitor的获取和释放，就是需要JVM通过字节码显式地去获取和释放monitor实现同步；使用synchronized**同步方法**时候，检查方法的ACC_SYNCHRONIZED标志是否被设置，如果设置了线程需要先去获取monitor。
-  
+
   ![重量级锁synchronized加锁流程](../images/重量级锁synchronized加锁流程.png)
-  
+
   轻量级锁：为了在没有多线程竞争的前提下，**减少传统重量级锁使用操作系统互斥量产生的性能消耗**。在进入同步块时，虚拟机首先在当前线程栈帧中建立一个Lock Record空间，用于存储锁对象目前的Mark Word拷贝（官方把这份拷贝加了一个Displaced前缀，即Displaced Mark Word），并尝试使用CAS操作将锁对象的Mark Word更新为指向Lock Record的指针。如果更新成功，则当前线程拥有了对象的锁，并且将对象Mark Word的锁标志位改为00（轻量级锁）状态。如果更新失败了，检查锁对象Mark Word是否指向当前线程的栈帧，若是则说明已经拥有锁，同步代码块继续执行，若否则说明被抢占了。如果有两条以上的线程争用同一个锁，轻量级锁久不再有效，**膨胀为重量级锁**。
 
 - 偏向锁：
-  
+
   ![对象头MarkWord简述](../images/对象头MarkWord简述.png)
 
 总结：
@@ -1647,7 +1647,7 @@ public class Thread implements Runnable {
 ```
 
 ```java
-public class ThreadLocal<T> { 
+public class ThreadLocal<T> {
 
     static class ThreadLocalMap {
 
@@ -2027,9 +2027,9 @@ ArrayList、LinkedList、Vector、CopyOnWriteArrayList区别以及关系：
 | E pollFirst();           | 否   | 取出队列中的头元素，如果队列为空则返回null                   |
 | E removeLast();          | 是   | 取出队列中的尾元素，如果队列为空则抛出NoSuchElementException |
 | E pollLast();            | 否   | 取出队列中的尾元素，如果队列为空则返回null                   |
-| E elementFirst();        | 是   | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
+| E getFirst();        | 是   | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
 | E peekFirst();           | 否   | 获取队列中的头元素，如果队列为空则返回null                   |
-| E elementLast();         | 是   | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
+| E getLast();         | 是   | 获取队列中的头元素，如果队列为空则抛出NoSuchElementException |
 | E peekLast();            | 否   | 获取队列中的头元素，如果队列为空则返回null                   |
 
 ## SPI

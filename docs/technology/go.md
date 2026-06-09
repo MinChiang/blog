@@ -1,3 +1,9 @@
+---
+title: GO
+date: 2022-11-21
+category: technology
+---
+
 # GO
 
 ## Go包发布流程

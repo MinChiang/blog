@@ -9,9 +9,9 @@
   - 安装Plugins manager：[下载地址](https://jmeter-plugins.org/install/Install/)
   - 把plugins-manager.jar放在Jmeter目录的lib/ext文件夹中
   - 再次启动Jmeter，发现在选项中多了Plugins manager选项，打开并安装下列的插件
-    - 3 Basic Graphs
-    - PerfMon Metrics Collector
-    - jpgc - Standard Set
+  - 3 Basic Graphs
+  - PerfMon Metrics Collector
+  - jpgc - Standard Set
   - 安装完成后记得重启Jmeter
 - 可以参考更加完善的文章：[Jmeter 学习路线 - 小菠萝测试笔记 - 博客园](https://www.cnblogs.com/poloyy/p/15257716.html)
 - 下载[linux的各个指标监控工具nmon](https://nmon.sourceforge.io/pmwiki.php)
@@ -27,8 +27,8 @@
   - 响应时间（RT：Response Time）
   - 每一个请求的平均响应时间（ART：Average Transaction Reponse Time）
   - 吞吐量
-    - QPS
-    - TPS
+  - QPS
+  - TPS
   - 并发用户数
   - 错误率
 

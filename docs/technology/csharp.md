@@ -1,3 +1,9 @@
+---
+title: "C#"
+date: 2024-04-15
+category: technology
+---
+
 # C\#
 
 ## .NET Standard、.NET以及.NET Framework的区别

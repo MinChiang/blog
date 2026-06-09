@@ -1,3 +1,9 @@
+---
+title: 基础配置
+date: 2024-04-15
+category: technology
+---
+
 ## 基础配置
 
 ### Npm配置
@@ -41,13 +47,13 @@
   ```powershell
   PS E:\workspace\blog> npm config list
   ; "user" config from C:\Users\MinChiang\.npmrc
-  
+
   cache = "E:\\Tools\\Nodejs\\node_cache"
   home = "https://npmmirror.com"
   prefix = "E:\\Tools\\Nodejs\\node_global"
   registry = "https://registry.npmmirror.com/"
   ```
-  
+
 ### Yarn配置
 
 - 安装yarn

@@ -1,3 +1,9 @@
+---
+title: Python
+date: 2022-08-01
+category: technology
+---
+
 # Python
 
 ## 安装与环境搭建
@@ -15,7 +21,7 @@
 
 - venv虚拟环境
   - 安装venv虚拟环境
-  
+
     ```bash
     python3 -m venv venv
     ```
@@ -28,7 +34,7 @@
     ```
 
   - 退出虚拟环境
-  
+
     ```bash
     cd .\venv\Scripts
     deactivate

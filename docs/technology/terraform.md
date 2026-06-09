@@ -1,3 +1,9 @@
+---
+title: Terraform开发
+date: 2024-04-15
+category: technology
+---
+
 # Terraform开发
 
 ## terraform的功能概要
@@ -28,7 +34,7 @@
       }
     }
   }
-  
+
   ```
 
 ![terraform原理-terraform功能介绍](../images/terraform原理-terraform功能介绍.jpg)
@@ -47,7 +53,7 @@
 │  LICENSE
 │  main.go                              # 程序入口
 │  README.md                            # 对内开发者文档手册
-│  terraform-registry-manifest.json      
+│  terraform-registry-manifest.json
 ├─assets                                # 文档的图片与归档记录
 ├─bin
 │  ├─darwin_amd64
@@ -55,10 +61,10 @@
 │  ├─linux_amd64
 │  ├─linux_arm64
 │  ├─windows_amd64
-│  └─windows_arm64  
-├─docs         
+│  └─windows_arm64
+├─docs
 ├─examples                              # terraform的配置文件样例
-│  ├─data-sources            
+│  ├─data-sources
 │  ├─provider
 │  └─resources
 ├─generate-doc                          # 对外的文档
@@ -91,7 +97,7 @@
      API server listening at: 127.0.0.1:10369
      {"@level":"debug","@message":"plugin address","@timestamp":"2024-01-30T17:45:23.088557+08:00","address":"127.0.0.1:10372","network":"tcp"}
      Provider started. To attach Terraform CLI, set the TF_REATTACH_PROVIDERS environment variable with the following:
-     
+
              Command Prompt: set "TF_REATTACH_PROVIDERS={"www.xxxxx.cn/xxxxx/xxxxx":{"Protocol":"grpc","ProtocolVersion":6,"Pid":25500,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:10372"}}}"
              PowerShell:     $env:TF_REATTACH_PROVIDERS='{"www.xxxxx.cn/xxxxx/xxxxx":{"Protocol":"grpc","ProtocolVersion":6,"Pid":25500,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:10372"}}}'
      ```
@@ -125,13 +131,13 @@
 
 - 在此目录创建**terraform.rc**文件
 
-  ```rc
+  ```hcl
   provider_installation {
-  
+
     dev_overrides {
         "www.xxxxx.cn/xxxxx/xxxxx"="D:/Go/gobin/"    # 本地调试的目录地址，这里设置为GOBIN目录
     }
-  
+
     # For all other providers, install them directly from their origin provider
     # registries as normal. If you omit this, Terraform will _only_ use
     # the dev_overrides block, and so no other providers will be available.
@@ -253,7 +259,7 @@
   gpg (GnuPG) 2.4.5; Copyright (C) 2024 g10 Code GmbH
   This is free software: you are free to change and redistribute it.
   There is NO WARRANTY, to the extent permitted by law.
-  
+
   Please select what kind of key you want:
      (1) RSA and RSA
      (2) DSA and Elgamal
@@ -277,15 +283,15 @@
   Key is valid for? (0) 0
   Key does not expire at all
   Is this correct? (y/N) y
-  
+
   GnuPG needs to construct a user ID to identify your key.
-  
+
   Real name: MinChiang
   Email address: 448725235@qq.com
   Comment: Personal
   You selected this USER-ID:
       "MinChiang (Personal) <448725235@qq.com>"
-  
+
   Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
   We need to generate a lot of random bytes. It is a good idea to perform
   some other action (type on the keyboard, move the mouse, utilize the
@@ -297,7 +303,7 @@
   generator a better chance to gain enough entropy.
   gpg: revocation certificate stored as 'C:\\Users\\44872\\AppData\\Roaming\\gnupg\\openpgp-revocs.d\\A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C.rev'
   public and secret key created and signed.
-  
+
   pub   ed25519 2024-05-17 [SC]
         A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C
   uid                      MinChiang (Personal) <448725235@qq.com>
@@ -321,7 +327,7 @@
   ```powershell
   PS C:\Users\44872> gpg --export --armor A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C
   -----BEGIN PGP PUBLIC KEY BLOCK-----
-  
+
   mDMEZkavIxYJKwYBBAHaRw8BAQdAHEVsMOIO/yUi9AKMPA36cTZ/qSVv5dWwKTiH
   TWC6/eq0J01pbkNoaWFuZyAoUGVyc29uYWwpIDw0NDg3MjUyMzVAcXEuY29tPoiT
   BBMWCgA7FiEEoRt7GhFTygG+z4LkbZOu+QALz3wFAmZGryMCGwMFCwkIBwICIgIG
@@ -340,7 +346,7 @@
   ```powershell
   PS C:\Users\44872> gpg --export-secret-keys --armor A11B7B1A1153CA01BECF82E46D93AEF9000BCF7C
   -----BEGIN PGP PRIVATE KEY BLOCK-----
-  
+
   {敏感的密钥内容}
   -----END PGP PRIVATE KEY BLOCK-----
   ```

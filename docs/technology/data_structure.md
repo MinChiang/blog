@@ -149,7 +149,7 @@ public class BinaryTree {
         if (leftEmpty && rightEmpty) {
             pre.left = null;
             pre.right = null;
-        } else if (!leftEmpty && !leftEmpty) {
+        } else if (!leftEmpty && !rightEmpty) {
             if (now.val < pre.val) {
                 pre.left = now.right;
             } else {

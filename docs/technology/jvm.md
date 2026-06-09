@@ -46,10 +46,10 @@ JMM是什么：
 - 线程私有：
   - 程序计数器：任何一个时刻，一个处理器内核只会执行一条指令，为了满足多线程之间的切换，通过程序计数器记录正在执行的虚拟机**字节码指令地址**，**是JVM规范中唯一一个位置不会出现OOM**；
   - 虚拟机栈：描述Java方法执行的内存区域，每个方法从开始调用到结束调用就是栈帧从入栈到出栈的结果；**栈帧**：用于存储局部变量、操作栈、动态链接和方法返回地址等信息：
-    - 局部变量表：存放方法参数和方法内部定义的**局部变量**，在编译期确定，在运行期间**不会**改变大小；
-    - 操作栈：各种指令的写入和提取，JVM执行引擎是基于操作栈的执行引擎；
-    - 动态连接：class文件中存在的符号引用，在类的**加载阶段**或第一次使用的时候转化为了直接应用，叫**静态连接**。在**运行期间**转化为直接引用，叫**动态连接**；
-    - 方法返回地址：方法执行后返回的地址；
+  - 局部变量表：存放方法参数和方法内部定义的**局部变量**，在编译期确定，在运行期间**不会**改变大小；
+  - 操作栈：各种指令的写入和提取，JVM执行引擎是基于操作栈的执行引擎；
+  - 动态连接：class文件中存在的符号引用，在类的**加载阶段**或第一次使用的时候转化为了直接应用，叫**静态连接**。在**运行期间**转化为直接引用，叫**动态连接**；
+  - 方法返回地址：方法执行后返回的地址；
   - 本地方法栈：调用本地native的方法服务，通过JNI来调用非Java的代码，需要其他语言实现；
 - 线程共享：
   - 堆：存放对象实例，可以细分为新生代和老年代（TLAB空间也在此）；
@@ -150,47 +150,47 @@ JMM是什么：
 #### 具体实现分类
 
 - 内核线程模型
-  
+
   - 特点：
 
-    - JVM的线程UT本质上是LWP的一个实例对象，也就是jvm的线程是轻量级线程的一个具体映射，LWP映射为KLT，在内核中执行
+  - JVM的线程UT本质上是LWP的一个实例对象，也就是jvm的线程是轻量级线程的一个具体映射，LWP映射为KLT，在内核中执行
 
-    - UT和LWP是**一对一**的
+  - UT和LWP是**一对一**的
 
-    - 是目前主流语言的线程模型，目前高版本的JVM都是用这种模型
-  
+  - 是目前主流语言的线程模型，目前高版本的JVM都是用这种模型
+
   - 优点：
 
-    - UT阻塞了不影响其他内核KLT的执行，因为有Thread Scheduler进行切换协调
-  
+  - UT阻塞了不影响其他内核KLT的执行，因为有Thread Scheduler进行切换协调
+
   - 缺点：
 
-    - 操作线程需要在**用户态**和**内核态**中来回切换，因为本质上都要反映到KTL中，消耗一定的资源
+  - 操作线程需要在**用户态**和**内核态**中来回切换，因为本质上都要反映到KTL中，消耗一定的资源
 
-    - 受到Linux内核创建的资源限制
+  - 受到Linux内核创建的资源限制
 
 ![内核调度线程模型](../images/内核调度线程模型.jpg)
 
 - 用户线程模型
   - 特点：
-    - 跨过系统的调度，UT直接调用CPU的资源
-    - JVM的早期版本使用这种模型，后面被抛弃了
+  - 跨过系统的调度，UT直接调用CPU的资源
+  - JVM的早期版本使用这种模型，后面被抛弃了
   - 优点：
-    - 提高并发上限，调度都由用户线程自主完成，减少上下文切换开销
+  - 提高并发上限，调度都由用户线程自主完成，减少上下文切换开销
   - 缺点：
-    - 一个UT阻塞了，系统的其他资源无法利用CPU的资源
+  - 一个UT阻塞了，系统的其他资源无法利用CPU的资源
 
 ![用户线程模型](../images/用户线程模型.jpg)
 
 - 混合线程模型
   - 特点：
-    - UT和LWP不再是一对一
-    - GO语言的实现方式
+  - UT和LWP不再是一对一
+  - GO语言的实现方式
   - 优点：
-    - 操作线程不用在内核中来回切换，减少开销
-    - 提高了并发的上限
+  - 操作线程不用在内核中来回切换，减少开销
+  - 提高了并发的上限
   - 缺点：
-    - 实现很复杂
+  - 实现很复杂
 
 ![用户线程模型](../images/混合线程模型.jpg)
 
@@ -270,20 +270,20 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 - **类加载检查**：定位检查指令参数是否能在常量池定位到类符号的引用，检查判断类是否被加载过、解析和初始化过；
 
 - **分配内存**：根据Java堆**是否规整**决定分配方式，分配方式包含两种：
-  
+
   - 指针碰撞：**内存需要绝对规整**，挪动开辟对象所需的区域大小即可；
   - 空闲列表：记录哪部分区域是空闲的。
-  
+
   而Java堆是否规整又由采用的**垃圾收集器是否带压缩整理功能**决定的，并发内存分配为以下规则：
-  
+
   - TLAB：在线程初始化时默认分配空间，JVM在线程中分配内存时先在TLAB（TLAB区域也是在堆上，但**线程专属**）分配，不存在线程的竞争。当分配对象大于TLAB剩余内存时，采用CAS+失败重试的方法创建；
   - CAS+失败重试：虚拟机采用CAS配上失败重试的方式保证更新操作的原子性，该方法是指在传统的堆上进行对象的创建，会导致激烈的竞争；
-  
+
   额外：
-  
+
   - 栈上分配，如果一个对象的作用域不会逃逸到方法之外，那这个对象可以分配到栈上，随着栈帧出栈而销毁；而且不会逃逸的对象所占比例很大，销毁时无需通过垃圾收集器回收，可以减小垃圾收集器的压力负载。如果JVM需要进行类似栈上分配的好处，则需要开启以下两个功能操作：
-    - 逃逸分析：在server模式下，启用-XX:+DoEscapeAnalysis，默认开启；
-    - 变量替换：启用-XX:+EliminateAllocations，默认打开；
+  - 逃逸分析：在server模式下，启用-XX:+DoEscapeAnalysis，默认开启；
+  - 变量替换：启用-XX:+EliminateAllocations，默认打开；
 
 - **初始化零值**：将分配到内存空间都初始化为零值，保证对象实例字段在Java代码中不赋初始值就可以直接使用；
 
@@ -296,11 +296,11 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 ### 对象内存布局
 
 - 对象头：
-  
+
   - Mark Word（运行时数据）：如哈希码，GC分代年龄，锁状态标志位；
-  
+
   ![对象头MarkWord简述](../images/对象头MarkWord简述.png)
-  
+
   - 类型指针（元数据指针）：指向类元素据的指针，确定对象是哪个类的实例；
 
 - 实例数据：真正存储对象有效信息的部分；
@@ -638,7 +638,7 @@ public static void main(String[] args) throws InterruptedException {
 ### 使用Jvisualvm查看JVM状态
 
 - 推荐安装插件：
-  
+
   - Visual GC
   - VisualVM-JConsole
   - VisualVM-MBeans
@@ -646,21 +646,21 @@ public static void main(String[] args) throws InterruptedException {
   - Threads Inspector
 
 - 在程序启动时增加几个命令参数以启动JMX链接，此时可以通过Jvisualvm的JMX方式连接
-  
+
   - -Dcom.sun.management.jmxremote.authenticate=false
   - -Dcom.sun.management.jmxremote.ssl=false
   - -Dcom.sun.management.jmxremote.port=12345
 
 - 若想通过Visual GC监测GC的情况，可以通过在程序中启动Jstatd进行监控，方法是：
-  
+
   - 在java_home的bin目录下创建jstatd.all.policy文件，其中/usr/local/java/lib/tools.jar可以按照需求替换为${JAVA_HOME}/lib/tools.jar，前提是已经设置过JAVA_HOME环境变量
-  
+
   ```txt
   grant codebase "file:/usr/local/java/lib/tools.jar" {
      permission java.security.AllPermission;
   };
   ```
-  
+
   - 通过命令启动./jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostname=xxx.xxx.xxx.xxx -p xxxx -J-Djava.rmi.server.logCalls=true
 
 ## 亲自遇到的问题

@@ -1,0 +1,38 @@
+:root {
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #bd34fe 30%, #41d1ff);
+}
+
+.VPHero .container {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.VPFeatures {
+  display: flex;
+  justify-content: center;
+}
+
+.VPFeatures .container {
+  margin: 0 auto;
+}
+
+.VPFeatures .items {
+  justify-content: center;
+}
+
+.record-number {
+  padding: 2.5rem;
+  border-top: 1px solid var(--vp-c-divider);
+  text-align: center;
+  color: var(--vp-c-text-2);
+}
+
+.record-number a {
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+}
+
+.record-number a:hover {
+  color: var(--vp-c-brand);
+}

@@ -1,3 +1,9 @@
+---
+title: AI
+date: 2026-04-23
+category: technology
+---
+
 # AI
 
 ## 文章引用：
@@ -8,7 +14,7 @@
 
 ## AI使用教程
 
-### Rules（规则）：项目宪法 
+### Rules（规则）：项目宪法
 
 **最佳实践：** 采用“身份 + 约束 + 禁令”结构。直接放在根目录的 `.cursorrules` 或 `.windsurfrules` 中。
 

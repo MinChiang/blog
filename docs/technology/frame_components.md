@@ -1,3 +1,9 @@
+---
+title: 基础组件
+date: 2020-06-11
+category: technology
+---
+
 # 基础组件
 
 ## Spring
@@ -222,9 +228,9 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 ### Spring Cloud组件
 
 - eureka和consul：注册中心；
-  
+
   功能对比与组件选型：
-  
+
   - eureka：已经闭源，基于AP，没有对应的配置中心，没有主从节点，一个节点挂了自动切换到其他节点使用，去中心化；
   - consul：保证一致性，基于CP，需要进行集群搭建，某个节点失效首先需要选择新的leader，半数以上的节点不可用，则服务继续提供正常服务。
 
@@ -322,7 +328,7 @@ public ModelAndView handle(HttpServletRequest request, HttpServletResponse respo
 ### 持久化
 
 - RDB：生成数据库的快照，相当于直接dump出数据文件。分为手动触发和自动触发（设定x秒内存在y次数据变更时自动触发）
-  
+
   - 优点：加载恢复时很快；
   - 缺点：不能做到命令级别或者秒级的。
 
@@ -630,15 +636,15 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 事务编号Zxid：共64位，低32位是单调递增的计数器，针对客户端每一个事务请求，计数器加1；高32位代表leader周期epoch的编号，每个当选的leader会从所有节点本地日志中选出最大的zxid，并读取其epoch值，然后加1，以此作为新的epoch，并将低32位从0开始计数。zxid是保持**单调递增**的。
 
 - 恢复模式：机器启动、leader崩溃、leader失去大部分follower支持都会进入该阶段
-  
+
   - Leader election（选举阶段）：***选出准leader***，集群节点处于looing状态，带上自己**服务器id和本地最新的zxid**，与其他节点进行通讯投票，当收到请求后，节点会用自身的zxid和其他节点的zxid做比较，如果发现其他节点的zxid比自己大（说明数据比自己新），那么重新发起投票，投票给目前**已知最大的zxid**所属节点。当一个节点得到超过半数节点的票数，那么可以当选**准leader**；
   - Discovery（发现阶段）：***接受提议、生成epoch、接受epoch***，follower和准leader进行通讯，准leader同步各个follower最新接收到的事务提议。在所有follower各自发来的**最新epoch值**中选出最大的epoch值加1，并以这个值作为最新的epoch，通知给所有follower；
   - Synchronization（同步阶段）：***同步follower副本***，利用上一个阶段获得的最新历史提议，同步到集群中的所有副本。只有大多数节点同步完成，准leader才会成为真诚的leader，**follower只会接受zxid比自己的最大zxid还大的提议**，此时leader的状态改为leading，follower的状态改为following。
 
 - 广播模式：zookeeper集群对外正式开始提供服务，并且leader可以进行消息广播，如果有新的节点计入，还需要对新节点进行同步。
-  
+
   ![zookeeper广播实例图](../images/zookeeper广播实例图.jpg)
-  
+
   1. 客户端发送写入请求到任意的follower；
   2. server把写入数据请求转发给leader；
   3. leader采用二段提交方式，发送propose广播给follower；
@@ -688,7 +694,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 ```java
 @Public
 public interface SourceFunction<T> extends Function, Serializable {
-    
+
     void run(SourceContext<T> ctx) throws Exception;
 
     void cancel();

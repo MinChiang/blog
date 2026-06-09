@@ -64,28 +64,28 @@ acme.sh --install-cert -d '*.minchiang.top' \
 ### 后续维护
 
 - 安装自动续约脚本任务
-  
-  ```bash
+
+```bash
   acme.sh --install-cronjob
-  ```
+```
 
 - 强制续约：
-  
-  ```bash
+
+```bash
   acme.sh --renew -d *.minchiang.top --force
-  ```
+```
 
 - 查看证书列表：
-  
-  ```bash
-  acme.sh --list 
-  ```
+
+```bash
+  acme.sh --list
+```
 
 - 查看是否已经注册到crontab中
-  
-  ```bash
+
+```bash
   crontab -l
-  ```
+```
 
 ## Cloudflare
 
@@ -118,33 +118,33 @@ acme.sh --install-cert -d '*.minchiang.top' \
 
 - 安装httpd以及fcgiwrap包
 
-  ```shell
+```shell
   apt install apache2-utils fcgiwrap
-  ```
+```
 
 - 创建htpasswd用户配置文件，并且添加用户
 
-  ```shell
+```shell
   touch /etc/nginx/.htpasswd
   htpasswd /etc/nginx/.htpasswd <你的用户名>
-  ```
+```
 
 - 在/etc/nginx/conf.d/git.conf中添加下面内容
 
-  ```shell
+```shell
   server {
       listen                      443 ssl;
       server_name                 git.minchiang.top;
-  
+
       ssl_certificate             /etc/nginx/ssl/cert.pem;
       ssl_certificate_key         /etc/nginx/ssl/key.pem;
-  
+
       ssl_session_cache           shared:SSL:1m;
       ssl_session_timeout         5m;
       ssl_ciphers                 ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
       ssl_protocols               TLSv1.2 TLSv1.3;
       ssl_prefer_server_ciphers   on;
-  
+
       location ~ (/.*) {
           # 使用 Basic 认证
           auth_basic "请输入git认证";
@@ -165,13 +165,13 @@ acme.sh --install-cert -d '*.minchiang.top' \
           # max_client_body_size 100M;
       }
   }
-  
+
   server {
       listen                      80;
       server_name                 git.minchiang.top;
       return 301                  https://$host$request_uri;
   }
-  ```
+```
 
 - 完成后可以通过`git clone https://git.minchiang.top/company.git`来拉取仓库，用户名和密码都是刚刚在/etc/nginx/.htpasswd添加的内容
 
@@ -182,55 +182,55 @@ acme.sh --install-cert -d '*.minchiang.top' \
 - Git快速配置
   - 配置用户名和明码
 
-    ```powershell
+```powershell
     git config –-global user.name 'xxxxx'
     git config –-global user.email 'xxx@xx.xxx'
-    ```
+```
 
   - 生成密钥，并上传到你的github的[ssh key中](https://github.com/settings/keys)
 
-    ```powershell
+```powershell
     ssh-keygen -t rsa -C 'xxx@xx.xxx'
-    ```
+```
 
   - 改变ssh通道的代理设置，修改配置文件：`C:\Users\你的用户\.ssh\config`
 
-    ```powershell
+```powershell
     Host *
         HostKeyAlgorithms +ssh-rsa
         PubkeyAcceptedKeyTypes +ssh-rsa
-    
+
     Host github.com
-        User git          # ssh用户名 
+        User git          # ssh用户名
         Hostname ssh.github.com       # 这里是把github.com域名映射为ssh.github.com
         PreferredAuthentications publickey    # 使用公钥私钥认证
         IdentityFile ~/.ssh/id_rsa      # 私钥位置
         Port 443          # 把原生的22端口映射为443端口
         ProxyCommand connect -S 127.0.0.1:10808 %h %p # 本地代理，-S表示走socks5协议，如果使用http协议则使用-H,
         # ProxyCommand connect -H 127.0.0.1:10809 %h %p # 这里使用的是http协议代理，与上面2选1
-    ```
+```
 
   - 设置http协议的代理，在命令行中输入
 
-    ```powershell
+```powershell
     # 使用socks5代理
     git config --global http.https://github.com.proxy socks5://127.0.0.1:10808
     # 使用http代理
     git config --global http.https://github.com.proxy http://127.0.0.1:10809
-    ```
+```
 
   - 设置使用Bcompare作为diff和merge的工具
 
-    ```powershell
+```powershell
     git config --global diff.tool bc
     git config --global mergetool.bc.path '"D:/BCompare/BCompare.exe" "$LOCAL" "$REMOTE"'
     git config --global difftool.prompt false
-    
+
     git config --global merge.tool bc
     git config --global mergetool.bc.path '"D:/BCompare/BCompare.exe" "$LOCAL" "$REMOTE" "$BASE" "$MERGED"'
     git config --global mergetool.prompt false
     git config --global mergetool.bc.trustexitcode true
-    ```
+```
 
 - 版本库初始化：git init
 - 加入到暂存区： git add
@@ -264,7 +264,7 @@ acme.sh --install-cert -d '*.minchiang.top' \
   - 有回滚项目文件的功能，把文件快速回滚到之前的状态：-- fileName
 - 合并分支：git merge
   - 先在checkout被merge的分支，再执行merge命令，把需要的分支合并到当前分支
-- 摘取单个提交：git check-pick
+- 摘取单个提交：git cherry-pick
 - 贮存现场：git stash
   - 列出贮存列表：list
   - 恢复贮存现场（不删除贮存内容）：apply
@@ -306,106 +306,106 @@ acme.sh --install-cert -d '*.minchiang.top' \
 settings -> Editor -> Color Schema -> File and Code Templates
 
 - Enum模板
-  
-  ```java
-  #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
-  
-  import java.util.Arrays;  
-  import java.util.Collections;  
-  import java.util.Map;  
-  import java.util.function.Function;  
-  import java.util.stream.Collectors;  
-  
-  #parse("File Header.java")  
+
+```java
+  #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+
+  import java.util.Arrays;
+  import java.util.Collections;
+  import java.util.Map;
+  import java.util.function.Function;
+  import java.util.stream.Collectors;
+
+  #parse("File Header.java")
   public enum ${NAME} {
-      /**  
-      * 未知  
-      */  
+      /**
+      * 未知
+      */
       UNKNOWN(0),
-  
+
       ;
-  
+
       private static final Map<Integer, ${NAME}> ALL = Collections.unmodifiableMap(Arrays.stream(${NAME}.class.getEnumConstants()).collect(Collectors.toMap(value -> value.id, Function.identity())));
-  
-      /**  
-      * 转换  
-      *  
-      * @param id id  
-      * @return 对应类别  
-      */  
+
+      /**
+      * 转换
+      *
+      * @param id id
+      * @return 对应类别
+      */
       public static ${NAME} from(int id) {
           return ALL.get(id);
-      }  
-  
-      /**  
-      * 唯一标志  
-      */  
-      public final int id;  
-  
+      }
+
+      /**
+      * 唯一标志
+      */
+      public final int id;
+
       ${NAME}(int id) {
-          this.id = id;  
+          this.id = id;
       }
   }
-  ```
+```
 
 - Factory模板
 
-  ```txt
-  #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
-  
-  #parse("File Header.java")  
-  public class ${NAME}Factory {  
-  
+```txt
+  #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+
+  #parse("File Header.java")
+  public class ${NAME}Factory {
+
       public ${NAME}Factory() {
       }
-  
-      /**  
-      * 创建牌组合  
-      *  
-      * @return 工厂创建对象  
-      */  
+
+      /**
+      * 创建牌组合
+      *
+      * @return 工厂创建对象
+      */
       public ${NAME} create() {
           return null;
       }
-  
+
   }
-  ```
+```
 
 - Singleton模板
 
-  ```java
-  #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end  
-  #parse("File Header.java")  
-  public class ${NAME} {  
+```java
+  #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+  #parse("File Header.java")
+  public class ${NAME} {
       private ${NAME}() {
       }
-  
-      /**  
-      * 获取单例对象  
-      *  
-      * @return 实例对象  
-      */  
+
+      /**
+      * 获取单例对象
+      *
+      * @return 实例对象
+      */
       public static ${NAME} getInstance() {
       return ${NAME}Holder.INSTANCE;
-      }  
-  
+      }
+
       private static final class ${NAME}Holder {
-  
+
       private static final ${NAME} INSTANCE = new ${NAME}();
-  
+
       }
   }
-  ```
+```
 
 - 标准头
 
-  ```java
-  /**   
-  * @author MinChiang  
-   * @version 1.0.0  
-   * @date ${YEAR}-${MONTH}-${DAY} ${TIME}   
+```java
+  /**
+  * @author MinChiang
+   * @version 1.0.0
+   * @date ${YEAR}-${MONTH}-${DAY} ${TIME}
   */
-  ```
+```
 
 ### 插件
 
@@ -464,7 +464,7 @@ count=1
 
 - 在[Account page](https://central.sonatype.com/account)中点击Generate User Token，获得下面内容
 
-  ```xml
+```xml
   <settings>
     <servers>
       <server>
@@ -474,7 +474,7 @@ count=1
       </server>
     </servers>
   </settings>
-  ```
+```
 
   ![maven包发布1](../images/maven包发布1.png)
 
@@ -482,30 +482,30 @@ count=1
   ![maven包发布2](../images/maven包发布2.png)
   对应的`pom.xml`文件如下，请注意正确填写**publishingServerId**：
 
-  ```xml
+```xml
   <?xml version="1.0" encoding="UTF-8"?>
   <project xmlns="http://maven.apache.org/POM/4.0.0"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
       <modelVersion>4.0.0</modelVersion>
-  
+
       <groupId>xxxx</groupId>
       <artifactId>xxxx</artifactId>
       <version>1.0.1</version>
       <packaging>jar</packaging>
       <name>xxxx</name>
       <url>xxxx</url>
-  
+
       <description>
           ctapi-sdk-acct
       </description>
-  
+
       <scm>
           <connection>scm:git:你的git仓库</connection>
           <developerConnection>scm:git:你的git仓库</developerConnection>
           <url>项目链接</url>
       </scm>
-  
+
       <developers>
           <developer>
               <id>开发者id，随便填</id>
@@ -517,14 +517,14 @@ count=1
               <url>开发者的url</url>
           </developer>
       </developers>
-  
+
       <licenses>
           <license>
               <name>The Apache Software License, Version 2.0</name>
               <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
           </license>
       </licenses>
-  
+
       <distributionManagement>
           <snapshotRepository>
               <id>sonatype-snapshots</id>
@@ -535,17 +535,17 @@ count=1
               <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
           </repository>
       </distributionManagement>
-  
+
       <properties>
           <maven.compiler.source>8</maven.compiler.source>
           <maven.compiler.target>8</maven.compiler.target>
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       </properties>
-  
+
       <dependencies>
     省略对应的依赖项
       </dependencies>
-  
+
       <build>
           <plugins>
               <plugin>
@@ -558,7 +558,7 @@ count=1
                       <encoding>${project.build.sourceEncoding}</encoding>
                   </configuration>
               </plugin>
-  
+
               <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-source-plugin</artifactId>
@@ -572,7 +572,7 @@ count=1
                       </execution>
                   </executions>
               </plugin>
-  
+
               <plugin>
                   <groupId>org.sonatype.central</groupId>
                   <artifactId>central-publishing-maven-plugin</artifactId>
@@ -583,7 +583,7 @@ count=1
                       <tokenAuth>true</tokenAuth>
                   </configuration>
               </plugin>
-  
+
               <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-javadoc-plugin</artifactId>
@@ -601,7 +601,7 @@ count=1
                       <doclint>none</doclint>
                   </configuration>
               </plugin>
-  
+
               <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-gpg-plugin</artifactId>
@@ -619,7 +619,7 @@ count=1
           </plugins>
       </build>
   </project>
-  ```
+```
 
 - 密钥对准备部分，到[GnuPG](https://gnupg.org/download/)中下载[Gpg4win](https://gpg4win.org/download.html)，并安装，按照流程生成密钥对，注意安装完后重启机器；在终端中执行`gpg --version`观察是否有内容输出，可以详见文档[GPG Signed Components](https://central.sonatype.org/publish/publish-maven/)部分
 - 在maven中分别执行clean、package、deploy
@@ -634,11 +634,11 @@ count=1
 
 - 迁移路径：
 
-  ```powershell
+```powershell
   wsl --export Ubuntu-24.04 D:\ubuntu24.04_backup.tar
   wsl --unregister Ubuntu-24.04
   wsl --import Ubuntu-24.04 D:\WSL\Ubuntu24.04 D:\ubuntu24.04_backup.tar --version 2
-  ```
+```
 
 ## Docker
 
@@ -662,36 +662,31 @@ sudo apt install -y neovim
 
 - 安装
 
-  ```bash
+```bash
   # 更新源并安装 zsh 和 curl/git
   sudo apt update
   sudo apt install -y zsh git curl
-  
+
   # 将当前的默认 Shell 切换为 zsh
   chsh -s $(which zsh)
-  
+
   # 国内镜像加速命令（国内网络直连极速下载）
   sh -c "$(curl -fsSL https://gitee.com/pocmon/ohmyzsh/raw/master/tools/install.sh)"
-  
+
   # 🤖 自动建议插件（根据历史命令自动变灰提示，按方向键 → 直接补全）
   git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-  
+
   # 🎨 语法高亮插件（命令输入正确变绿，输入错误变红，高亮区分参数）
   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-  ```
+```
 
 - 修改配置文件 `.zshrc`：`nvim ~/.zshrc`
 
-  ```
+```txt
   ZSH_THEME="agnoster"
   plugins=(
       git
       zsh-autosuggestions
       zsh-syntax-highlighting
   )
-  ```
-
-  
-
-  
-
+```

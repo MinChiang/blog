@@ -66,21 +66,21 @@
 
   - 应用层，**回答服务应用要完成的任务内容**，要求尽量的简单
   - **不包含任何的业务逻辑或者知识**
-    - 没有if...else等逻辑判断（业务逻辑）
-    - 没有计算相关的东西，例如计算工单时长等，都不能出现
+  - 没有if...else等逻辑判断（业务逻辑）
+  - 没有计算相关的东西，例如计算工单时长等，都不能出现
   - 应用层分为两类：
-    - xxxQueryService：表示读取，入参都是以xxxQuery结尾，出餐xxxDTO结尾
-    - xxxApplicationService：表示写入，入参都是以xxxCommand结尾，如果创建了聚合根对象则返回对应的id，否则返回值为空
+  - xxxQueryService：表示读取，入参都是以xxxQuery结尾，出餐xxxDTO结尾
+  - xxxApplicationService：表示写入，入参都是以xxxCommand结尾，如果创建了聚合根对象则返回对应的id，否则返回值为空
   - 这里是做数据库事务的地方
-    - 原则上这里的接口是意识不到事务的，即**不能再接口层面上面加@Transational的注解**
-    - 注意长事务，如果有长事务出现则需要手动编排管理事务
+  - 原则上这里的接口是意识不到事务的，即**不能再接口层面上面加@Transational的注解**
+  - 注意长事务，如果有长事务出现则需要手动编排管理事务
   - 这里只有对应的interface，并没有对应的实现
   - 编写application实现原则：
-    - 数据校验
-    - 通过Repository查询聚合根
-    - 操作聚合根，对聚合根进行状态的变更
-    - 通过Repository保存聚合根
-    - 发送领域事件
+  - 数据校验
+  - 通过Repository查询聚合根
+  - 操作聚合根，对聚合根进行状态的变更
+  - 通过Repository保存聚合根
+  - 发送领域事件
 
   ```java
   public interface OrderQueryService {
@@ -91,7 +91,7 @@
        * @return 工单详情
        */
       GetOrderDTO getOrder(@Valid @NotNull GetOrderQuery query);
-  
+
       /**
        * 查询我的锁定中的工单
        *
@@ -134,49 +134,49 @@
        * 工单主键
        */
       private OrderId id;
-  
+
       // 这里是一些比较重要的设计点
-  
+
       /**
        * 所属组别
        */
       private GroupId groupId;
-  
+
       /**
        * 优先级，这个值和提单人是否是VIP，以及工单的紧急度相关
        */
       private Priority priority = Priority.LOWEST;
-  
+
       /**
        * 锁定信息
        */
       private Lock lock = NO_LOCK;
-  
+
       /**
        * 工单归档信息
        */
       private ArchiveInformation archiveInformation = ArchiveInformation.NOT_ARCHIVED;
-  
+
       /**
        * 状态
        */
       private OrderStatusEnum status = WAITING;
-  
+
       /**
        * 业务id
        */
       private Integer appId;
-  
+
       /**
        * 服务id
        */
       private Long serviceId;
-  
+
       /**
        * 工单来源，1-聊天入口，2-电话入口，3-手动提单
        */
       private OriginEnum origin;
-  
+
       /**
        * 接受/锁定工单
        *
@@ -193,7 +193,7 @@
           maintainedBy(user);
           return events;
       }
-  
+
       /**
        * 解锁/释放工单
        *
@@ -210,7 +210,7 @@
           maintainedBy(user);
           return events;
       }
-  
+
       /**
        * 解决/归档工单
        *
@@ -245,10 +245,10 @@
   - 领域服务，请与ApplicationService区分开
   - domain service是一个不必要的妥协，应该越少越好
   - 有些行为不能单纯地放在一个实体中
-    - 对外围接口进行调用的情况
-    - 未来复杂的计算逻辑，但是计算的参数有预想地不再聚合内
-    - 一些同时改变多个聚合的方法
-    - 不仅有接口还有实现，一些文章说直接写对应实现即可，但是本人还是推荐保留接口
+  - 对外围接口进行调用的情况
+  - 未来复杂的计算逻辑，但是计算的参数有预想地不再聚合内
+  - 一些同时改变多个聚合的方法
+  - 不仅有接口还有实现，一些文章说直接写对应实现即可，但是本人还是推荐保留接口
 
   ```java
   /**
@@ -451,7 +451,7 @@ customer-order-api
 │                              ├─constant     一些对外的校验常量
 │                              ├─dto      存放与外界交互的参数以及结果（对内进行复用的）
 │                              │  ├─command     写命令
-│                              │  ├─event     领域事件  
+│                              │  ├─event     领域事件
 │                              │  ├─query     读请求
 │                              │  └─result     返回结果
 │                              ├─exception     异常

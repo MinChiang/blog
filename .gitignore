@@ -41,5 +41,10 @@ dist/
 test/unit/coverage/
 .obsidian/
 *.assets/
-docs/.vupress/blog/
-blog/
+
+# VitePress
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+# Agent runtime
+.sisyphus/

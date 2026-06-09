@@ -53,7 +53,7 @@ public enum CardFigureEnum {
     TWO(2, "TWO", 0),
     ACE(1, "ACE", 1),
     ;
-    
+
  // 省略其他无用代码
 }
 ```
@@ -90,7 +90,7 @@ public enum CardFigureEnum {
     TWO(11, 2, "TWO", 0),
     ACE(12, 1, "ACE", 1),
     ;
-    
+
  // 省略其他无用代码
 }
 ```

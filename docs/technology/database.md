@@ -151,7 +151,7 @@ SELECT
     SYSDATE(),
     SLEEP(10),
     SYSDATE();
-    
+
 -- 不用索引执行一个查询
 SELECT * FROM api_statistics as2;
 ```
@@ -175,6 +175,6 @@ LIMIT 0, 200;
 # User@Host: root[root] @ localhost [127.0.0.1]  Id:    10
 # Query_time: 0.005397  Lock_time: 0.000015 Rows_sent: 1  Rows_examined: 1
 SET timestamp=1687185751;
-/* ApplicationName=DBeaver Ultimate 21.3.0 - SQLEditor <Script-10.sql> */ SELECT * FROM api_statistics as2 
+/* ApplicationName=DBeaver Ultimate 21.3.0 - SQLEditor <Script-10.sql> */ SELECT * FROM api_statistics as2
 LIMIT 0, 200;
 ```

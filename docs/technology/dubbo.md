@@ -1,3 +1,9 @@
+---
+title: Dubbo
+date: 2023-06-12
+category: technology
+---
+
 # Dubbo
 
 ## 负载均衡算法
@@ -33,19 +39,19 @@ ExtensionLoader
 
      ```java
      package org.apache.dubbo.rpc;
-     
+
      import org.apache.dubbo.common.extension.ExtensionLoader;
-     
+
      public class Protocol$Adaptive implements org.apache.dubbo.rpc.Protocol {
-     
+
          public void destroy() {
              throw new UnsupportedOperationException("The method public abstract void org.apache.dubbo.rpc.Protocol.destroy() of interface org.apache.dubbo.rpc.Protocol is not adaptive method!");
          }
-     
+
          public int getDefaultPort() {
              throw new UnsupportedOperationException("The method public abstract int org.apache.dubbo.rpc.Protocol.getDefaultPort() of interface org.apache.dubbo.rpc.Protocol is not adaptive method!");
          }
-     
+
          public org.apache.dubbo.rpc.Exporter export(org.apache.dubbo.rpc.Invoker arg0) throws org.apache.dubbo.rpc.RpcException {
              if (arg0 == null) throw new IllegalArgumentException("org.apache.dubbo.rpc.Invoker argument == null");
              if (arg0.getUrl() == null)
@@ -57,7 +63,7 @@ ExtensionLoader
              org.apache.dubbo.rpc.Protocol extension = (org.apache.dubbo.rpc.Protocol) ExtensionLoader.getExtensionLoader(org.apache.dubbo.rpc.Protocol.class).getExtension(extName);
              return extension.export(arg0);
          }
-     
+
          public org.apache.dubbo.rpc.Invoker refer(java.lang.Class arg0, org.apache.dubbo.common.URL arg1) throws org.apache.dubbo.rpc.RpcException {
              if (arg1 == null) throw new IllegalArgumentException("url == null");
              org.apache.dubbo.common.URL url = arg1;
@@ -67,7 +73,7 @@ ExtensionLoader
              org.apache.dubbo.rpc.Protocol extension = (org.apache.dubbo.rpc.Protocol) ExtensionLoader.getExtensionLoader(org.apache.dubbo.rpc.Protocol.class).getExtension(extName);
              return extension.refer(arg0, arg1);
          }
-     
+
      }
      ```
 
@@ -83,8 +89,8 @@ ExtensionLoader
       3. 获取不到则读取环境变量ENV中的dubbo.properties.file以加载文件名
       4. 若取不到则取dubbo.properties作为文件名
 2. 调整配置读取顺序
-   - 如果是以配置中心优先：SystemConfiguration -> AppExternalConfiguration -> ExternalConfiguration -> AbstractConfig -> PropertiesConfiguration
-   - 非配置中心优先：SystemConfiguration -> AbstractConfig -> AppExternalConfiguration -> ExternalConfiguration -> PropertiesConfiguration
+  - 如果是以配置中心优先：SystemConfiguration -> AppExternalConfiguration -> ExternalConfiguration -> AbstractConfig -> PropertiesConfiguration
+  - 非配置中心优先：SystemConfiguration -> AbstractConfig -> AppExternalConfiguration -> ExternalConfiguration -> PropertiesConfiguration
 3. 获取配置中的所有setter方法，便利所有的属性，从CompositeConfiguration里面重新加载对应的值
 
 一个服务是由一个url地址组成建立链接的，那一个进程有多个服务会不会建立多个链接？

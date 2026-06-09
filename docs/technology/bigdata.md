@@ -1,3 +1,9 @@
+---
+title: 大数据
+date: 2020-06-11
+category: technology
+---
+
 # 大数据
 
 ## 环境搭建
