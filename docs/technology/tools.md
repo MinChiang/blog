@@ -1,4 +1,4 @@
-# 工具
+## 工具
 
 ## ACME.sh
 
@@ -12,7 +12,7 @@
 
 - [NameSilo API托管地址](https://www.namesilo.com/account/api-manager)
 - 记录下申请的key
-![namesilo api token生成](../images/namesilo_api_token生成.png)
+  ![namesilo api token生成](../images/namesilo_api_token生成.png)
 
 ### Cloudflare为例申请Token
 
@@ -187,13 +187,13 @@ acme.sh --install-cert -d '*.minchiang.top' \
     git config –-global user.email 'xxx@xx.xxx'
 ```
 
-  - 生成密钥，并上传到你的github的[ssh key中](https://github.com/settings/keys)
+- 生成密钥，并上传到你的github的[ssh key中](https://github.com/settings/keys)
 
 ```powershell
     ssh-keygen -t rsa -C 'xxx@xx.xxx'
 ```
 
-  - 改变ssh通道的代理设置，修改配置文件：`C:\Users\你的用户\.ssh\config`
+- 改变ssh通道的代理设置，修改配置文件：`C:\Users\你的用户\.ssh\config`
 
 ```powershell
     Host *
@@ -210,7 +210,7 @@ acme.sh --install-cert -d '*.minchiang.top' \
         # ProxyCommand connect -H 127.0.0.1:10809 %h %p # 这里使用的是http协议代理，与上面2选1
 ```
 
-  - 设置http协议的代理，在命令行中输入
+- 设置http协议的代理，在命令行中输入
 
 ```powershell
     # 使用socks5代理
@@ -219,7 +219,7 @@ acme.sh --install-cert -d '*.minchiang.top' \
     git config --global http.https://github.com.proxy http://127.0.0.1:10809
 ```
 
-  - 设置使用Bcompare作为diff和merge的工具
+- 设置使用Bcompare作为diff和merge的工具
 
 ```powershell
     git config --global diff.tool bc

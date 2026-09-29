@@ -1,8 +1,6 @@
+# 
+
 # 算法
-
-## 排序
-
-![排序算法属性](../images/排序算法属性.png)
 
 ### 冒泡排序
 
@@ -583,9 +581,6 @@ public class LeakyBucket {
 
 - 3：[力扣](https://leetcode.cn/problems/longest-substring-without-repeating-characters)
 - 146：[力扣](https://leetcode.cn/problems/lru-cache)
-
-思路：map+双向链表，由于get和put都是必须为O(1)复杂度，因此只能用map
-
 - 215：[力扣](https://leetcode.cn/problems/kth-largest-element-in-an-array)
 - 15：[力扣](https://leetcode.cn/problems/3sum)
 - 102：[力扣](https://leetcode.cn/problems/binary-tree-level-order-traversal)
