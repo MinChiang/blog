@@ -74,15 +74,15 @@
     - 遍历后，如果没有对应相等的key，则先进行resize
     - resize后，要重新获取对应的链表位置，再进行值的设定
     - 注意维护对应的size
-  - get(self, key: K) -> V | None
+  - get(key: K) -> V | None
     - 先计算key所在data数组中的下标，用hash(key) % capacity进行计算，获得一个list[Node[K,V]]
     - 遍历list[Node[K,V]]，判定对应的Node.key是否与目标值key相等
-  - remove(self, key: K) -> V | None
+  - remove(key: K) -> V | None
     - 先计算key所在data数组中的下标，用hash(key) % capacity进行计算，获得一个list[Node[K,V]]
     - 遍历list[Node[K,V]]，判定对应的Node.key是否与目标值key相等
     - 相等则在list中删除对应的元素，然后返回删除元素的value
     - 未删除则返回None
-  - resize(self)
+  - resize()
     - 判定是否已经超过了预制大小，计算公式：(size + 1) / capacity > 0.75，其中0.75是认为定义的容量值，经典值为0.75
     - 新的capacity为原来大小的2倍，新建对应data表
     - 遍历原来的data表，重新hash表里面的所有元素，重新放入新的data表里面
@@ -180,6 +180,76 @@ class HashMap[K, V]:
     def __contains__(self, value: K) -> bool:
         return self.contains_key(value)
 ```
+
+### 堆
+
+- 解决问题：
+  - 快速找到最大/最小的元素，时间复杂度为O(1)
+- 构造方法：
+  - 代码上：使用一个**数组**保存元素
+  - 逻辑上使用**完全二叉树进行元素保存**
+- 完全二叉树注意点：
+  - 每一层的元素比下一层的元素都要大/小
+  - 父节点下标 = （当前节点的下标 - 1）/ 2
+  - 左子节点的下标 = 当前节点的下标 \* 2 + 1
+  - 右子节点的下标 = 当前节点的下标 \* 2 + 2
+  - 最后一个非叶子节点的下标 = （最后一个节点下标 - 1）/ 2 = （（数组长度 - 1）- 1）/ 2 = 数组长度 / 2 - 1
+- 方法（以构造最小堆为例，堆顶的元素是最小值）：
+  - **init**(data: list[T]) -> None:
+    - 把列表数组中的元素按照二叉树的形式排列
+    - \_heapify():
+      - 从**最后一个非叶子节点的元素开始**，不断执行\_sift_down的动作
+      - 从这个节点开始，每次下标-1，直到所有元素都执行下沉完成
+
+      ```python
+      _heapify()
+          index = 最后一个非叶子节点 = 数组长度 / 2 - 1
+          while index >= 0:
+              _sift_down(index)
+              index = index - 1
+      ```
+
+  - peek() -> T
+    - 直接返回数组中的第一个元素，data[0]
+  - push(value: T) -> None
+    - 在数组中的最后插入一个元素，然后实现**上浮**操作
+    - 上浮操作定义：
+      - 循环到堆顶的元素，如果当前的元素比父节点的元素小，则把当前元素和夫元素进行交换
+      - 注意循环的结束判断，堆顶的第一个元素是没有父节点的，因此要循环index > 0
+
+      ```python
+      _sift_up(index: int)
+          while index > 0:
+              父节点下标 = (index - 1) // 2
+              if 当前节点值 >= 父节点值:
+                  return
+              交换当前节点和父节点
+              index = 父节点下标
+      ```
+
+  - pop() -> T
+    - 如果在数组中弹出第一个元素，数组的后面元素都会往前移动，这样的效率是很慢
+    - 因此，动作是：先**取出**第一个元素data[0]，注意**不是移除**
+    - 移除最后一个元素，data[len[data - 1]]，然后把它放到data[0]的位置上，执行下沉动作
+    - 下沉操作定义：
+      - 把当前节点和**左右子节点**进行比较，然后把较小的值与当前节点的值进行替换
+      - 注意要判断**左右节点的合法性，因为左右子节点可能是不存在的**
+      - 如果当前的节点已经比左右节点都要小，就直接退出返回，否则则要取交换后的位置继续执行下沉动作
+
+      ```python
+      _sift_down(index: int)
+          while True:
+              左子节点下标 = index * 2 + 1
+              右子节点下标 = index * 2 + 2
+              smallest = index
+              if 左子节点下标在长度范围内 and 左子节点小于smallest位置的值:
+                  smallest = 左子节点下标
+              if 右子节点下标在长度范围内 and 右子节点小于smallest位置的值:
+                  smallest = 右子节点下标
+              if smallest == index:
+                  return
+              交换index和smallest的元素值
+      ```
 
 ## B-树、B树、B+树、B\*树
 
