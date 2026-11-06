@@ -25,6 +25,7 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: "Java基础", link: "/technology/java_basis" },
+            { text: "AI", link: "/technology/ai" },
             { text: "JVM", link: "/technology/jvm" },
             { text: "测试", link: "/technology/test" },
             { text: "框架组件", link: "/technology/frame_components" },
